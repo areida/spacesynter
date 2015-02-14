@@ -43,7 +43,14 @@ var UserStore = Fluxxor.createStore({
         this.error = true;
 
         this.emit('change');
-    }
+    },
+
+    getState : function()
+    {
+        return {};
+    },
+
+    setState : function() {}
 });
 
 module.exports = UserStore;
