@@ -57,7 +57,7 @@ module.exports = {
         ],
         loaders : [
             {
-                test   : /\.(ico|jpg|png)$/,
+                test   : /\.(eot|ico|jpg|png|svg|ttf|woff|woff2)$/,
                 loader : 'file-loader',
                 query  : {name : '[path][name].[ext]?[hash]'}
             },
