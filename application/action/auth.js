@@ -9,8 +9,8 @@ var loginCreatedUser = function(password, userData) {
     var flux = this;
 
     // User created, now log in
-    oauthClient.login(userData.email, password)
-        .then(function(tokenData) {
+    return oauthClient.login(userData.email, password)
+        .then(function (tokenData) {
             flux.dispatch(
                 constants.LOGIN_SUCCESSFUL,
                 {
@@ -18,8 +18,7 @@ var loginCreatedUser = function(password, userData) {
                     userData  : userData
                 }
             );
-        })
-        .fail(function() {
+        }, function () {
             flux.dispatch(constants.LOGIN_FAILED);
         });
 };
@@ -30,8 +29,8 @@ var fetchLoggedInUser = function(tokenData)
 
     // Authenticated, but still need user data
     userClient.setToken(tokenData);
-    userClient.getCurrentUser()
-        .then(function(userData) {
+    return userClient.getCurrentUser()
+        .then(function (userData) {
             flux.dispatch(
                 constants.LOGIN_SUCCESSFUL,
                 {
@@ -39,8 +38,7 @@ var fetchLoggedInUser = function(tokenData)
                     userData  : userData
                 }
             );
-        })
-        .fail(function() {
+        }, function () {
             flux.dispatch(constants.LOGIN_FAILED);
         });
 };
@@ -52,11 +50,13 @@ module.exports = {
 
         flux.dispatch(constants.LOGGING_IN);
 
-        oauthClient.login(username, password)
-            .then(fetchLoggedInUser.bind(flux))
-            .fail(function() {
-                flux.dispatch(constants.LOGIN_FAILED);
-            });
+        return oauthClient.login(username, password)
+            .then(
+                fetchLoggedInUser.bind(flux),
+                function() {
+                    flux.dispatch(constants.LOGIN_FAILED);
+                }
+            );
     },
 
     logout : function()
@@ -72,14 +72,15 @@ module.exports = {
 
         this.dispatch(constants.REGISTERING);
 
-        userClient.createUser(
-            {
+        return userClient.createUser({
                 email    : email,
                 password : password
             })
-            .then(loginCreatedUser.bind(flux, password))
-            .fail(function() {
-                flux.dispatch(constants.REGISTRATION_FAILED);
-            });
+            .then(
+                loginCreatedUser.bind(flux, password),
+                function() {
+                    flux.dispatch(constants.REGISTRATION_FAILED);
+                }
+            );
     }
 };

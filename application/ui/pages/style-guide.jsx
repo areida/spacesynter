@@ -2,36 +2,21 @@
 /* global document */
 'use strict';
 
-var React            = require('react');
-var RouterStateMixin = require('react-router').State;
-var FluxMixin        = require('fluxxor').FluxMixin(React);
-var SGHeader         = require('../components/style-guide/sg-header');
+var React      = require('react');
+var FluxMixin  = require('fluxxor').FluxMixin(React);
+var StateMixin = require('react-router').State;
 
-var TypographySection   = require('../components/style-guide/sections/sg-typography');
+var SGHeader            = require('../components/style-guide/sg-header');
 var ButtonSection       = require('../components/style-guide/sections/sg-buttons');
-var IconSection         = require('../components/style-guide/sections/sg-icons');
 var FormElementsSection = require('../components/style-guide/sections/sg-form-elements');
-
-require('../scss/style-guide');
+var IconSection         = require('../components/style-guide/sections/sg-icons');
+var TypographySection   = require('../components/style-guide/sections/sg-typography');
 
 module.exports = React.createClass({
 
     displayName : 'StyleGuide',
 
-    mixins : [FluxMixin, RouterStateMixin],
-
-    componentWillMount: function()
-    {
-        var doc               = document,
-            styleGuideCSSLink = doc.createElement('link');
-
-        styleGuideCSSLink.href  = '/css/style-guide.css';
-        styleGuideCSSLink.type  = 'text/css';
-        styleGuideCSSLink.rel   = 'stylesheet';
-        styleGuideCSSLink.media = 'screen';
-
-        doc.getElementsByTagName('head')[0].appendChild(styleGuideCSSLink);
-    },
+    mixins : [FluxMixin, StateMixin],
 
     getComponentConstructors : function()
     {

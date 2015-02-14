@@ -3,6 +3,7 @@
 
 var React     = require('react');
 var FluxMixin = require('fluxxor').FluxMixin(React);
+var Link      = require('react-router').Link;
 var classSet  = require('react/lib/cx');
 
 module.exports = React.createClass({
@@ -23,32 +24,27 @@ module.exports = React.createClass({
         };
     },
 
-    onClick : function()
-    {
-        if (this.props.displayName) {
-            this.getFlux().actions.route.navigate(
-                'style-guide-section',
-                {section : this.props.displayName}
-            );
-        } else {
-            this.getFlux().actions.route.navigate('style-guide');
-        }
-    },
-
     render : function()
     {
-        var linkClasses;
+        var linkClasses, linkParams, linkTo;
 
         linkClasses = classSet({
             'sg-nav__menu-link'             : true,
             'sg-nav__menu-link--is-current' : this.props.active
         });
 
+        linkParams = this.props.displayName ? {section : this.props.displayName} : {};
+        linkTo     = this.props.displayName ? 'style-guide-section' : 'style-guide';
+
         return (
             <li className='sg-nav__menu-item'>
-                <a className={linkClasses} onClick={this.onClick}>
+                <Link
+                    to        = {linkTo}
+                    params    = {linkParams}
+                    className = {linkClasses}
+                    onClick   = {this.onClick} >
                     {this.props.children || this.props.displayName}
-                </a>
+                </Link>
             </li>
         );
     }

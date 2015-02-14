@@ -28,7 +28,7 @@ module.exports = React.createClass({
     {
         event.preventDefault();
 
-        this.getFlux().actions.auth.logout();
+        this.getFlux().actions.auth.logout().done();
 
         this.transitionTo('home');
     },
