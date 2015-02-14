@@ -11,5 +11,8 @@ module.exports = {
         hostname  : backend,
         port      : 80,
         client_id : '123'
+    },
+    server : {
+        port : 9000
     }
 };

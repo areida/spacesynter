@@ -3,8 +3,7 @@
 'use strict';
 
 var React  = require('react'); // Used in compiled js, so required even though appears unused
-var Router = require('react-router');
-var Route  = Router.Route;
+var Route  = require('react-router').Route;
 
 var SiteLayout       = require('./ui/layouts/site');
 var HomePage         = require('./ui/pages/home');
@@ -25,15 +24,10 @@ var getEnvironmentDependentRoutes = function()
     return routes;
 };
 
-var routes = (
+module.exports = (
     <Route handler={SiteLayout}>
         <Route path='/' name='home' handler={HomePage}/>
         {getEnvironmentDependentRoutes()}
         <Route path='*' name='404' handler={NotFoundPage}/>
     </Route>
 );
-
-module.exports = Router.create({
-    routes   : routes,
-    location : Router.HistoryLocation
-});
