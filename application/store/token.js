@@ -1,17 +1,20 @@
 /* jshint globalstrict: true */
 'use strict';
 
-var constants = require('../constants');
-var Fluxxor   = require('fluxxor');
-var store     = require('store');
+var constants       = require('../constants');
+var APIStoreFactory = require('./api-store-factory');
+var store           = require('store');
 
-var TokenStore = Fluxxor.createStore({
+var TokenStore = APIStoreFactory.createStore({
 
     initialize : function()
     {
-        this.loading  = false;
-        this.error    = false;
-        this.loggedIn = !! store.get('token');
+        this.state = {
+           error    : false,
+           loading  : false,
+           loggedIn : !! store.get('token'),
+           token    : store.get('token')
+        };
 
         this.bindActions(
             constants.LOGGING_IN, 'onLogin',
@@ -23,25 +26,28 @@ var TokenStore = Fluxxor.createStore({
 
     onLogin : function()
     {
-        this.loading = true;
+        this.state.loaded  = false;
+        this.state.loading = true;
 
         this.emit('change');
     },
 
     onLoginSuccessful : function(payload)
     {
-        this.token    = payload.tokenData;
-        this.loggedIn = true;
+        this.state.loaded   = true;
+        this.state.loading  = false;
+        this.state.loggedIn = true;
+        this.state.token    = payload.tokenData;
 
-        store.set('token', this.token);
+        store.set('token', this.state.token);
 
         this.emit('change');
     },
 
     onLoginFailed : function()
     {
-        this.loading = false;
-        this.error   = true;
+        this.state.loading = false;
+        this.state.error   = true;
 
         this.emit('change');
     },
@@ -49,7 +55,7 @@ var TokenStore = Fluxxor.createStore({
     onLogout : function()
     {
         store.remove('token');
-        this.loggedIn = false;
+        this.state.loggedIn = false;
 
         this.emit('change');
     },
@@ -57,6 +63,11 @@ var TokenStore = Fluxxor.createStore({
     getTokenData : function()
     {
         return store.get('token');
+    },
+
+    isLoggedIn : function()
+    {
+        return this.state.loggedIn;
     }
 });
 

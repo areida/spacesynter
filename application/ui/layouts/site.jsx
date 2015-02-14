@@ -19,7 +19,7 @@ module.exports = React.createClass({
         var store = this.getFlux().store('TokenStore');
 
         return {
-            loggedIn : store.loggedIn
+            loggedIn : store.isLoggedIn()
         };
     },
 

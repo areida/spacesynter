@@ -8,7 +8,7 @@ var store     = require('store');
 var UserStore = Fluxxor.createStore({
     initialize : function()
     {
-        this.data = store.get('user') || {};
+        this.data  = store.get('user') || {};
         this.error = false;
 
         this.bindActions(
