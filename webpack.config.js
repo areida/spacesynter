@@ -59,7 +59,7 @@ module.exports = {
             {
                 test   : /\.(eot|ico|jpg|png|svg|ttf|woff|woff2)$/,
                 loader : 'file-loader',
-                query  : {name : '[path][name].[ext]?[hash]'}
+                query  : {name : '[path][name].[ext]'}
             },
             {
                 test    : /\.jsx$/,
