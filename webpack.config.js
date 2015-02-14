@@ -81,7 +81,7 @@ module.exports = {
     },
     plugins : config.plugins,
     resolve : {
-        extensions : ['', '.css', '.js', '.json', '.jsx', '.scss', '.webpack.js', '.web.js']
+        extensions : ['', '.js', '.json', '.jsx', '.webpack.js', '.web.js']
     },
     devtool : '#inline-source-map',
 };
