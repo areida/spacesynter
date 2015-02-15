@@ -23,8 +23,6 @@ Tmpl.load = function () {
     return Fs.readFileSync(process.cwd() + '/application/index.html', 'utf8');
 };
 
-app.use(Express.static(process.cwd() + '/build'));
-
 var serveApp = function (req, res) {
     Router.run(routes, req.url, function (Handler, state) {
         var flux = require('./application/flux');
@@ -32,20 +30,21 @@ var serveApp = function (req, res) {
         flux.fetchData(state).done(function () {
             var Factory = React.createFactory(Handler);
 
-            React.withContext({flux : flux}, function() {
-                res.send(Tmpl('page', {
-                    flux : JSON.stringify(flux.toObject()),
-                    html : React.renderToString(new Factory()),
-                }));
+            res.send(Tmpl('page', {
+                flux : JSON.stringify(flux.toObject()),
+                html : React.renderToString(new Factory({flux : flux})),
+            }));
 
-                res.end();
-            });
+            res.end();
         });
     });
 };
 
-app.get('/', serveApp);
+app.get('/?', serveApp);
+app.get('/gists(/:username)?', serveApp);
 app.get('/style-guide(/:section)?', serveApp);
+
+app.use(Express.static(process.cwd() + '/build'));
 
 console.log('Listening on localhost:' + config.server.port);
 app.listen(config.server.port);

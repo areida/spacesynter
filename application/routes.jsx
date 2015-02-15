@@ -6,6 +6,7 @@ var React  = require('react'); // Used in compiled js, so required even though a
 var Route  = require('react-router').Route;
 
 var SiteLayout       = require('./ui/layouts/site');
+var GistsPage        = require('./ui/pages/gists');
 var HomePage         = require('./ui/pages/home');
 var StyleGuidePage   = require('./ui/pages/style-guide');
 var NotFoundPage     = require('./ui/pages/404');
@@ -27,6 +28,8 @@ var getEnvironmentDependentRoutes = function()
 module.exports = (
     <Route handler={SiteLayout}>
         <Route path='/' name='home' handler={HomePage}/>
+        <Route path='/gists/:username' name='gists' handler={GistsPage}/>
+        <Route path='/gists' name='gists-get' handler={GistsPage}/>
         {getEnvironmentDependentRoutes()}
         <Route path='*' name='404' handler={NotFoundPage}/>
     </Route>

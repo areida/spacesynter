@@ -12,6 +12,11 @@ module.exports = {
         port      : 80,
         client_id : '123'
     },
+    github : {
+        hostname : 'api.github.com',
+        port     : 443,
+        secure   : true
+    },
     server : {
         port : 9000
     }

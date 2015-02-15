@@ -17,7 +17,7 @@ module.exports = {
         this.setState({inputValue : currentValue});
 
         if (this.props.onChange) {
-            this.props.onChange(currentValue);
+            this.props.onChange(currentValue, this);
         }
     }
 
