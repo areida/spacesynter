@@ -1,13 +1,16 @@
 /* jshint globalstrict: true */
 'use strict';
 
-var config      = require('../config');
 var AuthGateway = require('synapse-common/http/auth-gateway');
 var store       = require('store');
+
+var config      = require('../config');
 
 var GithubClient = AuthGateway.extend({
 
     config : config.github,
+
+    state : null,
 
     getRateLimit : function()
     {

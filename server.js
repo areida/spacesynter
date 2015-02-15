@@ -20,12 +20,13 @@ var Tmpl   = require('blueimp-tmpl').tmpl;
 var config = require('./application/config');
 var routes = require('./application/routes');
 
-var githubOAuth = require('github-oauth')({
+var github   = require('./server/github');
+var ghClient = new Github({
     githubClient : process.env.GITHUB_CLIENT,
     githubSecret : process.env.GITHUB_SECRET,
-    baseURL      : process.env.BASE_URL || (config.server.hostname + ':' + config.server.port),
-    loginURI     : '/login',
-    callbackURI  : '/callback',
+    baseUrl      : process.env.BASE_URL || (config.server.hostname + ':' + config.server.port),
+    loginUri     : '/login',
+    callbackUri  : '/callback',
     scope        : 'gist'
 });
 
@@ -49,8 +50,8 @@ Tmpl.load = function () {
 
 function GET(req, res)
 {
-    if (req.session.token) {
-        localStorage.setItem('token', JSON.stringify(req.session.token));
+    if (req.session.ghToken) {
+        localStorage.setItem('token', JSON.stringify(req.session.ghToken));
     }
 
     Router.run(routes, req.url, function (Handler, state) {
@@ -80,19 +81,31 @@ app.get('/gists', function (req, res) {
     }
 });
 
-app.all('/callback/', function (req, res) {
-    githubOAuth.callback(req, res, function (err, token) {
-        if (err) {
-            console.error('there was a login error', err);
-            res.redirect(403, '/');
-        } else {
-            req.session.token = token;
-            res.redirect(302, '/');
-        }
-    });
+app.get('/login/', function(req, res) {
+    req.session.ghState = ghClient.createState();
+
+    res.redirect(302, ghClient.authorizeUrl(req.session.state));
 });
 
-app.all('/login/', githubOAuth.login);
+app.get('/callback/', function (req, res) {
+    if (! req.query.code || ! req.session.state) {
+        res.redirect(403, '/');
+    }
+
+    ghClient.callback(req.query.code, req.session.state)
+        .then(
+            function (token) {
+                req.session.ghState = null;
+                req.session.ghToken = token;
+                res.redirect(302, '/');
+            },
+            function (error) {
+                console.error('there was a login error', error);
+                res.redirect(403, '/');
+            }
+        )
+        .done();
+});
 
 app.use(Express.static(process.cwd() + '/build'));
 
