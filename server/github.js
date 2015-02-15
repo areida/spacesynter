@@ -1,10 +1,10 @@
 var crypto    = require('crypto');
 var HttpError = require('synapse-common/http/error');
-var Q         = Q;
+var Q         = require('q');
 var qs        = require('querystring');
 var request   = require('request');
 var url       = require('url');
-var _         = requre('underscore');
+var _         = require('underscore');
 
 var ghLoginUrl = 'https://github.com/login';
 
@@ -27,8 +27,8 @@ Github.prototype.createState = function()
 Github.prototype.authorizeUrl = function(state)
 {
     var query = {
-        client_id    : this.options.githubClient,
-        redirect_uri : url.resolve(this.options.baseUrl, this.options.callbackUrl),
+        client_id    : this.options.ghClientId,
+        redirect_uri : url.resolve(this.options.baseUrl, this.options.callbackUri),
         state        : state
     };
 
@@ -44,22 +44,22 @@ Github.prototype.authorizeUrl = function(state)
 Github.prototype.callback = function(code, state)
 {
     var query = {
-        client_id     : this.options.githubClient,
-        client_secret : this.options.githubSecret
+        client_id     : this.options.ghClientId,
+        client_secret : this.options.ghClientSecret,
         code          : code,
         state         : state
     };
 
-    return new Q.Promise(function(reject, resolve) {
+    return new Q.Promise(function (resolve, reject) {
         request({
             url  : ghLoginUrl + '/oauth/access_token',
             qs   : query,
             json : true
-        }, function (error, response, responseData) {
+        }, function (error, response, token) {
             if (error) {
-                reject(new HttpError(responseData, response));
+                reject(new HttpError(token, response));
             } else {
-                resolve(responseData);
+                resolve(token);
             }
         });
     });
