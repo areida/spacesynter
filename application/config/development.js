@@ -8,16 +8,17 @@ backend = __BACKEND__ || '%DEV_API_HOST%';
 
 module.exports = {
     api : {
-        hostname  : backend,
-        port      : 80,
-        client_id : '123'
+        hostname : 'localhost',
+        port     : 9000
     },
     github : {
-        hostname : 'api.github.com',
-        port     : 443,
-        secure   : true
+        hostname  : 'api.github.com',
+        port      : 443,
+        secure    : true,
+        userAgent : 'areida/frontend-template'
     },
     server : {
-        port : 9000
+        hostname : 'localhost',
+        port     : 9000
     }
 };

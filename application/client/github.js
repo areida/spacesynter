@@ -16,12 +16,16 @@ var GithubClient = AuthGateway.extend({
 
     getUsersGists : function(username)
     {
-        return this.apiRequest('GET', '/users/' + username + '/gists');
+        if (username) {
+            return this.apiRequest('GET', '/users/' + username + '/gists');
+        } else {
+            return this.apiRequest('GET', '/gists');
+        }
     },
 
     getRequestOptions : function(method, path, data)
     {
-        var config, headers, queryString;
+        var config, headers, queryString, token;
 
         config = this.getConfig();
 
@@ -39,7 +43,13 @@ var GithubClient = AuthGateway.extend({
         };
 
         if (typeof window === 'undefined') {
-            headers['User-Agent:'] = 'areida/frontend-template';
+            headers['User-Agent:'] = config.userAgent;
+        }
+
+        token = store.get('token');
+
+        if (token) {
+            headers.Authorization = 'token ' + token.access_token;
         }
 
         return {

@@ -66,7 +66,7 @@ var GistsPage = React.createClass({
     },
 
     render : function() {
-        var message, style;
+        var message, style, title;
 
         message = null;
 
@@ -83,9 +83,11 @@ var GistsPage = React.createClass({
             fontSize  : '20px'
         };
 
+        title = (this.state.username ? this.state.username + '\'s' : 'Your') + ' Gists';
+
         return (
             <div>
-                <h1 style={style}>{this.state.username + '\'s Gists'}</h1>
+                <h1 style={style}>{title}</h1>
                 <p>{message}</p>
                 <GistsList gists={this.state.gists} />
                 <Link to='home'>Go Back</Link>

@@ -10,7 +10,12 @@ module.exports = React.createClass({
 
     displayName : 'SiteLayout',
 
-    mixins : [FluxMixin],
+    mixins : [FluxMixin, new StoreWatchMixin('UserStore')],
+
+    getStateFromFlux : function()
+    {
+        return {};
+    },
 
     render : function() {
         return (
