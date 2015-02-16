@@ -1,0 +1,351 @@
+.card__container {
+    position             : relative;
+    top                  : rem-calc(110);
+    width                : 100%;
+    max-width            : 1440px;
+    margin               : 0 auto;
+    text-align           : center;
+
+    .card__wrapper {
+        display              : inline-block;
+        float                : left;
+        width                : 100%;
+        padding              : 20px;
+
+        @media #{$medium-up} {
+            width            : 50%;
+        }
+
+        @media #{$large-up} {
+            width            : 33%;
+        }
+
+        @media #{$large-up} {
+            width            : 25%;
+        }
+
+        .card {
+            height               : auto;
+
+            .card__header {
+                @extend .ff-source-bold;
+                position         : relative;
+                height           : rem-calc(50);
+                width            : 100%;
+                background-color : $gray-theme--700;
+                border-radius    : 3px 3px 0 0;
+                margin-bottom    : rem-calc(30);
+                cursor               : pointer;
+
+                &.card__header--center {
+                    h2 {
+                        text-align   : center;
+                    }
+                }
+
+                h2 {
+                    margin       : 0;
+                    text-align       : left;
+                    color            : $white;
+                    line-height      : rem-calc(50);
+                    font-size        : rem-calc(20);
+                    padding-left     : rem-calc(10);
+                }
+
+                .card__header--x {
+                    position: absolute;
+                    top     : 18px;
+                    right   : 15px;
+                    height  : 15px;
+                    width   : 15px;
+                    color   : $gray-theme--900;
+                    background-color: $white;
+                    border-radius: 50%;
+
+                }
+
+            }
+
+            .card__input {
+                width    : 90%;
+                margin   : rem-calc(10) auto;
+            }
+
+        }
+
+    }
+
+}
+
+// add instance card
+// AddInstanceCard
+
+.new-instance-form {
+
+    .form__input {
+        padding          : 0 1px;
+
+        &:focus {
+            outline      : 0;
+        }
+
+        .input {
+            padding      : rem-calc(0 20 0 10);
+        }
+
+    }
+
+    .space-remaining {
+        position         : relative;
+        top              : 20px;
+        line-height      : 36px;
+
+        .space-remaining__interger {
+            @extend .ff-source-bold;
+            font-size    : 55px;
+        }
+
+        .space-remaining__unit {
+            font-size    : 24px;
+        }
+
+        p {
+            line-height  : 10px;
+            font-size    : 14px;
+        }
+
+    }
+
+    .button {
+        margin-top       : 30px;
+    }
+
+}
+
+.add-instance {
+    position             : relative;
+    width                : 100%;
+    height               : rem-calc(400);
+    background-color     : $gray-theme--300;
+    cursor               : pointer;
+
+
+    .add-instance__plus {
+        position         : absolute;
+        top              : 50%;
+        left             : 50%;
+        height           : rem-calc(100);
+        width            : rem-calc(100);
+        margin           : rem-calc(-50 0 0 -50);
+
+        &::before {
+            content      : '';
+            position     : absolute;
+            top          : 50%;
+            left         : 0;
+            margin-top   : rem-calc(-10);
+            height       : rem-calc(20);
+            width        : rem-calc(100);
+            background-color : $white;
+        }
+
+        &::after {
+            content      : '';
+            position     : absolute;
+            top          : 0;
+            left         : 50%;
+            margin-left  : rem-calc(-10);
+            height       : rem-calc(100);
+            width        : rem-calc(20);
+            background-color : $white;
+        }
+
+    }
+
+}
+
+// instance card
+// InstanceCard
+
+.mimic-input-row {
+    height               : rem-calc(36);
+    margin-bottom        : rem-calc(36);
+}
+
+.mimic-input-field {
+    @extend .ff-source;
+    position             : relative;
+    z-index              : 2000;
+    line-height          : rem-calc(18);
+    border               : 1px solid #ccc;
+    border-radius        : 2px;
+    background-color     : $inputBG;
+    font-size            : rem-calc(18);
+    margin               : 0 0 rem-calc(32);
+    padding-left         : rem-calc(35);
+    color                : rgba($gray-theme--700, .5);
+
+    .mimic-input-inner-wrapper {
+        height           : inherit;
+        width            : 100%;
+        overflow         : hidden;
+    }
+
+    .input-variable {
+        line-height      : rem-calc(35);
+        white-space      : nowrap;
+    }
+
+    .input-icon {
+        position         : absolute;
+        top              : 0;
+        left             : 0;
+        padding-left     : rem-calc(10);
+        color            : $gray-theme--700;
+        line-height      : rem-calc(36);
+    }
+
+
+}
+
+.border-right {
+    border-right     : 1px solid rgba($black, .2);
+}
+
+.log-button,
+.action-button {
+    display          : block;
+    padding-bottom   : rem-calc(10);
+}
+
+.log-icon,
+.status-light {
+    display              : block;
+    position             : relative;
+    left                 : 50%;
+    height               : 30px;
+    width                : 30px;
+    margin-left          : -15px;
+    margin-top           : 10px;
+}
+
+.log-icon {
+    color                : $gray-theme--700;
+    font-size            : rem-calc(30);
+    line-height          : rem-calc(30);
+}
+
+.status-light {
+    background-color     : tint($statusGreen, 10%);
+    box-shadow           : 0 0 20px 10px tint($statusGreen, 20%), inset 0 -3px 2px 1px shade($statusGreen, 8%), inset 0 3px 2px 1px tint($statusGreen, 35%);
+    border-radius        : 50%;
+
+    &.pending {
+        background-color : $statusYellow;
+        box-shadow       : 0 0 20px 10px tint($statusYellow, 25%), inset 0 -3px 2px 1px shade($statusYellow, 8%), inset 0 3px 2px 1px tint($statusYellow, 45%);
+    }
+
+    &.warning {
+        background-color : $statusOrange;
+        box-shadow           : 0 0 20px 10px tint($statusOrange, 30%), inset 0 -3px 2px 1px shade($statusOrange, 8%), inset 0 3px 2px 1px tint($statusOrange, 25%);
+    }
+
+    &.error {
+        background-color : $statusRed;
+        box-shadow           : 0 0 20px 10px tint($statusRed, 40%), inset 0 -3px 2px 1px shade($statusRed, 8%), inset 0 3px 2px 1px tint($statusRed, 25%);
+    }
+
+    &.waiting {
+        background-color : $gray-theme--300;
+        box-shadow       : none;
+    }
+
+}
+
+
+// tooltip
+.tooltip__wrapper {
+
+    &:before {
+        content          : '';
+        position         : absolute;
+        z-index          : 2000;
+        top              : 0;
+        left             : 50%;
+        margin-left      : -5px;
+        width            : 0;
+        height           : 0;
+        opacity          : 0;
+        border-style     : solid;
+        border-width     : 0;
+        border-color     : transparent transparent $gray-theme--400;
+    }
+
+}
+
+.form__input--tooltip {
+    position             : absolute;
+    top                  : 0;
+    left                 : 50%;
+    height               : rem-calc(36);
+    line-height          : rem-calc(36);
+    padding              : rem-calc(0 5);
+    min-width            : 100%;
+    width                : 100%;
+    white-space          : nowrap;
+    overflow             : hidden;
+    font-size            : rem-calc(10);
+    background-color     : $gray-theme--300;
+    border               : 1px solid shade($gray-theme--300, 20%);
+    border-radius        : 2px;
+    box-shadow           : 0 0 3px 1px rgba($black, .10);
+    --webkit-transform   : translateX(-50%);
+}
+
+.mimic-form {
+
+    &:nth-child(1) {
+        z-index          : 2001;
+    }
+
+    &:nth-child(2) {
+        z-index          : 1999;
+    }
+
+    &:nth-child(3) {
+        z-index          : 1997;
+    }
+
+    .mimic-input-row {
+        &:nth-child(1) {
+            z-index          : 2000;
+        }
+
+        &:nth-child(2) {
+            z-index          : 1998;
+        }
+
+        &:nth-child(3) {
+            z-index          : 1996;
+            margin-bottom    : rem-calc(26);
+        }
+    }
+
+    .form__input:hover {
+
+        .form__input--tooltip {
+            top              : 46px;
+            width            : 125%;
+
+
+        }
+
+        .tooltip__wrapper:before {
+            top          : 36px;
+            border-width : 0 5px 10px;
+            opacity      : 1;
+        }
+
+    }
+
+}

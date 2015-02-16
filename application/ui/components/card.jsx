@@ -2,7 +2,7 @@
 'use strict';
 
 var React = require('react');
-var cx    = React.addons.classSet;
+var cx    = require('react/lib/cx');
 var _     = require('underscore');
 
 module.exports = React.createClass({

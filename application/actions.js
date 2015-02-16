@@ -1,10 +1,14 @@
 /* jshint globalstrict: true */
 'use strict';
 
-var authActions   = require('./action/auth');
-var githubActions = require('./action/github');
+var authActions     = require('./action/auth');
+var instanceActions = require('./action/instance');
+var projectActions  = require('./action/project');
+var githubActions   = require('./action/github');
 
 module.exports = {
-    auth   : authActions,
-    github : githubActions
+    auth     : authActions,
+    instance : instanceActions,
+    project  : projectActions,
+    github   : githubActions
 };

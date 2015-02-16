@@ -3,6 +3,7 @@
 
 var React = require('react');
 var Link  = require('react-router').Link;
+var cx    = require('react/lib/cx');
 
 module.exports = React.createClass({
     displayName : 'ExistingInstanceFront',
@@ -13,7 +14,7 @@ module.exports = React.createClass({
             status   = instance.deploy_status,
             url      = 'http://' + instance.name + '.spacesynter.com';
 
-        var statusClasses = React.addons.classSet({
+        var statusClasses = cx({
             'status-light' : true,
             'pending'      : status === 'cloning' || status === 'provisioning',
             'warning'      : status === 'deleting',

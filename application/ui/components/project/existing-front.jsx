@@ -3,7 +3,7 @@
 
 var React = require('react');
 var Link  = require('react-router').Link;
-var cx    = React.addons.classSet;
+var cx    = require('react/lib/cx');
 
 module.exports = React.createClass({
     displayName : 'ExistingProjectFront',

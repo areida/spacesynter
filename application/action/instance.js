@@ -1,8 +1,7 @@
 /* jshint globalstrict: true */
 'use strict';
 
-var githubClient = require('../client/github');
-var constants    = require('../constants');
+var constants = require('../constants');
 
 module.exports = {
     create : function()

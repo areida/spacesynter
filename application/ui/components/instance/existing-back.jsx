@@ -3,6 +3,7 @@
 
 var React     = require('react');
 var FluxMixin = require('fluxxor').FluxMixin(React);
+var cx        = require('react/lib/cx');
 
 module.exports = React.createClass({
     displayName : 'ExistingInstanceBack',
@@ -42,7 +43,7 @@ module.exports = React.createClass({
 
     render : function()
     {
-        var buttonClasses = React.addons.classSet({
+        var buttonClasses = cx({
             'button'           : true,
             'button--block'    : true,
             'button--primary'  : true,

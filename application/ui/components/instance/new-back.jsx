@@ -14,16 +14,15 @@ module.exports = React.createClass({
     displayName : 'NewInstanceBack',
     mixins      : [
         FluxMixin,
-        new StoreWatchMixin('GithubStore'),
-        new StoreWatchMixin('ProjectStore')
+        new StoreWatchMixin('GithubStore', 'ProjectStore')
     ],
 
     getStateFromFlux : function()
     {
         return {
-            projects : this.getFlux().store('project').getProjects(),
-            branches : this.getFlux().store('github').getBranches(),
-            pulls    : this.getFlux().store('github').getPulls()
+            branches : this.getFlux().store('GithubStore').getBranches(),
+            projects : this.getFlux().store('ProjectStore').getAll(),
+            pulls    : this.getFlux().store('GithubStore').getPulls()
         };
     },
 

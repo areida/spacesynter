@@ -20,6 +20,19 @@ module.exports = React.createClass({
 
     poll : null,
 
+    statics : {
+        fetchData : function(flux, params)
+        {
+            return [
+                flux.actions.instance.fetchAll()
+            ];
+        },
+        willTransitionFrom: function (transition, component)
+        {
+            component.getFlux().actions.github.clearGists();
+        }
+    },
+
     getInitialState : function()
     {
         return {};
