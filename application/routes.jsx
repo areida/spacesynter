@@ -10,8 +10,9 @@ var LoggedOutLayout = require('./ui/layouts/logged-out');
 var SiteLayout      = require('./ui/layouts/site');
 
 var GistsPage      = require('./ui/pages/gists');
-var HomePage       = require('./ui/pages/home');
+var InstancesPage  = require('./ui/pages/instances');
 var LoginPage      = require('./ui/pages/login');
+var ProjectsPage   = require('./ui/pages/projects');
 var NotFoundPage   = require('./ui/pages/404');
 var StyleGuidePage = require('./ui/pages/style-guide');
 
@@ -32,9 +33,8 @@ var getEnvironmentDependentRoutes = function()
 module.exports = (
     <Route handler={SiteLayout}>
         <Route handler={LoggedInLayout}>
-            <Route path='/' name='home' handler={HomePage} />
-            <Route path='/gists/:username' name='gists' handler={GistsPage} />
-            <Route path='/gists' name='all-gists' handler={GistsPage} />
+            <Route path='/' name='instances' handler={InstancesPage} />
+            <Route path='/projects' name='projects' handler={ProjectsPage} />
         </Route>
         <Route handler={LoggedOutLayout}>
             {getEnvironmentDependentRoutes()}

@@ -11,13 +11,13 @@ module.exports = React.createClass({
 
     destroy : function()
     {
-        this.getFlux().actions.instance.destroy(instance);
+        this.getFlux().actions.instance.destroy();
         this.props.flip();
     },
 
     reprovision : function()
     {
-        this.getFlux().actions.instance.reprovision(instance);
+        this.getFlux().actions.instance.reprovision();
         this.props.flip();
     },
 

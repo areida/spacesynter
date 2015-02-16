@@ -41,7 +41,7 @@ module.exports = React.createClass({
             name : this.state.name
         };
 
-        this.getFlux().actions.project.add(project);
+        this.getFlux().actions.project.create(project);
 
         this.setState(this.getInitialState());
         this.props.flip();

@@ -13,5 +13,8 @@ module.exports = {
     LOGIN                   : 'LOGIN',
     LOGIN_SUCCESSFUL        : 'LOGIN_SUCCESSFUL',
     LOGIN_FAILED            : 'LOGIN_FAILED',
-    LOGOUT                  : 'LOGOUT'
+    LOGOUT                  : 'LOGOUT',
+    PROJECT_CREATE          : 'PROJECT_CREATE',
+    PROJECT_DESTROY         : 'PROJECT_DESTROY',
+    PROJECT_FETCH_ALL       : 'PROJECT_FETCH_ALL'
 };

@@ -16,8 +16,8 @@ module.exports = React.createClass({
 
         statusClasses = cx({
             'status-light' : true,
-            'warning'      : status === 'deleting',
-            'error'        : status === 'error'
+            'warning'      : this.state.status === 'deleting',
+            'error'        : this.state.status === 'error'
         });
 
         return (

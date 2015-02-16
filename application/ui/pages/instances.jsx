@@ -7,11 +7,11 @@ var FluxMixin       = require('fluxxor').FluxMixin(React);
 var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 var _               = require('underscore');
 
-var Card             = require('./components/card');
-var InstanceBack     = require('./components/instance/existing-back');
-var InstanceFront    = require('./components/instance/existing-front');
-var NewInstanceBack  = require('./components/instance/new-back');
-var NewInstanceFront = require('./components/instance/new-front');
+var Card             = require('../components/card');
+var InstanceBack     = require('../components/instance/existing-back');
+var InstanceFront    = require('../components/instance/existing-front');
+var NewInstanceBack  = require('../components/instance/new-back');
+var NewInstanceFront = require('../components/instance/new-front');
 
 module.exports = React.createClass({
     displayName : 'Instances',

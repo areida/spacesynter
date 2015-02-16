@@ -90,7 +90,7 @@ var GistsPage = React.createClass({
                 <h1 style={style}>{title}</h1>
                 <p>{message}</p>
                 <GistsList gists={this.state.gists} />
-                <Link to='home'>Go Back</Link>
+                <Link to='instances'>Go Back</Link>
             </div>
         );
     }

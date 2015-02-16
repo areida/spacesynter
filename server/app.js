@@ -20,7 +20,7 @@ Tmpl.load = function () {
     return Fs.readFileSync(process.cwd() + '/application/index.html', 'utf8');
 };
 
-var appServer =  {
+var appServer = {
     get : function(req, res)
     {
         if (req.session.ghToken || req.url === '/login') {

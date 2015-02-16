@@ -42,15 +42,17 @@ module.exports = React.createClass({
         this.getFlux().actions.project.fetchAll();
     },
 
-    onBranchChange : function(branchNumber, component)
+    onBranchChange : function(branch)
     {
-        if (component.props.type === 'pull') {
+        if (branch === 'pull') {
             this.setState({
+                branch       : branch,
                 nameDisabled : true,
-                instanceName : this.state.selectedProject.name + '-' + branchNumber
+                instanceName : this.state.project.name + '-' + branch
             });
         } else {
             this.setState({
+                branch       : branch,
                 nameDisabled : false
             });
         }
@@ -58,24 +60,24 @@ module.exports = React.createClass({
 
     onInstanceNameChange : function(instanceName)
     {
-        this.setState(instanceName : instanceName);
+        this.setState({instanceName : instanceName});
     },
 
     onProjectChange : function(projectId)
     {
-        var projectName;
+        var project, projectName;
 
-        this.setState({
-            selectedProject : project
-        });
+        project = _.findWhere(this.state.projects, {id : projectId});
 
         if (project) {
+            this.setState({
+                project : project
+            });
+
             projectName = project.repo_name.split('/');
 
             this.getFlux().actions.github.fetchPulls(projectName[0], projectName[1], 'open');
             this.getFlux().actions.github.fetchBranches(projectName[0], projectName[1]);
-        } else {
-            this.getFlux().actions.github.reset();
         }
     },
 
@@ -84,7 +86,7 @@ module.exports = React.createClass({
         event.preventDefault();
 
         var instance = {
-            project_id    : this.state.projectId,
+            project_id    : this.state.project.id,
             name          : this.state.instanceName,
             branch        : this.state.branch,
             deploying     : 0,
