@@ -23,7 +23,6 @@ React.initializeTouchEvents(true);
 
 if (state) {
     flux = flux.fromObject(window.__STATE__);
-    console.log(window.__STATE__);
     state.remove();
 }
 
