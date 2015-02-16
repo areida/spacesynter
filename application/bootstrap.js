@@ -5,7 +5,9 @@
 var React  = require('react');
 var Router = require('react-router');
 var routes = require('./routes');
-var flux   = require('./flux');
+var Flux   = require('./flux');
+
+var flux = new Flux();
 
 var state = window.document.getElementById('server-state');
 

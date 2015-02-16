@@ -7,8 +7,14 @@ var _       = require('underscore');
 var stores  = require('./stores');
 var actions = require('./actions');
 
-var Flux = function(stores, actions) {
-    Fluxxor.Flux.call(this, stores, actions);
+var Flux = function() {
+    var Stores = {};
+
+    _.each(stores, function(Store, name) {
+        Stores[name] = new Store();
+    });
+
+    Fluxxor.Flux.call(this, Stores, actions);
 };
 
 Flux.prototype = Object.create(Fluxxor.Flux.prototype);
@@ -59,4 +65,4 @@ Flux.prototype.toObject = function()
     return data;
 };
 
-module.exports = new Flux(stores, actions);
+module.exports = Flux;

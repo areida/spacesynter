@@ -4,6 +4,7 @@ var Router = require('react-router');
 var Tmpl   = require('blueimp-tmpl').tmpl;
 
 var config = require('../application/config');
+var Flux   = require('../application/flux');
 var routes = require('../application/routes');
 
 var Github   = require('./github');
@@ -22,13 +23,11 @@ Tmpl.load = function () {
 var appServer =  {
     get : function(req, res)
     {
-console.log(req.session);
         if (req.session.ghToken || req.url === '/login') {
             localStorage.setItem('token', req.session.ghToken ? JSON.stringify(req.session.ghToken) : null);
 
-            var flux = require('../application/flux');
-console.log(flux.toObject());
             Router.run(routes, req.url, function (Handler, state) {
+                var flux = new Flux();
 
                 flux.fetchData(state).done(function () {
                     var Factory = React.createFactory(Handler);

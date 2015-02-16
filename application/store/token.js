@@ -15,7 +15,7 @@ var TokenStore = APIStoreFactory.createStore({
            loggedIn : !! store.get('token'),
            token    : store.get('token')
         };
-console.log(this.state);
+
         this.bindActions(
             constants.LOGOUT, 'onLogout'
         );
