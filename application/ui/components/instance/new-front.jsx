@@ -9,9 +9,9 @@ module.exports = React.createClass({
     render : function()
     {
         return (
-            <div className="front" onClick={this.props.flip}>
-                <div className="add-instance">
-                    <div className="add-instance__plus" />
+            <div className='front' onClick={this.props.flip}>
+                <div className='add-instance'>
+                    <div className='add-instance__plus' />
                 </div>
             </div>
         );

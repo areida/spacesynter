@@ -52,22 +52,22 @@ module.exports = React.createClass({
         var buttonLabel = 'Start';
 
         return (
-            <div className="back">
-                <div onClick={this.props.flip} className="card__header">
+            <div className='back'>
+                <div onClick={this.props.flip} className='card__header'>
                     <h2>Actions</h2>
-                    <a onClick={this.props.flip} className="card__header--x">×</a>
+                    <a onClick={this.props.flip} className='card__header--x'>×</a>
                 </div>
-                <div className="small-12 columns">
+                <div className='small-12 columns'>
                     <a onClick={this.start} className={buttonClasses} >{buttonLabel}</a>
                 </div>
-                <div className="small-12 columns">
-                    <a onClick={this.reprovision} className="button button--block">Reprovision</a>
+                <div className='small-12 columns'>
+                    <a onClick={this.reprovision} className='button button--block'>Reprovision</a>
                 </div>
-                <div className="small-12 columns">
-                    <a onDoubleClick={this.recreate} className="button button--block button--disabled">Recreate (not implemented)</a>
+                <div className='small-12 columns'>
+                    <a onDoubleClick={this.recreate} className='button button--block button--disabled'>Recreate (not implemented)</a>
                 </div>
-                <div className="small-12 columns">
-                    <a onDoubleClick={this.destroy} className="button button--block button--tertiary">Delete (double-click)</a>
+                <div className='small-12 columns'>
+                    <a onDoubleClick={this.destroy} className='button button--block button--tertiary'>Delete (double-click)</a>
                 </div>
             </div>
         );
