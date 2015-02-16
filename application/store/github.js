@@ -21,7 +21,6 @@ var GithubStore = APIStoreFactory.createStore({
 
         this.bindActions(
             constants.CLEAR_GISTS, 'onClearGists',
-            constants.GET_RATE_LIMIT_SUCCESS, 'onGetRateLimitSuccess',
             constants.GET_USERS_GISTS, 'onGetUsersGists',
             constants.GET_USERS_GISTS_FAILURE, 'onGetUsersGistsFailure',
             constants.GET_USERS_GISTS_SUCCESS, 'onGetUsersGistsSuccess'
@@ -34,15 +33,6 @@ var GithubStore = APIStoreFactory.createStore({
         this.state.gists   = [];
         this.state.loaded  = false;
         this.state.loading = false;
-
-        this.emit('change');
-    },
-
-    onGetRateLimitSuccess : function(response)
-    {
-        this.state.loaded    = false;
-        this.state.loading   = true;
-        this.state.rateLimit = response.rate;
 
         this.emit('change');
     },

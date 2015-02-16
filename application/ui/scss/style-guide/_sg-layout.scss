@@ -37,18 +37,18 @@ $sg-content-header-height : rem-calc(64);
 // to right of header on large screens
 // centered for mobile
 .sg-content {
-    position    : relative;
+    //position    : relative;
     z-index     : 1;
     width       : auto;
     min-height  : 100%;
-    margin-left : rem-calc(240px);
+    margin-left : rem-calc(300px);
     background  : tint($black, 96%);
     border      : 1px solid transparent;
 }
 
 // centered content of page with max-width
 .sg-page {
-    max-width   : rem-calc(1120);
+    max-width   : rem-calc(920);
     height      : 100%;
     min-height  : 100%;
     margin      : 0 auto;

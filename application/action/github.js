@@ -1,30 +1,13 @@
 /* jshint globalstrict: true */
 'use strict';
 
-var constants    = require('../constants');
 var githubClient = require('../client/github');
+var constants    = require('../constants');
 
 module.exports = {
     clearGists : function()
     {
         this.dispatch(constants.CLEAR_GISTS);
-    },
-
-    getRateLimit : function()
-    {
-        var flux = this;
-
-        flux.dispatch(constants.GET_RATE_LIMIT);
-
-        return githubClient.getRateLimit()
-            .then(
-                function (response) {
-                    flux.dispatch(constants.GET_RATE_LIMIT_SUCCESS, response);
-                },
-                function () {
-                    flux.dispatch(constants.GET_RATE_LIMIT_FAILURE);
-                }
-            );
     },
 
     getUsersGists : function(username)

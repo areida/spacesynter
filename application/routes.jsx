@@ -5,11 +5,15 @@
 var React  = require('react'); // Used in compiled js, so required even though appears unused
 var Route  = require('react-router').Route;
 
-var SiteLayout     = require('./ui/layouts/site');
+var LoggedInLayout  = require('./ui/layouts/logged-in');
+var LoggedOutLayout = require('./ui/layouts/logged-out');
+var SiteLayout      = require('./ui/layouts/site');
+
 var GistsPage      = require('./ui/pages/gists');
 var HomePage       = require('./ui/pages/home');
-var StyleGuidePage = require('./ui/pages/style-guide');
+var LoginPage      = require('./ui/pages/login');
 var NotFoundPage   = require('./ui/pages/404');
+var StyleGuidePage = require('./ui/pages/style-guide');
 
 var getEnvironmentDependentRoutes = function()
 {
@@ -27,10 +31,15 @@ var getEnvironmentDependentRoutes = function()
 
 module.exports = (
     <Route handler={SiteLayout}>
-        <Route path='/' name='home' handler={HomePage}/>
-        <Route path='/gists/:username' name='gists' handler={GistsPage}/>
-        <Route path='/gists' name='all-gists' handler={GistsPage}/>
-        {getEnvironmentDependentRoutes()}
-        <Route path='*' name='404' handler={NotFoundPage}/>
+        <Route handler={LoggedInLayout}>
+            <Route path='/' name='home' handler={HomePage} />
+            <Route path='/gists/:username' name='gists' handler={GistsPage} />
+            <Route path='/gists' name='all-gists' handler={GistsPage} />
+        </Route>
+        <Route handler={LoggedOutLayout}>
+            {getEnvironmentDependentRoutes()}
+            <Route path='/login' name='login' handler={LoginPage} />
+            <Route path='*' name='404' handler={NotFoundPage} />
+        </Route>
     </Route>
 );

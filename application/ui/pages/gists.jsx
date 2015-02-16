@@ -26,9 +26,9 @@ var GistsPage = React.createClass({
         {
             return flux.actions.github.getUsersGists(params.username);
         },
-        willTransitionFrom: function (transition, element)
+        willTransitionFrom: function (transition, component)
         {
-            element.getFlux().actions.github.clearGists();
+            component.getFlux().actions.github.clearGists();
         }
     },
 

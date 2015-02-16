@@ -2,12 +2,11 @@
 'use strict';
 
 var React        = require('react');
-var RouteHandler = require('react-router').RouteHandler;
 var FluxMixin    = require('fluxxor').FluxMixin(React);
+var RouteHandler = require('react-router').RouteHandler;
 
 module.exports = React.createClass({
-
-    displayName : 'SiteLayout',
+    displayName : 'LoggedOutLayout',
 
     mixins : [FluxMixin],
 

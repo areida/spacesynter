@@ -12,7 +12,6 @@ function Github(options) {
     _.extend({
         baseUrl     : 'http://localhost',
         callbackUri : '/github/callback',
-        loginUri    : '/github/login',
         scope       : null
     }, options);
 
@@ -38,7 +37,7 @@ Github.prototype.authorizeUrl = function(state)
 
     query = qs.stringify(query);
 
-    return (ghLoginUrl + '/oauth/authorize' + '?' + query);
+    return (ghLoginUrl + '/oauth/authorize?' + query);
 };
 
 Github.prototype.callback = function(code, state)

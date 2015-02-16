@@ -15,47 +15,17 @@ var TokenStore = APIStoreFactory.createStore({
            loggedIn : !! store.get('token'),
            token    : store.get('token')
         };
-
+console.log(this.state);
         this.bindActions(
-            constants.LOGGING_IN, 'onLogin',
-            constants.LOGIN_SUCCESSFUL, 'onLoginSuccessful',
-            constants.LOGIN_FAILED, 'onLoginFailed',
             constants.LOGOUT, 'onLogout'
         );
-    },
-
-    onLogin : function()
-    {
-        this.state.loaded  = false;
-        this.state.loading = true;
-
-        this.emit('change');
-    },
-
-    onLoginSuccessful : function(payload)
-    {
-        this.state.loaded   = true;
-        this.state.loading  = false;
-        this.state.loggedIn = true;
-        this.state.token    = payload.tokenData;
-
-        store.set('token', this.state.token);
-
-        this.emit('change');
-    },
-
-    onLoginFailed : function()
-    {
-        this.state.loading = false;
-        this.state.error   = true;
-
-        this.emit('change');
     },
 
     onLogout : function()
     {
         store.remove('token');
         this.state.loggedIn = false;
+        this.state.token    = {};
 
         this.emit('change');
     },
@@ -68,6 +38,17 @@ var TokenStore = APIStoreFactory.createStore({
     isLoggedIn : function()
     {
         return this.state.loggedIn;
+    },
+
+    setState : function(state)
+    {
+        this.state = state;
+
+        if (this.state.token) {
+            store.set('token', this.state.token);
+        } else {
+            store.remove('token');
+        }
     }
 });
 

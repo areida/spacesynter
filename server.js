@@ -8,35 +8,20 @@ global.localStorage    = require('localStorage');
 global.navigator       = require('navigator');
 
 var Express      = require('express');
-var session      = require('express-session');
-var RedisStore   = require('connect-redis')(session);
-var cookieParser = require('cookie-parser');
+var Session      = require('express-session');
+var CookieParser = require('cookie-parser');
+var RedisStore   = require('connect-redis')(Session);
 
-var Fs     = require('fs');
-var React  = require('react');
-var Router = require('react-router');
-var Tmpl   = require('blueimp-tmpl').tmpl;
+var appServer = require('./server/app');
+var config    = require('./application/config');
 
-var config = require('./application/config');
-var routes = require('./application/routes');
+var app = new Express();
 
-var Github   = require('./server/github');
-var ghClient = new Github({
-    ghClientId     : process.env.GH_CLIENT_ID,
-    ghClientSecret : process.env.GH_CLIENT_SECRET,
-    baseUrl        : process.env.BASE_URL || 'http://' + (config.server.hostname + ':' + config.server.port),
-    loginUri       : '/login',
-    callbackUri    : '/callback',
-    scope          : 'gist'
-});
-
-var app = Express();
-
-app.use(cookieParser());
-app.use(session({
+app.use(new CookieParser());
+app.use(new Session({
     resave            : false,
     saveUninitialized : false,
-    secret            : (process.env.SESSION_KEY || '26hiowop34uuy723245rqatdfgh5234tfmgh24sdg'),
+    secret            : (process.env.SESSION_KEY || 'test key'),
     store             : new RedisStore({
         host : process.env.REDIS_HOST || 'localhost',
         port : process.env.REDIS_PORT || 6379,
@@ -44,74 +29,17 @@ app.use(session({
     })
 }));
 
-Tmpl.load = function () {
-    return Fs.readFileSync(process.cwd() + '/application/index.html', 'utf8');
-};
+app.get('/?', appServer.get);
+app.get('/gists/:username/?', appServer.get);
+app.get('/login/?', appServer.get);
+app.get('/gists/?', appServer.redirects.gists)
+app.get('/logout/?', appServer.logout);
+app.get('/gh-login/?', appServer.githubLogin);
+app.get('/gh-callback/?', appServer.githubCallback);
 
-function GET(req, res)
-{
-    if (req.session.ghToken) {
-        localStorage.setItem('token', JSON.stringify(req.session.ghToken));
-    }
-
-    Router.run(routes, req.url, function (Handler, state) {
-        var flux = require('./application/flux');
-
-        flux.fetchData(state).done(function () {
-            var Factory = React.createFactory(Handler);
-
-            res.send(Tmpl('page', {
-                flux : JSON.stringify(flux.toObject()),
-                html : React.renderToString(new Factory({flux : flux})),
-            }));
-
-            res.end();
-        });
-    });
+if (__ENVIRONMENT__ !== 'production') {
+    app.get('/style-guide(/:section)?/?', appServer.get);
 }
-
-app.get('/?', GET);
-app.get('/gists/:username', GET);
-app.get('/style-guide(/:section)?', GET);
-app.get('/gists', function (req, res) {
-    if (req.params.username) {
-        res.redirect(302, req.url + '/' + req.params.username);
-        res.end();
-    } else {
-        GET(req, res);
-    }
-});
-
-app.get('/login/?', function(req, res) {
-    req.session.ghState = ghClient.createState();
-console.log(req.session);
-    res.redirect(302, ghClient.authorizeUrl(req.session.state));
-    res.end();
-});
-
-app.all('/callback/', function (req, res) {
-    console.log(req.session, req.query);
-    if (! req.query.code || ! req.session.ghState) {
-        res.redirect(403, '/');
-        res.end();
-    } else {
-        ghClient.callback(req.query.code, req.session.state)
-            .then(
-                function (token) {
-                    req.session.ghState = null;
-                    req.session.ghToken = token;
-                    res.redirect(302, '/');
-                    res.end();
-                },
-                function (error) {
-                    console.error('there was a login error', error);
-                    res.redirect(403, '/');
-                    res.end();
-                }
-            )
-            .done();
-    }
-});
 
 app.use(Express.static(process.cwd() + '/build'));
 
