@@ -10,6 +10,15 @@ module.exports = {
         };
     },
 
+    componentWillReceiveProps : function(nextProps)
+    {
+        if (nextProps.initialValue !== this.props.initialValue) {
+            this.setState({
+                inputValue : nextProps.initialValue
+            });
+        }
+    },
+
     onChange : function(event)
     {
         var currentValue = event.currentTarget.value;
@@ -17,7 +26,7 @@ module.exports = {
         this.setState({inputValue : currentValue});
 
         if (this.props.onChange) {
-            this.props.onChange(currentValue, this);
+            this.props.onChange(currentValue, this, event);
         }
     }
 

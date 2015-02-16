@@ -1,8 +1,8 @@
 /* jshint globalstrict: true */
 'use strict';
 
-var React = require('react');
-var Label = require('../label');
+var React           = require('react');
+var Label           = require('../label');
 
 module.exports = React.createClass({
 
@@ -26,9 +26,15 @@ module.exports = React.createClass({
         };
     },
 
-    onChange : function()
+    onChange : function(event)
     {
+        var currentValue = event.currentTarget.value;
+
         this.setState({isChecked : ! this.state.isChecked});
+
+        if (this.props.onChange) {
+            this.props.onChange(currentValue);
+        }
     },
 
     render : function()

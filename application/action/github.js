@@ -10,6 +10,12 @@ module.exports = {
         this.dispatch(constants.CLEAR_GISTS);
     },
 
+    fetchBranches : function()
+    {},
+
+    fetchPulls : function()
+    {},
+
     getUsersGists : function(username)
     {
         var flux = this;
@@ -25,7 +31,10 @@ module.exports = {
                     flux.dispatch(constants.GET_USERS_GISTS_FAILURE, error);
                 }
             );
-    }
+    },
+
+    reset : function()
+    {}
 };
 
 

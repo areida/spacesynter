@@ -9,9 +9,11 @@ var GithubStore = APIStoreFactory.createStore({
     initialize : function()
     {
         this.state = {
+            branches  : [],
             loaded    : false,
             loading   : false,
             gists     : [],
+            pulls     : [],
             rateLimit : {
                 limit     : 0,
                 remaining : 0,
@@ -67,6 +69,11 @@ var GithubStore = APIStoreFactory.createStore({
         this.emit('change');
     },
 
+    getBranches : function()
+    {
+        return this.state.branches;
+    },
+
     getError : function()
     {
         return this.state.error;
@@ -75,6 +82,11 @@ var GithubStore = APIStoreFactory.createStore({
     getGists : function()
     {
         return this.state.gists;
+    },
+
+    getPulls : function()
+    {
+        return this.state.pulls;
     }
 });
 
