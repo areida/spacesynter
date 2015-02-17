@@ -12,13 +12,15 @@ var Session      = require('express-session');
 var CookieParser = require('cookie-parser');
 var RedisStore   = require('connect-redis')(Session);
 
-var appServer = require('./server/app');
+var app       = require('./server/app');
+var auth      = require('./server/auth');
+var redirects = require('./server/redirects');
 var config    = require('./application/config');
 
-var app = new Express();
+var server = new Express();
 
-app.use(new CookieParser());
-app.use(new Session({
+server.use(new CookieParser());
+server.use(new Session({
     resave            : false,
     saveUninitialized : false,
     secret            : (process.env.SESSION_KEY || 'test key'),
@@ -29,19 +31,10 @@ app.use(new Session({
     })
 }));
 
-app.get('/?', appServer.get);
-app.get('/gists/:username/?', appServer.get);
-app.get('/login/?', appServer.get);
-app.get('/gists/?', appServer.redirects.gists)
-app.get('/logout/?', appServer.logout);
-app.get('/gh-login/?', appServer.githubLogin);
-app.get('/gh-callback/?', appServer.githubCallback);
-
-if (__ENVIRONMENT__ !== 'production') {
-    app.get('/style-guide(/:section)?/?', appServer.get);
-}
-
-app.use(Express.static(process.cwd() + '/build'));
+server.use(Express.static(process.cwd() + '/build'));
+server.use(auth);
+server.use(redirects);
+server.use(app);
 
 console.log('Listening on ' + config.server.hostname + ':' + config.server.port);
-app.listen(config.server.port);
+server.listen(config.server.port);
