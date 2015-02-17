@@ -190,8 +190,8 @@ module.exports = React.createClass({
 
     render : function()
     {
-        return this.transferPropsTo(
-            <InputValidation
+        return (
+            <InputValidation {...this.props}
                 validation = {this.props.validation}
                 display    = {this.props.validationDisplay} >
                 {this.renderLabel()}
