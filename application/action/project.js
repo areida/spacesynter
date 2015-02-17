@@ -4,9 +4,20 @@
 var constants = require('../constants');
 
 module.exports = {
-    create : function()
+    create : function(name, repo)
     {
+        var flux = this;
+
         this.dispatch(constants.PROJECT_CREATE);
+
+        projectClient.create({
+            name : name,
+            repo : repo
+        }).then(
+            function (data) {
+                flux.dispatch(constants.PROJECT_CREATE_SUCCESS, data);
+            }
+        );
     },
 
     destroy : function()

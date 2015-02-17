@@ -72,6 +72,7 @@
     "navigator"       : "1.0.1",
     "node-jsx"        : "0.12.4",
     "request"         : "2.53.0",
+    "socket.io"       : "1.3.4",
     "then-redis"      : "1.3.0"
   }
 }

@@ -21,6 +21,7 @@
         {% if (o.flux) { %}
         <link rel="stylesheet" href="/app.css">
         <script id="server-state" type="text/javascript">window.__STATE__ = {%#o.flux%};</script>
+        <script type="text/javascript" src="http://localhost:9000/socket.io/socket.io.js"></script>
         {% }%}
     </head>
     <body>

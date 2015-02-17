@@ -11,6 +11,16 @@ var flux = new Flux();
 
 var state = window.document.getElementById('server-state');
 
+var socket = io('http://localhost:9000');
+
+socket.on('connected', function () {
+    console.log('socket.io connected');
+});
+
+socket.on('spacesynter', function (data) {
+    console.log(data.message);
+});
+
 require('./ui/scss/app.scss');
 
 if (__ENVIRONMENT__ !== 'production') {

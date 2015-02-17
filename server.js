@@ -11,13 +11,22 @@ var Express      = require('express');
 var Session      = require('express-session');
 var CookieParser = require('cookie-parser');
 var RedisStore   = require('connect-redis')(Session);
+var Redis        = require('then-redis');
+var Io           = require('socket.io');
 
 var app    = require('./server/app');
 var auth   = require('./server/auth');
 var db     = require('./server/db');
 var config = require('./application/config');
 
-var server = new Express();
+var dbClient, io, httpServer, server;
+
+dbClient = Redis.createClient({
+    host : 'localhost',
+    port : 6379
+});
+
+server = new Express();
 
 server.use(new CookieParser());
 server.use(new Session({
@@ -36,5 +45,18 @@ server.use(auth);
 server.use(db);
 server.use(app);
 
+httpServer = server.listen(config.server.port);
+
+io = new Io(httpServer);
+
+io.on('connection', function (socket) {
+    socket.emit('connected');
+
+    dbClient.on('message', function (channel, message) {
+        socket.emit(channel, {message : messsage});
+    });
+
+    dbClient.subscribe('instance');
+});
+
 console.log('Listening on ' + config.server.hostname + ':' + config.server.port);
-server.listen(config.server.port);

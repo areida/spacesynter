@@ -25,7 +25,10 @@ function create(database, req, res) {
     database.exists(req.body.name).then(function (exists) {
         if (! exists) {
             database.hmset(req.body.name, req.body);
+            database.publish('spacesynter', 'db-updated');
+            res.send(req.body);
         } else {
+            res.send({message : '`' + req.body.name + '` already exists in database'});
             res.sendStatus(422);
         }
 
@@ -65,8 +68,10 @@ function update(database, req, res) {
     database.exists(req.params.key).then(function (exists) {
         if (exists) {
             database.hmset(req.params.key, req.body);
+            database.publish('spacesynter', 'db-updated');
+            res.send(req.body);
         } else {
-            res.sendStatus(422);
+            res.sendStatus(404);
         }
 
         res.end();
@@ -77,8 +82,9 @@ function destroy(database, req, res) {
     database.exists(req.params.key).then(function (exists) {
         if (exists) {
             instanceDb.hdel(req.params.key);
+            database.publish('spacesynter', 'db-updated');
         } else {
-            res.sendStatus(422);
+            res.sendStatus(404);
         }
 
         res.end();
