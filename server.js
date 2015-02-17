@@ -13,6 +13,7 @@ var CookieParser = require('cookie-parser');
 var RedisStore   = require('connect-redis')(Session);
 
 var app       = require('./server/app');
+var db        = require('./server/db');
 var auth      = require('./server/auth');
 var redirects = require('./server/redirects');
 var config    = require('./application/config');
@@ -34,6 +35,7 @@ server.use(new Session({
 server.use(Express.static(process.cwd() + '/build'));
 server.use(auth);
 server.use(redirects);
+server.use(db);
 server.use(app);
 
 console.log('Listening on ' + config.server.hostname + ':' + config.server.port);
