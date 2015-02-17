@@ -4,10 +4,9 @@ var HtmlWebpack       = require('html-webpack-plugin');
 var WebpackError      = require('webpack-error-notification');
 
 var environment = (process.env.APP_ENV || 'development');
-var config      = {
+var config = {
     entry   : ['./application/bootstrap.js'],
     plugins : [
-        new ExtractTextPlugin('app.css', {allChunks : true}),
         new HtmlWebpack({template : './application/index.html'}),
         new Webpack.DefinePlugin({
             __BACKEND__     : process.env.BACKEND,
@@ -15,10 +14,10 @@ var config      = {
         })
     ],
     reactLoaders : ['jsx?insertPragma=React.DOM'],
-    sassOptions  : (
-        '?outputStyle=' + (environment === 'production' ? 'compressed' : 'nested') +
-        '&includePaths[]=' + __dirname + '/node_modules'
-    )
+    sassLoader   : {
+        test   : /\.scss$/,
+        loader : 'style-loader!css-loader!sass-loader?outputStyle=nested&includePaths[]=' + __dirname + '/node_modules'
+    }
 };
 
 if (environment === 'development') {
@@ -35,12 +34,24 @@ if (environment === 'development') {
     ]);
 }
 
+if (environment === 'production' || process.env.SERVER) {
+    config.plugins    = config.plugins.concat([new ExtractTextPlugin('app.css', {allChunks : true})]);
+    config.sassLoader = {
+        test   : /\.scss$/,
+        loader : ExtractTextPlugin.extract(
+            'style-loader',
+            'css-loader!sass-loader?outputStyle=nested&includePaths[]=' + __dirname + '/node_modules'
+        )
+    };
+}
+
 module.exports = {
     name   : 'browser bundle',
     entry  : config.entry,
     output : {
-        filename : 'app.js',
-        path     : __dirname + '/build'
+        filename   : 'app.js',
+        path       : __dirname + '/build',
+        publicPath : '/'
     },
     module : {
         preLoaders : [
@@ -70,13 +81,7 @@ module.exports = {
                 test   : /\.json$/,
                 loader : 'json-loader'
             },
-            {
-                test   : /\.scss$/,
-                loader : ExtractTextPlugin.extract(
-                    'style-loader',
-                    'css-loader!sass-loader' + config.sassOptions
-                )
-            }
+            config.sassLoader
         ]
     },
     plugins : config.plugins,
