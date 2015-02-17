@@ -20,33 +20,35 @@ module.exports = React.createClass({
 
     poll : null,
 
-    componentWillMount : function()
+    getInitialState : function()
+    {
+        return {};
+    },
+
+    getStateFromFlux : function()
+    {
+        return {
+            projects : this.getFlux().store('ProjectStore').getAll()
+        };
+    },
+
+    componentDidMount : function()
     {
         this.updatePoll();
     },
 
     componentWillUnmount : function()
     {
-        window.clearTimeout(this.poll);
-    },
-
-    getInitialState : function()
-    {
-        return this.getStateFromStores();
-    },
-
-    getStateFromStores : function()
-    {
-        return {
-            projects : this.getFlux().store('ProjectStore').fetchAll()
-        };
+        if (this.poll) {
+            window.clearTimeout(this.poll);
+        }
     },
 
     updatePoll : function()
     {
         this.getFlux().actions.project.fetchAll();
         
-        this.poll = window.setTimeout(this.updatePoll, 100000);
+        this.poll = _.delay(this.updatePoll, 100000);
     },
 
     onAddProject : function(project)

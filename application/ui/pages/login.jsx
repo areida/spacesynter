@@ -33,7 +33,7 @@ module.exports = React.createClass({
     authenticate : function()
     {
         if (this.state.loggedIn) {
-            this.transitionTo('home');
+            this.transitionTo('/');
         }
     },
 

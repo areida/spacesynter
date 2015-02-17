@@ -11,10 +11,10 @@ module.exports = React.createClass({
 
     getInitialState : function()
     {
-        return this.getStateFromStores();
+        return {};
     },
 
-    getStateFromStores : function()
+    getStateFromFlux : function()
     {
         return {
             rateLimit : this.props.stores.github.rateLimit,

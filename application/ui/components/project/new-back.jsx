@@ -6,6 +6,7 @@ var FluxMixin       = require('fluxxor').FluxMixin(React);
 var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 var _               = require('underscore');
 
+var Button      = require('../buttons/button');
 var SelectInput = require('../form/inputs/select');
 var TextInput   = require('../form/inputs/text');
 
@@ -53,32 +54,18 @@ module.exports = React.createClass({
             <div className='back'>
                 <div onClick={this.props.flip} className='card__header'>
                     <h2>New Project</h2>
-                    <a onClick={this.props.flip} className='card__header--x'>×</a>
+                    <span className='card__header--x'>×</span>
                 </div>
-                <form className='form new-instance-form' onSubmit={this.onSubmit}>
-                    <div className='small-12 columns'>
-                        <div>
-                            <div className='form__input'>
-                            <TextInput
-                                className    = 'input'
-                                type         = 'text'
-                                id           = 'projectName'
-                                onChange     = {this.onFormChange}
-                                initialValue = {this.state.projectName} />
-                                <span className='validate__field-error'>×</span>
-                                <span className='validate__field-message'>Please enter an instance name.</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='small-5 columns'>
-                        <div className='space-remaining'>
-                            <span className='space-remaining__interger'>8</span><span className='space-remaining-unit'>GB</span>
-                            <p>remaining</p>
-                        </div>
-                    </div>
-                    <div className='small-7 columns'>
-                        <button onClick={this.onSubmit} className='button' type='submit'>Submit</button>
-                    </div>
+                <form className='form new-project-form' onSubmit={this.onSubmit}>
+                    <TextInput
+                        className    = 'input'
+                        type         = 'text'
+                        id           = 'projectName'
+                        onChange     = {this.onFormChange}
+                        initialValue = {this.state.projectName} />
+                    <Button className='button' type='submit'>
+                        <a>Submit</a>
+                    </Button>
                 </form>
             </div>
         );

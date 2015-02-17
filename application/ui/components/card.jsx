@@ -22,24 +22,20 @@ module.exports = React.createClass({
 
     render : function()
     {
-        var children, classes;
-
-        children = this.props.children.map(_.bind(function(child) {
-            child.props.flip = _.bind(this.onFlip, this);
-
-            return child;
-        }, this));
-
-        classes = cx({
+        var classes = cx({
             'flip-container' : true,
             'flipped'        : this.state.flipped
         });
+
+        _.each(this.props.children, function (child) {
+            child.props.flip = _.bind(this.onFlip, this);
+        }, this);
 
         return (
             <div className="card__wrapper">
                 <div className={classes}>
                     <div className="flipper card">
-                        {children}
+                        {this.props.children}
                     </div>
                 </div>
             </div>
