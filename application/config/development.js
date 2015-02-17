@@ -20,5 +20,9 @@ module.exports = {
     server : {
         hostname : 'localhost',
         port     : 9000
+    },
+    devServer : {
+        hostname : 'localhost',
+        port     : 9090
     }
 };

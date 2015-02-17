@@ -33,8 +33,8 @@ var getEnvironmentDependentRoutes = function()
 module.exports = (
     <Route handler={SiteLayout}>
         <Route handler={LoggedInLayout}>
-            <Route path='/' name='instances' handler={InstancesPage} />
-            <Route path='/projects' name='projects' handler={ProjectsPage} />
+            <Route path='/' name='projects' handler={ProjectsPage} />
+            <Route path='/instances' name='instances' handler={InstancesPage} />
         </Route>
         <Route handler={LoggedOutLayout}>
             {getEnvironmentDependentRoutes()}
