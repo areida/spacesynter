@@ -12,11 +12,10 @@ var Session      = require('express-session');
 var CookieParser = require('cookie-parser');
 var RedisStore   = require('connect-redis')(Session);
 
-var app       = require('./server/app');
-var db        = require('./server/db');
-var auth      = require('./server/auth');
-var redirects = require('./server/redirects');
-var config    = require('./application/config');
+var app    = require('./server/app');
+var auth   = require('./server/auth');
+var db     = require('./server/db');
+var config = require('./application/config');
 
 var server = new Express();
 
@@ -34,7 +33,6 @@ server.use(new Session({
 
 server.use(Express.static(process.cwd() + '/build'));
 server.use(auth);
-server.use(redirects);
 server.use(db);
 server.use(app);
 
