@@ -4,43 +4,42 @@ var HtmlWebpack       = require('html-webpack-plugin');
 var WebpackError      = require('webpack-error-notification');
 
 var environment = (process.env.APP_ENV || 'development');
+var npmDir      = __dirname + '/node_modules';
+
 var config = {
     entry   : ['./application/bootstrap.js'],
     plugins : [
-        new HtmlWebpack({template : './application/index.html'}),
         new Webpack.DefinePlugin({
             __BACKEND__     : process.env.BACKEND,
             __ENVIRONMENT__ : '\''+environment+'\''
         })
     ],
-    reactLoaders : ['jsx?insertPragma=React.DOM'],
+    reactLoaders : ['jsx?insertPragma=React.DOM&harmony'],
     sassLoader   : {
         test   : /\.scss$/,
-        loader : 'style-loader!css-loader!sass-loader?outputStyle=nested&includePaths[]=' + __dirname + '/node_modules'
+        loader : 'style-loader!css-loader!sass-loader?outputStyle=nested&includePaths[]=' + npmDir
     }
 };
 
 if (environment === 'development') {
-    config.entry = [
-        'webpack/hot/dev-server',
-        'webpack-dev-server/client?http://localhost:9000'
-    ].concat(config.entry);
+    config.plugins.push(new WebpackError(process.platform));
 
-    config.reactLoaders = ['react-hot'].concat(config.reactLoaders);
-
-    config.plugins = config.plugins.concat([
-        new Webpack.HotModuleReplacementPlugin(),
-        new WebpackError(process.platform)
-    ]);
+    if (! process.env.SERVER) {
+        config.entry.unshift('webpack-dev-server/client?http://localhost:9090')
+        config.entry.unshift('webpack/hot/dev-server')
+        config.plugins.push(new Webpack.HotModuleReplacementPlugin());
+        config.plugins.push(new HtmlWebpack({template : './application/index.html'}));
+        config.reactLoaders.unshift('react-hot');
+    }
 }
 
 if (environment === 'production' || process.env.SERVER) {
-    config.plugins    = config.plugins.concat([new ExtractTextPlugin('app.css', {allChunks : true})]);
+    config.plugins.push(new ExtractTextPlugin('app.css', {allChunks : true}));
     config.sassLoader = {
         test   : /\.scss$/,
         loader : ExtractTextPlugin.extract(
             'style-loader',
-            'css-loader!sass-loader?outputStyle=nested&includePaths[]=' + __dirname + '/node_modules'
+            'css-loader!sass-loader?outputStyle=compressed&includePaths[]=' + npmDir
         )
     };
 }
@@ -51,19 +50,19 @@ module.exports = {
     output : {
         filename   : 'app.js',
         path       : __dirname + '/build',
-        publicPath : '/'
+        publicPath : 'http://localhost:9090/'
     },
     module : {
         preLoaders : [
             {
                 test    : /\.js?/,
                 loader  : 'jshint-loader',
-                exclude : __dirname + '/node_modules'
+                exclude : npmDir
             },
             {
                 test    : /\.jsx?/,
                 loader  : 'jsxhint-loader',
-                exclude : __dirname + '/node_modules'
+                exclude : npmDir
             }
         ],
         loaders : [
@@ -75,7 +74,7 @@ module.exports = {
             {
                 test    : /\.jsx$/,
                 loaders : config.reactLoaders,
-                exclude : __dirname + '/node_modules'
+                exclude : npmDir
             },
             {
                 test   : /\.json$/,

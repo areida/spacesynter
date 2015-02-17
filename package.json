@@ -10,7 +10,7 @@
   },
   "scripts" : {
         "start"   : "rm -rf ./build && webpack && node webpack",
-        "server"  : "rm -rf ./build && SERVER=true webpack && node server",
+        "server"  : "rm -rf ./build && SERVER=true webpack && SERVER=true node server",
         "webpack" : "rm -rf ./build && webpack",
         "dist"    : "rm -rf ./build && APP_ENV=production webpack -p && zip -r build-`date +%s` application build node_modules server server.js",
         "test"    : "cd __tests__ && rm -rf ./build && webpack && node webpack",
