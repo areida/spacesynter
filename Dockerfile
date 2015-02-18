@@ -29,9 +29,9 @@ ADD docker/default    /etc/nginx/sites-available/default
 RUN mkdir             /etc/service/nginx
 ADD docker/nginx.sh   /etc/service/nginx/run
 RUN chmod +x          /etc/service/nginx/run
-RUN mkdir             /etc/service/phpfpm
-ADD docker/php-fpm.sh /etc/service/phpfpm/run
-RUN chmod +x          /etc/service/phpfpm/run
+RUN mkdir             /etc/service/php-fpm
+ADD docker/php-fpm.sh /etc/service/php-fpm/run
+RUN chmod +x          /etc/service/php-fpm/run
 RUN mkdir             /etc/service/redis
 ADD docker/redis.sh   /etc/service/redis/run
 RUN chmod +x          /etc/service/redis/run
