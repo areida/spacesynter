@@ -9,7 +9,7 @@ RUN apt-get dist-upgrade -y
 RUN apt-get -y install python-software-properties
 RUN apt-get -y install software-properties-common
 RUN add-apt-repository -y ppa:ondrej/php5-5.6
-RUN apt-get install -y vim curl wget git mysql-server postgresql redis-server
+RUN apt-get install -y vim curl wget git mysql-client postgresql-client redis-server
 RUN apt-get install -y php5 php5-mysql php5-pgsql php5-curl php5-mcrypt php5-cli php5-fpm php-pear imagemagick php5-imagick php5-intl
 RUN curl -sS https://getcomposer.org/installer | php ;mv composer.phar /usr/local/bin/composer
 
