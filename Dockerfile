@@ -24,17 +24,17 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php5/fpm/php-fpm.conf
 RUN sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php5/fpm/php.ini
  
-RUN mkdir -p         /srv/www
-ADD docker/default   /etc/nginx/sites-available/default
-RUN mkdir            /etc/service/nginx
-ADD docker/nginx.sh  /etc/service/nginx/run
-RUN chmod +x         /etc/service/nginx/run
-RUN mkdir            /etc/service/phpfpm
-ADD docker/phpfpm.sh /etc/service/phpfpm/run
-RUN chmod +x         /etc/service/phpfpm/run
-RUN mkdir            /etc/service/redis
-ADD docker/redis.sh  /etc/service/redis/run
-RUN chmod +x         /etc/service/redis/run
+RUN mkdir -p          /srv/www
+ADD docker/default    /etc/nginx/sites-available/default
+RUN mkdir             /etc/service/nginx
+ADD docker/nginx.sh   /etc/service/nginx/run
+RUN chmod +x          /etc/service/nginx/run
+RUN mkdir             /etc/service/phpfpm
+ADD docker/php-fpm.sh /etc/service/phpfpm/run
+RUN chmod +x          /etc/service/phpfpm/run
+RUN mkdir             /etc/service/redis
+ADD docker/redis.sh   /etc/service/redis/run
+RUN chmod +x          /etc/service/redis/run
 
 # Add projectfiles
 ADD . /srv/www/
