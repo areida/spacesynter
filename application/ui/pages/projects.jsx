@@ -7,11 +7,8 @@ var FluxMixin       = require('fluxxor').FluxMixin(React);
 var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 var _               = require('underscore');
 
-var Card            = require('../components/card');
-var NewProjectBack  = require('../components/project/new-back');
-var NewProjectFront = require('../components/project/new-front');
-var ProjectFront    = require('../components/project/existing-front');
-var ProjectBack     = require('../components/project/existing-back');
+var NewProject = require('../components/project/new');
+var Project    = require('../components/project/existing');
 
 module.exports = React.createClass({
     displayName : 'Projects',
@@ -63,22 +60,14 @@ module.exports = React.createClass({
 
     renderProject : function(project)
     {
-        return (
-            <Card key={project.id}>
-                <ProjectFront project={project} />
-                <ProjectBack project={project}  />
-            </Card>
-        );
+        return <Project project={project} />;
     },
 
     render : function()
     {
         return (
-            <div className="card__container">
-                <Card>
-                    <NewProjectFront />
-                    <NewProjectBack />
-                </Card>
+            <div>
+                <NewProject />
                 {this.state.projects.map(this.renderProject)}
             </div>
         );
