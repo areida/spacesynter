@@ -40,6 +40,9 @@ RUN chmod +x         /etc/service/nginx/run
 RUN mkdir            /etc/service/phpfpm
 ADD docker/phpfpm.sh /etc/service/phpfpm/run
 RUN chmod +x         /etc/service/phpfpm/run
+RUN mkdir            /etc/service/redis
+ADD docker/redis.sh  /etc/service/redis/run
+RUN chmod +x         /etc/service/redis/run
 
 # Add projectfiles
 ADD . /var/www/
