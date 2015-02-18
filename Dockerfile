@@ -15,14 +15,6 @@ RUN curl -sS https://getcomposer.org/installer | php ;mv composer.phar /usr/loca
 
 RUN echo qa > /etc/container_environment/APP_ENV
 
-# Confgiure php-fpm and nginx
-ADD docker/php-fpm.conf /etc/nginx/conf.d/php-fpm.conf
-RUN chmod 0644 /etc/nginx/conf.d/php-fpm.conf
-
-RUN rm /etc/php5/fpm/pool.d/www.conf
-ADD docker/www2.conf /etc/php5/fpm/pool.d/www2.conf
-RUN chmod 0644 /etc/php5/fpm/pool.d/www2.conf
-
 RUN sed -i "s/;date.timezone =.*/date.timezone = UTC/" /etc/php5/fpm/php.ini
 RUN sed -i "s/;date.timezone =.*/date.timezone = UTC/" /etc/php5/cli/php.ini
 
