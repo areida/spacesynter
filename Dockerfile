@@ -1,14 +1,21 @@
-FROM ubuntu:14.04
+FROM phusion/baseimage:0.9.16
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update --fix-missing
-RUN DEBIAN_FRONTEND=noninteractive apt-get dist-upgrade -y
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python-software-properties
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
-RUN DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ondrej/php5-5.6
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git nginx mysql-server postgresql curl redis-server
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y php5 php5-mysql php5-pgsql php5-curl php5-mcrypt php5-cli php5-fpm php-pear imagemagick php5-imagick php5-intl
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
+
+# Install stuff
+RUN apt-get update --fix-missing
+RUN apt-get dist-upgrade -y
+RUN apt-get -y install python-software-properties
+RUN apt-get -y install software-properties-common
+RUN add-apt-repository -y ppa:ondrej/php5-5.6
+RUN apt-get install -y vim curl wget git mysql-server postgresql redis-server
+RUN apt-get install -y php5 php5-mysql php5-pgsql php5-curl php5-mcrypt php5-cli php5-fpm php-pear imagemagick php5-imagick php5-intl
 RUN curl -sS https://getcomposer.org/installer | php ;mv composer.phar /usr/local/bin/composer
 
+RUN echo qa > /etc/container_environment/APP_ENV
+
+# Confgiure php-fpm and nginx
 ADD docker/php-fpm.conf /etc/nginx/conf.d/php-fpm.conf
 RUN chmod 0644 /etc/nginx/conf.d/php-fpm.conf
 
@@ -16,13 +23,28 @@ RUN rm /etc/php5/fpm/pool.d/www.conf
 ADD docker/www2.conf /etc/php5/fpm/pool.d/www2.conf
 RUN chmod 0644 /etc/php5/fpm/pool.d/www2.conf
 
-ADD docker/timezone.ini /etc/php5/cli/conf.d/timezone.ini
-RUN chmod 0644 /etc/php5/cli/conf.d/timezone.ini
+RUN sed -i "s/;date.timezone =.*/date.timezone = UTC/" /etc/php5/fpm/php.ini
+RUN sed -i "s/;date.timezone =.*/date.timezone = UTC/" /etc/php5/cli/php.ini
 
-ADD . /srv/www/
+RUN apt-get install -y nginx
 
-ADD docker/start.sh /start.sh
-RUN chmod a+x /start.sh
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php5/fpm/php-fpm.conf
+RUN sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" /etc/php5/fpm/php.ini
+ 
+RUN mkdir -p         /var/www
+ADD docker/default   /etc/nginx/sites-available/default
+RUN mkdir            /etc/service/nginx
+ADD docker/nginx.sh  /etc/service/nginx/run
+RUN chmod +x         /etc/service/nginx/run
+RUN mkdir            /etc/service/phpfpm
+ADD docker/phpfpm.sh /etc/service/phpfpm/run
+RUN chmod +x         /etc/service/phpfpm/run
+
+# Add projectfiles
+ADD . /var/www/
 
 EXPOSE 22 80
-ENTRYPOINT ['/start.sh']
+
+# Clean up APT
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
