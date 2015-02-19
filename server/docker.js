@@ -1,8 +1,56 @@
-var docker = require('dockerode');
-var config = require('../application/config');
+var Docker  = require('docker.io');
+var Q       = require('q');
+var config  = require('../application/config');
 
-var dockerServer = {
+var docker;
 
+docker = new Docker({socketPath : '/var/run/docker.sock'});
+
+module.exports = {
+    create : function(name, image)
+    {
+        var options = {
+            name       : name,
+            HostName   : name + '.spacesynter.com',
+            HostConfig : {
+                PublishAllPorts : true,
+                VolumesFrom     : [process.cwd(), '/srv/www']
+            },
+            Image : image || 'api-base-image'
+        };
+
+        return new Q.Promise(function (resolve, reject) {
+            docker.containers.create(options, function (error, response) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(response, options);
+                }
+            });
+        });
+    },
+    inspect : function(id)
+    {
+        return new Q.Promise(function (resolve, reject) {
+            docker.containers.inspect({id : id}, function (error, response) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(response);
+                }
+            });
+        });
+    },
+    kill : function(id)
+    {
+        return new Q.Promise(function (resolve, reject) {
+            docker.containers.kill({id : id}, function (error, response) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(response);
+                }
+            });
+        });
+    }
 };
-
-module.exports = dockerServer;

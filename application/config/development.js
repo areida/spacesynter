@@ -11,18 +11,23 @@ module.exports = {
         hostname : 'localhost',
         port     : 9000
     },
+    devServer : {
+        hostname : 'localhost',
+        port     : 9090
+    },
     github : {
         hostname  : 'api.github.com',
         port      : 443,
         secure    : true,
-        userAgent : 'areida/frontend-template'
+        userAgent : 'areida/spacesynter'
+    },
+    redis : {
+        host     : 'localhost',
+        port     : 6379,
+        database : 3
     },
     server : {
         hostname : 'localhost',
         port     : 9000
-    },
-    devServer : {
-        hostname : 'localhost',
-        port     : 9090
     }
 };
