@@ -12,12 +12,14 @@ var TextInput   = require('../form/inputs/text');
 
 module.exports = React.createClass({
 
-    displayName : 'NewProject',
-    mixins      : [FluxMixin, new StoreWatchMixin('ProjectStore')],
+    displayName : 'NewInstance',
+    mixins      : [FluxMixin, new StoreWatchMixin('InstanceStore')],
 
     getInitialState : function()
     {
-        return {};
+        return {
+            name : ''
+        };
     },
 
     getStateFromFlux : function()
@@ -38,28 +40,23 @@ module.exports = React.createClass({
     {
         event.preventDefault();
 
-        var project = {
-            name : this.state.name
-        };
-
-        this.getFlux().actions.project.create(project);
+        this.getFlux().actions.instance.create(this.state.name);
 
         this.setState(this.getInitialState());
-        this.props.flip();
     },
 
     render : function()
     {
         return (
             <div>
-                <h2>New Project</h2>
-                <form className='form new-project-form' onSubmit={this.onSubmit}>
+                <h2>New Instance</h2>
+                <form className='form new-instance-form' onSubmit={this.onSubmit}>
                     <TextInput
                         className    = 'input'
                         type         = 'text'
-                        id           = 'projectName'
+                        id           = 'name'
                         onChange     = {this.onFormChange}
-                        initialValue = {this.state.projectName}
+                        initialValue = {this.state.name}
                     />
                     <Button className='button' type='submit'>
                         <a>Submit</a>

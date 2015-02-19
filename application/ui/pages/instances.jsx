@@ -7,31 +7,15 @@ var FluxMixin       = require('fluxxor').FluxMixin(React);
 var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 var _               = require('underscore');
 
-var Card             = require('../components/card');
-var InstanceBack     = require('../components/instance/existing-back');
-var InstanceFront    = require('../components/instance/existing-front');
-var NewInstanceBack  = require('../components/instance/new-back');
-var NewInstanceFront = require('../components/instance/new-front');
+var NewInstance = require('../components/instance/new');
+var Instance    = require('../components/instance/existing');
 
 module.exports = React.createClass({
-    displayName : 'Instances',
+    displayName : 'Instance',
 
     mixins : [FluxMixin, new StoreWatchMixin('InstanceStore')],
 
     poll : null,
-
-    statics : {
-        fetchData : function(flux, params)
-        {
-            return [
-                flux.actions.instance.fetchAll()
-            ];
-        },
-        willTransitionFrom: function (transition, component)
-        {
-            component.getFlux().actions.github.clearGists();
-        }
-    },
 
     getInitialState : function()
     {
@@ -45,41 +29,45 @@ module.exports = React.createClass({
         };
     },
 
-    componentWillMount : function()
+    componentDidMount : function()
     {
         this.updatePoll();
     },
 
     componentWillUnmount : function()
     {
-        window.clearTimeout(this.poll);
+        if (this.poll) {
+            window.clearTimeout(this.poll);
+        }
     },
 
     updatePoll : function()
     {
         this.getFlux().actions.instance.fetchAll();
+        
+        this.poll = _.delay(this.updatePoll, 100000);
+    },
 
-        this.poll = window.setTimeout(this.updatePoll, 5000);
+    onAddInstance : function(instance)
+    {
+        this.getFlux().actions.instance.create(instance);
+    },
+
+    onDelete : function(instance)
+    {
+        this.getFlux().actions.instance.remove(instance);
     },
 
     renderInstance : function(instance)
     {
-        return (
-            <Card key={instance.id}>
-                <InstanceFront instance={instance} />
-                <InstanceBack instance={instance} />
-            </Card>
-        );
+        return <Instance instance={instance} />;
     },
 
     render : function()
     {
         return (
-            <div className="card__container">
-                <Card>
-                    <NewInstanceFront />
-                    <NewInstanceBack />
-                </Card>
+            <div>
+                <NewInstance />
                 {this.state.instances.map(this.renderInstance)}
             </div>
         );

@@ -4,11 +4,11 @@
 var React  = require('react');
 
 module.exports = React.createClass({
-    displayName : 'ExistingProject',
+    displayName : 'ExistingInstance',
 
     destroy : function()
     {
-        this.getFlux().actions.project.destroy(this.props.project);
+        this.getFlux().actions.isntance.destroy(this.props.isntance);
     },
 
     render : function()
