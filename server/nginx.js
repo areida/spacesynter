@@ -14,17 +14,10 @@ db = Redis.createClient(config.redis);
 
 module.exports = {
     reload : function(data) {
-        db.keys('*').then(function (keys) {
-            if (keys.length) {
-                db.hgetall(keys).then(function (items) {
-                    Fs.writeFile('/home/ubuntu/servers.conf', Tmpl('servers', items), function (err) {
-                        reloader.reload();
-                    });
-                });
-            } else {
-                res.send([]);
-                res.end();
-            }
+        db.hgetall(keys).then(function (data) {
+            Fs.writeFile('/home/ubuntu/servers.conf', Tmpl('servers', items), function (err) {
+                reloader.reload();
+            });
         });
     }
 }

@@ -16,7 +16,7 @@ module.exports = {
                 PublishAllPorts : true,
                 VolumesFrom     : [process.cwd(), '/srv/www']
             },
-            Image : image || 'api-base-image'
+            Image : image || 'synapse/api-base-image'
         };
 
         return new Q.Promise(function (resolve, reject) {

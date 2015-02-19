@@ -15,13 +15,12 @@ dbServer = new Express();
 
 dbServer.use(bodyParser.json());
 
-dbServer.delete('/db/instance/:key', function(req, res) {
-    db.hget(req.params.key).then(function (instance) {
+dbServer.delete('/db/instance/:id', function(req, res) {
+    db.hget(req.params.id).then(function (instance) {
         if (instance) {
             docker.kill(instance.id).then(
-                    db.hdel(req.params.key);
+                    db.hdel(req.params.id);
                     db.publish('container', 'removed');
-                    nginx.reload();
                     res.end();
                },
                 function (error) {
@@ -38,10 +37,10 @@ dbServer.delete('/db/instance/:key', function(req, res) {
     });
 });
 
-dbServer.get('/db/instance/:key', function(req, res) {
-    db.exists(req.params.key).then(function (exists) {
+dbServer.get('/db/instance/:id', function(req, res) {
+    db.exists(req.params.id).then(function (exists) {
         if (exists) {
-            db.hget(req.params.key).then(function (item) {
+            db.hget(req.params.id).then(function (item) {
                 res.send(item);
                 res.end();
             });
@@ -77,7 +76,7 @@ dbServer.post('/db/instance', function(req, res) {
                         host : options.Hostname
                     };
 
-                    docker.inspect(response.Id).then(
+                    docker.inspect(data.id).then(
                         function (response) {
                             data.ports = {
                                 22 : _.findWhere(response.HostConfig.Ports, {PrivatePort : 22}).PublicPort,
@@ -86,9 +85,8 @@ dbServer.post('/db/instance', function(req, res) {
 
                             data.state = JSON.stringify(response.state);
 
-                            db.hmset(req.body.name, data);
+                            db.hmset(data.id, data);
                             db.publish('container', 'created');
-                            nginx.reload();
                             res.send(data);
                             res.end();
                         },
@@ -114,10 +112,12 @@ dbServer.post('/db/instance', function(req, res) {
     });
 });
 
-dbServer.put('/db/instance/:key', function(req, res) {
-    db.exists(req.params.key).then(function (exists) {
+dbServer.put('/db/instance/:id', function(req, res) {
+    res.sendStatus(501);
+    res.end();
+    /*db.exists(req.params.id).then(function (exists) {
         if (exists) {
-            db.hmset(req.params.key, req.body);
+            db.hmset(req.params.id, req.body);
             db.publish('container', 'updated');
             res.send(req.body);
         } else {
@@ -125,7 +125,7 @@ dbServer.put('/db/instance/:key', function(req, res) {
         }
 
         res.end();
-    });
+    });*/
 });
 
 module.exports = dbServer;

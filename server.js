@@ -21,10 +21,7 @@ var config = require('./application/config');
 
 var dbClient, io, httpServer, server;
 
-dbClient = Redis.createClient({
-    host : 'localhost',
-    port : 6379
-});
+dbClient = Redis.createClient(config.redis);
 
 server = new Express();
 
@@ -51,12 +48,26 @@ io = new Io(httpServer);
 
 io.on('connection', function (socket) {
     socket.emit('connected');
-
-    dbClient.on('message', function (channel, message) {
-        socket.emit(channel, {message : messsage});
-    });
-
-    dbClient.subscribe('instance');
 });
+
+dbClient.on('message', function (channel, message) {
+    if (['created', 'killed', 'recreated'].indexOf(message) !== -1) {
+        dbClient.keys('*').then(function (keys) {
+            if (keys.length) {
+                db.hgetall(keys).then(function (items) {
+                    nginx.reload({containers : items}, function () {
+                        io.emit(channel, {message : messsage});
+                    });
+                });
+            } else {
+                nginx.reload({containers : []}, function () {
+                    io.emit(channel, {message : messsage});
+                });
+            }
+        });
+    }
+});
+
+dbClient.subscribe('container');
 
 console.log('Listening on ' + config.server.hostname + ':' + config.server.port);
