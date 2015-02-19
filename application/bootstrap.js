@@ -4,14 +4,16 @@
 
 var React  = require('react');
 var Router = require('react-router');
-var routes = require('./routes');
+
+var config = require('./config');
 var Flux   = require('./flux');
+var routes = require('./routes');
 
 var flux = new Flux();
 
 var state = window.document.getElementById('server-state');
 
-var socket = io('http://localhost:9000');
+var socket = io('http://' + config.server.host + ':' + config.server.port);
 
 socket.on('connected', function () {
     console.log('socket.io connected');

@@ -38,6 +38,7 @@ app.get(/^([^.]+)$/, function (req, res, next) {
 
                 res.send(Tmpl('page', {
                     flux : JSON.stringify(flux.toObject()),
+                    host : config.server.hostname + ':' + config.server.port,
                     html : React.renderToString(new Factory({flux : flux})),
                 }));
 

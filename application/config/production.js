@@ -3,11 +3,22 @@
 
 module.exports = {
     api : {
-        hostname  : '%PRODUCTION_API_HOST%',
-        port      : 80,
-        client_id : '123'
+        hostname  : 'spacesynter.com',
+        port      : 80
+    },
+    github : {
+        hostname  : 'api.github.com',
+        port      : 443,
+        secure    : true,
+        userAgent : 'areida/spacesynter'
+    },
+    redis : {
+        host     : 'localhost',
+        port     : 6379,
+        database : 1
     },
     server : {
-        port : 80
+        hostname : 'spacesynter.com',
+        port     : 80
     }
 };
