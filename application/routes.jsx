@@ -5,6 +5,8 @@
 var React  = require('react'); // Used in compiled js, so required even though appears unused
 var Route  = require('react-router').Route;
 
+var config = require('./config');
+
 var LoggedInLayout  = require('./ui/layouts/logged-in');
 var LoggedOutLayout = require('./ui/layouts/logged-out');
 var SiteLayout      = require('./ui/layouts/site');
@@ -35,7 +37,7 @@ module.exports = (
         </Route>
         <Route handler={LoggedOutLayout}>
             {getEnvironmentDependentRoutes()}
-            <Route path='/login' name='login' handler={LoginPage} />
+            <Route path={config.app.loginUri} name='login' handler={LoginPage} />
             <Route path='*' name='404' handler={NotFoundPage} />
         </Route>
     </Route>

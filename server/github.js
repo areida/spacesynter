@@ -6,52 +6,50 @@ var request   = require('request');
 var url       = require('url');
 var _         = require('underscore');
 
-var ghLoginUrl = 'https://github.com/login';
+var config = require('../application/config');
 
-function Github(options) {
-    _.extend({
-        baseUrl     : 'http://localhost',
-        callbackUri : '/github/callback',
-        scope       : null
-    }, options);
-
-    this.options = options;
-}
-
-Github.prototype.createState = function()
-{
-    return crypto.randomBytes(8).toString('hex');
+var options = {
+    ghClientId     : process.env.GH_CLIENT_ID,
+    ghClientSecret : process.env.GH_CLIENT_SECRET,
+    ghLoginUrl     : 'https://github.com/login',
+    baseUrl        : process.env.GH_BASE_URL || 'http://' + (config.app.hostname + ':' + config.app.port),
+    callbackUri    : '/gh-callback',
+    scope          : 'gist'
 };
 
-Github.prototype.authorizeUrl = function(state)
-{
+var github = new Express();
+
+function createState() {
+    return crypto.randomBytes(8).toString('hex');
+}
+
+function authorizeUrl(state) {
     var query = {
-        client_id    : this.options.ghClientId,
-        redirect_uri : url.resolve(this.options.baseUrl, this.options.callbackUri),
+        client_id    : options.ghClientId,
+        redirect_uri : url.resolve(options.baseUrl, options.callbackUri),
         state        : state
     };
 
-    if (this.options.scope) {
-        query.scope = this.options.scope;
+    if (options.scope) {
+        query.scope = options.scope;
     }
 
     query = qs.stringify(query);
 
-    return (ghLoginUrl + '/oauth/authorize?' + query);
-};
+    return (options.ghLoginUrl + '/oauth/authorize?' + query);
+}
 
-Github.prototype.callback = function(code, state)
-{
+function callback(code, state) {
     var query = {
-        client_id     : this.options.ghClientId,
-        client_secret : this.options.ghClientSecret,
+        client_id     : options.ghClientId,
+        client_secret : options.ghClientSecret,
         code          : code,
         state         : state
     };
 
     return new Q.Promise(function (resolve, reject) {
         request({
-            url  : ghLoginUrl + '/oauth/access_token',
+            url  : options.ghLoginUrl + '/oauth/access_token',
             qs   : query,
             json : true
         }, function (error, response, token) {
@@ -62,6 +60,49 @@ Github.prototype.callback = function(code, state)
             }
         });
     });
-};
+}
 
-module.exports = Github;
+github.get('/gh-login/?', function (req, res) {
+    req.session.ghState = ghClient.createState();
+
+    res.redirect(302, ghClient.authorizeUrl(req.session.state));
+    res.end();
+});
+
+github.get('/gh-callback/?', function (req, res) {
+    if (! req.query.code || ! req.session.ghState) {
+        res.redirect(302, config.app.loginUri);
+        res.end();
+    } else {
+        ghClient.callback(req.query.code, req.session.state)
+            .then(
+                function (token) {
+                    var redirectUrl = req.session.redirectUrl || '/';
+                    req.session.ghState     = null;
+                    req.session.ghToken     = token;
+                    req.session.redirectUrl = null;
+                    res.redirect(302, redirectUrl);
+                    res.end();
+                },
+                function (error) {
+                    console.error('there was a login error', error);
+                    res.redirect(403, '/');
+                    res.end();
+                }
+            )
+            .done();
+    }
+});
+
+github.get('/logout/?', function (req, res) {
+    req.session.ghToken = null;
+
+    if (req.headers['content-type'] === 'application/json') {
+        res.end();
+    } else {
+        res.redirect(302, config.app.loginUri);
+        res.end(); 
+    }
+});
+
+module.exports = github;

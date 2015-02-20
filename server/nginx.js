@@ -1,29 +1,42 @@
 var Fs       = require('fs');
+var Q        = require('q');
 var Redis    = require('then-redis');
 var Reloader = require('nginx-reload');
 var Tmpl     = require('blueimp-tmpl').tmpl;
 
 var config = require('../application/config');
-var db, reloader = new Reloader();
+var redisClient, reloader = new Reloader();
 
-db = Redis.createClient(config.redis);
+redisClient = Redis.createClient(config.redis.containers);
+
+Tmpl.load = function (name) {
+    return Fs.readFileSync(process.cwd() + '/templates/' + name, 'utf8');
+};
 
 module.exports = {
-    reload : function(containers, callback) {
-        var serverConf;
-
-        if (typeof callback === 'undefined') {
-            callback   = containers;
-            containers = [];
-        }
-
-        console.log('here', containers);
-
-        serverConf = Tmpl('server.conf', {containers : containers});
-
-        db.hgetall(keys).then(function (data) {
-            Fs.writeFile('/home/ubuntu/servers.conf', serverConf, function (err) {
-                reloader.reload();
+    reload : function() {
+        return Q.promise(function (resolve, reject) {
+            redisClient.keys('*').then(function (keys) {
+                if (keys.length) {
+                    db.hgetall(keys).then(function (containers) {
+                        var serverConf = Tmpl('server.conf', {containers : containers});
+                        Fs.writeFile('/home/ubuntu/servers.conf', serverConf, function (err) {
+                            if (err) {
+                                reject();
+                            } else {
+                                reloader.reload(function (err) {
+                                    if (err) {
+                                        reject();
+                                    } else {
+                                        resolve();
+                                    }
+                                });
+                            }
+                        });
+                    });
+                } else {
+                    resolve();
+                }
             });
         });
     }

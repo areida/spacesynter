@@ -8,7 +8,14 @@ backend = __BACKEND__ || '%DEV_API_HOST%';
 
 module.exports = {
     api : {
+        auth     : false,
         hostname : 'localhost',
+        port     : 8000
+    },
+    app : {
+        auth     : false,
+        hostname : 'localhost',
+        loginUri : '/login',
         port     : 9000
     },
     devServer : {
@@ -22,12 +29,16 @@ module.exports = {
         userAgent : 'areida/spacesynter'
     },
     redis : {
-        hostname : 'localhost',
-        port     : 6379,
-        database : 3
-    },
-    server : {
-        hostname : 'localhost',
-        port     : 9000
+        containers : {
+            host     : 'localhost',
+            port     : 6379,
+            database : 0
+        },
+        cookies : {
+            host     : 'localhost',
+            port     : 6379,
+            database : 1,
+            secret   : 'abcdefghijklmnopqrstuvwxyz1234567890'
+        }
     }
 };

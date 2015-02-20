@@ -14,7 +14,7 @@ var flux = new Flux();
 var state = window.document.getElementById('server-state');
 
 if (__SERVER__) {
-    var socket = io('http://' + config.server.hostname + ':' + config.server.port);
+    var socket = io('http://' + config.api.hostname + ':' + config.api.port);
 
     socket.on('connected', function () {
         window.console.log('socket.io connected');

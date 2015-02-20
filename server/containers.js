@@ -1,26 +1,21 @@
-var Express    = require('express');
-var Redis      = require('then-redis');
-var bodyParser = require('body-parser')
-var _          = require('underscore');
+var Express = require('express');
 
 var config = require('../application/config');
 var docker = require('./docker');
 var nginx  = require('./nginx');
 
-var db, dbServer;
+var containers, illegalContainerNames, redisClient;
 
-db = Redis.createClient(config.redis);
+containers   = new Express();
+illegalNames = ['api'];
+redisClient  = Redis.createClient(config.redis.containers);
 
-dbServer = new Express();
-
-dbServer.use(bodyParser.json());
-
-dbServer.delete('/db/instance/:id', function(req, res) {
-    db.hget(req.params.id).then(function (instance) {
-        if (instance) {
-            docker.kill(instance.id).then(function () {
-                    db.hdel(req.params.id);
-                    db.publish('container', 'removed');
+containers.delete('/container/:id', function(req, res) {
+    redisClient.hget(req.params.id).then(function (container) {
+        if (container) {
+            docker.kill(container.id).then(function () {
+                    redisClient.hdel(req.params.id);
+                    redisClient.publish('container', 'removed');
                     res.end();
                },
                 function (error) {
@@ -37,10 +32,10 @@ dbServer.delete('/db/instance/:id', function(req, res) {
     });
 });
 
-dbServer.get('/db/instance/:id', function(req, res) {
-    db.exists(req.params.id).then(function (exists) {
+containers.get('/container/:id', function(req, res) {
+    redisClient.exists(req.params.id).then(function (exists) {
         if (exists) {
-            db.hget(req.params.id).then(function (item) {
+            redisClient.hget(req.params.id).then(function (item) {
                 res.send(item);
                 res.end();
             });
@@ -51,10 +46,10 @@ dbServer.get('/db/instance/:id', function(req, res) {
     });
 });
 
-dbServer.get('/db/instances', function(req, res) {
-    db.keys('*').then(function (keys) {
+containers.get('/containers', function(req, res) {
+    redisClient.keys('*').then(function (keys) {
         if (keys) {
-            db.hgetall(keys).then(function (items) {
+            redisClient.hgetall(keys).then(function (items) {
                 res.send(items);
                 res.end();
             });
@@ -65,9 +60,14 @@ dbServer.get('/db/instances', function(req, res) {
     });
 });
 
-dbServer.post('/db/instance', function(req, res) {
-    db.exists(req.body.name).then(function (exists) {
-        if (! exists) {
+containers.post('/container', function(req, res) {
+    redisClient.exists(req.body.name).then(function (exists) {
+        if (exists || illegalNames.indexOf(req.body.name) !== -1) {
+            res.send({message : '`' + req.body.name + '` already exists'});
+            res.sendStatus(422);
+
+            res.end();
+        } else {
             docker.create(req.body.name).then(
                 function (response, options) {
                     var data = {
@@ -85,8 +85,8 @@ dbServer.post('/db/instance', function(req, res) {
 
                             data.state = JSON.stringify(response.state);
 
-                            db.hmset(data.id, data);
-                            db.publish('container', 'created');
+                            redisClient.hmset(data.id, data);
+                            redisClient.publish('container', 'created');
                             res.send(data);
                             res.end();
                         },
@@ -103,22 +103,17 @@ dbServer.post('/db/instance', function(req, res) {
                     res.end();
                 }
             );
-        } else {
-            res.send({message : '`' + req.body.name + '` already exists'});
-            res.sendStatus(422);
-
-            res.end();
         }
     });
 });
 
-dbServer.put('/db/instance/:id', function(req, res) {
+containers.put('/container/:id', function(req, res) {
     res.sendStatus(501);
     res.end();
-    /*db.exists(req.params.id).then(function (exists) {
+    /*redisClient.exists(req.params.id).then(function (exists) {
         if (exists) {
-            db.hmset(req.params.id, req.body);
-            db.publish('container', 'updated');
+            redisClient.hmset(req.params.id, req.body);
+            redisClient.publish('container', 'updated');
             res.send(req.body);
         } else {
             res.sendStatus(404);
@@ -128,4 +123,4 @@ dbServer.put('/db/instance/:id', function(req, res) {
     });*/
 });
 
-module.exports = dbServer;
+module.exports = containers;
