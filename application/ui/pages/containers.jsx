@@ -30,7 +30,7 @@ var ContainersPage = React.createClass({
     getStateFromFlux : function()
     {
         return {
-            containers : this.getFlux().store('ContainerStore').getAll()
+           containers : this.getFlux().store('ContainerStore').getAll()
         };
     },
 

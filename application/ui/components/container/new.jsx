@@ -18,7 +18,8 @@ module.exports = React.createClass({
     getInitialState : function()
     {
         return {
-            name : ''
+            image : '',
+            name  : ''
         };
     },
 
@@ -47,19 +48,41 @@ module.exports = React.createClass({
 
     render : function()
     {
+        var buttonStyle, formStyle, inputStyle;
+
         return (
-            <div className='container__container-new'>
-                <h2>New Container</h2>
-                <form className='form new-container-form' onSubmit={this.onSubmit}>
-                    <TextInput
-                        className    = 'input'
-                        type         = 'text'
-                        id           = 'name'
-                        onChange     = {this.onFormChange}
-                        initialValue = {this.state.name}
-                    />
-                    <Button className='button' type='submit' onClick={this.onSubmit}>
-                        <a>Submit</a>
+            <div className='container new row'>
+                <form
+                    className = 'form new-container-form'
+                    onSubmit  = {this.onSubmit}
+                    style     = {formStyle}
+                >
+                    <div className='medium-2 columns'>
+                        <TextInput
+                            id           = 'name'
+                            initialValue = {this.state.name}
+                            onChange     = {this.onFormChange}
+                            placeholder  = 'Name'
+                            size         = 'small'
+                            type         = 'text'
+                        />
+                    </div>
+                    <div className='medium-2 columns'>
+                        <SelectInput
+                            disabled     = {true}
+                            id           = 'image'
+                            initialValue = {this.state.image}
+                            onChange     = {this.onFormChange}
+                            options      = {[{text : 'Image', value : null}]}
+                        />
+                    </div>
+                    <Button
+                        className = 'button'
+                        type      = 'submit'
+                        size      = 'small'
+                        style     = {buttonStyle}
+                    >
+                        <a onClick={this.onSubmit}>Create</a>
                     </Button>
                 </form>
             </div>

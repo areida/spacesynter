@@ -16,6 +16,7 @@ module.exports = React.createClass({
 
     propTypes : {
         id                : React.PropTypes.string.isRequired,
+        disabled          : React.PropTypes.bool,
         label             : React.PropTypes.string,
         onChange          : React.PropTypes.func,
         options           : React.PropTypes.arrayOf(
@@ -43,6 +44,7 @@ module.exports = React.createClass({
     getDefaultProps : function()
     {
         return {
+            disabled          : false,
             label             : null,
             onChange          : null,
             options           : null,
@@ -119,7 +121,9 @@ module.exports = React.createClass({
                         className = 'input input--select'
                         id        = {this.props.id}
                         value     = {this.getSelectedValue()}
-                        onChange  = {this.onChange} >
+                        onChange  = {this.onChange}
+                        disabled  = {this.props.disabled ? 'disabled' : ''}
+                    >
                         {this.renderSelectOptions()}
                     </select>
                     <span className='input--select__arrow'>
