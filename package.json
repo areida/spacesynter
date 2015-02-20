@@ -4,6 +4,7 @@
   "version"     : "0.0.0",
   "description" : "A quickstart frontend template that expects to be paired with a backend based off of synapsestudios/api-template",
   "license"     : "MIT",
+  "private"     : true,
   "repository"  : {
     "type" : "git",
     "url"  : "https://github.com/synapsestudios/frontend-template.git"
@@ -12,7 +13,7 @@
         "start"   : "rm -rf ./build && webpack && node webpack",
         "server"  : "rm -rf ./build && SERVER=true webpack && SERVER=true node server",
         "webpack" : "rm -rf ./build && webpack",
-        "dist"    : "rm -rf ./build && APP_ENV=production webpack -p && zip -r `git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` application build docker Dockerfile node_modules server server.js templates",
+        "dist"    : "rm -rf ./build && APP_ENV=production webpack -p && zip -r `git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` application build docker Dockerfile node_modules server server.js templates -x `awk '{print \"./node_modules/\"$1\"/**\\\\*\"}' .npmignore | tr '\\n' ' '`",
         "test"    : "cd __tests__ && rm -rf ./build && webpack && node webpack",
         "karma"   : "./node_modules/karma/bin/karma start karma.conf.js",
         "clean"   : "rm -rf ./build"
