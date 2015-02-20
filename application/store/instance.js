@@ -4,18 +4,18 @@
 var constants       = require('../constants');
 var APIStoreFactory = require('./api-store-factory');
 
-var InstanceStore = APIStoreFactory.createStore({
+var ContainerStore = APIStoreFactory.createStore({
     initialize : function()
     {
         this.state = {
-            instances : []
+            containers : []
         };
     },
 
     getAll : function()
     {
-        return this.state.instances;
+        return this.state.containers;
     }
 });
 
-module.exports = InstanceStore;
+module.exports = ContainerStore;

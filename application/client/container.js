@@ -9,24 +9,24 @@ var AuthClient = AuthGateway.extend({
 
     config : config.api,
 
-    create : function(name)
+    create : function(container)
     {
-        return this.apiRequest('POST', '/db/instance/', {name : name});
+        return this.apiRequest('POST', '/container/', {name : container.name});
     },
 
     destroy : function(key)
     {
-        return this.apiRequest('DELETE', '/db/instance/' + key);
+        return this.apiRequest('DELETE', '/container/' + key);
     },
 
     fetch : function(key)
     {
-        return this.apiRequest('GET', '/db/instance/' + key);
+        return this.apiRequest('GET', '/container/' + key);
     },
 
     fetchAll : function()
     {
-        return this.apiRequest('GET', '/db/instances');
+        return this.apiRequest('GET', '/containers');
     }
 
 });

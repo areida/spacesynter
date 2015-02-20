@@ -12,8 +12,8 @@ var TextInput   = require('../form/inputs/text');
 
 module.exports = React.createClass({
 
-    displayName : 'NewInstance',
-    mixins      : [FluxMixin, new StoreWatchMixin('InstanceStore')],
+    displayName : 'NewContaienr',
+    mixins      : [FluxMixin, new StoreWatchMixin('ContaienrStore')],
 
     getInitialState : function()
     {
@@ -40,7 +40,7 @@ module.exports = React.createClass({
     {
         event.preventDefault();
 
-        this.getFlux().actions.instance.create(this.state.name);
+        this.getFlux().actions.container.create({name : this.state.name});
 
         this.setState(this.getInitialState());
     },
@@ -49,8 +49,8 @@ module.exports = React.createClass({
     {
         return (
             <div>
-                <h2>New Instance</h2>
-                <form className='form new-instance-form' onSubmit={this.onSubmit}>
+                <h2>New Container</h2>
+                <form className='form new-container-form' onSubmit={this.onSubmit}>
                     <TextInput
                         className    = 'input'
                         type         = 'text'
