@@ -31,15 +31,7 @@ Flux.prototype.fetchData = function(state)
             return route.handler.fetchData;
         })
         .reduce(function (promises, route) {
-            var promise = route.handler.fetchData(flux, params);
-
-            if (Array.isArray(promise)) {
-                promises.concat(promise);
-            } else {
-                promises.push(promise);
-            }
-
-            return promises;
+            return promises.push(route.handler.fetchData(flux, params));
         }, []));
 };
 

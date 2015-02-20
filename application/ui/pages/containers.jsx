@@ -37,7 +37,7 @@ var ContainersPage = React.createClass({
     componentDidMount : function()
     {
         if (! this.getFlux().store('ContainerStore').isLoaded()) {
-            ContainersPage.fetchData(this.getFlux());
+            ContainersPage.fetchData(this.getFlux()).done();
         }
     },
 
