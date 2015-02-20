@@ -37,14 +37,12 @@ containers.get('/container/:name', function(req, res) {
 
 containers.get('/containers', function(req, res) {
     redisClient.keys('*').then(function (keys) {
-        console.log(keys);
         if (keys.length) {
             redisClient.mget(keys).then(function (containers) {
-        console.log(arguments);
-                res.send(containers);
+                res.json(containers.map(function (container) { return JSON.parse(container); }));
             });
         } else {
-            res.send([]);
+            res.json([]);
         }
     });
 });
@@ -66,11 +64,10 @@ containers.post('/container', function(req, res) {
                 },
                 state : {}
             };
-console.log(data);
-console.log(JSON.stringify(data));
+
             redisClient.set(data.name, JSON.stringify(data));
             redisClient.publish('container', 'created');
-            res.send(data);
+            res.json(data);
         }
     });
 });

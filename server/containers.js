@@ -18,11 +18,11 @@ containers.delete('/container/:name', function(req, res) {
         if (container) {
             docker.kill(container.name).then(function () {
                     redisClient.hdel(req.params.name);
-                    redisClient.publish('container', 'removed');
+                    redisClient.publish('container', 'killed');
                     res.sendStatus(204);
                },
                 function (error) {
-                    res.sendStatus(500);
+                    res.status(500);
                     res.send(error);
                 }
             );
@@ -35,8 +35,8 @@ containers.delete('/container/:name', function(req, res) {
 containers.get('/container/:name', function(req, res) {
     redisClient.exists(req.params.name).then(function (exists) {
         if (exists) {
-            redisClient.get(req.params.name).then(function (containers) {
-                res.send(containers);
+            redisClient.get(req.params.name).then(function (container) {
+                res.send(container);
             });
         } else {
             res.sendStatus(404);
@@ -48,7 +48,7 @@ containers.get('/containers', function(req, res) {
     redisClient.keys('*').then(function (keys) {
         if (keys) {
             redisClient.mget(keys).then(function (containers) {
-                res.send(containers);
+                res.json(containers.map(function (container) { return JSON.parse(container); }));
             });
         } else {
             res.json([]);
@@ -84,12 +84,14 @@ containers.post('/container', function(req, res) {
                             res.json(data);
                         },
                         function (error) {
-                            res.sendStatus(500);
+                            res.status(500);
+                            res.send(error);
                         }
                     );
                },
                 function (error) {
-                    res.sendStatus(500);
+                    res.status(500);
+                    res.send(error);
                 }
             );
         }
