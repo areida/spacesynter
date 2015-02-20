@@ -1,4 +1,4 @@
-packages = %w{git nginx mysql-server postgresql curl}
+packages = %w{docker.io git nodejs npm redis-server unzip}
 
 packages.each do |pkg|
     package pkg do
