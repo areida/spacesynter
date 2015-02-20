@@ -5,11 +5,11 @@ var path             = require('path');
 var request          = require('request');
 var WebpackDevServer = require('webpack-dev-server');
 var webpack          = require('webpack');
-var config           = require('./webpack.config');
-var appConfig        = require('./application/config');
+var webpackConfig    = require('./webpack.config');
+var config           = require('./application/config');
 
-var server = new WebpackDevServer(webpack(config), {
-    contentBase : appConfig.server.port,
+var server = new WebpackDevServer(webpack(webpackConfig), {
+    contentBase : __dirname + '/build',
     headers     : {'Access-Control-Allow-Origin': '*'},
     hot         : true,
     inline      : true,
@@ -20,16 +20,18 @@ server.use(function (req, res, next) {
     var ext = path.extname(req.url);
 
     if ((ext === '' || ext === '.html') && req.url !== '/') {
-        req.pipe(request('http://' + appConfig.devServer.hostname + ':' + appConfig.devServer.port)).pipe(res);
+        req.pipe(
+            request('http://' + config.devServer.hostname + ':' + config.devServer.port)
+        ).pipe(res);
     } else {
         next();
     }
 });
 
-server.listen(appConfig.devServer.port, appConfig.devServer.hostname, function (err, result) {
+server.listen(config.devServer.port, config.devServer.hostname, function (err, result) {
     if (err) {
         console.log(err);
     }
 
-    console.log('Listening at ' + appConfig.devServer.hostname + ':' + appConfig.devServer.port);
+    console.log('Listening at ' + config.devServer.hostname + ':' + config.devServer.port);
 });
