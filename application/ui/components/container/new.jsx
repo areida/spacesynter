@@ -31,7 +31,7 @@ module.exports = React.createClass({
     {
         var state = this.state;
 
-        state[element.id] = value;
+        state[element.props.id] = value;
 
         this.setState(state);
     },
@@ -58,12 +58,11 @@ module.exports = React.createClass({
                         onChange     = {this.onFormChange}
                         initialValue = {this.state.name}
                     />
-                    <Button className='button' type='submit'>
+                    <Button className='button' type='submit' onClick={this.onSubmit}>
                         <a>Submit</a>
                     </Button>
                 </form>
             </div>
         );
     }
-
 });

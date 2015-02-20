@@ -3,11 +3,6 @@
 
 var BaseAPIStore = function () {};
 
-BaseAPIStore.prototype.getState = function()
-{
-    return this.state;
-};
-
 BaseAPIStore.prototype.isLoading = function()
 {
     return this.state.loading;
@@ -28,10 +23,14 @@ BaseAPIStore.prototype.isSaved = function()
     return this.state.saved;
 };
 
-BaseAPIStore.prototype.setState = function(state)
+BaseAPIStore.prototype.fromObject = function(object)
 {
-    this.state = state;
+    this.state = object;
 };
 
+BaseAPIStore.prototype.toObject = function()
+{
+    return this.state;
+};
 
 module.exports = BaseAPIStore;

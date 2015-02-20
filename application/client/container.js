@@ -14,14 +14,14 @@ var AuthClient = AuthGateway.extend({
         return this.apiRequest('POST', '/container/', {name : container.name});
     },
 
-    destroy : function(key)
+    destroy : function(container)
     {
-        return this.apiRequest('DELETE', '/container/' + key);
+        return this.apiRequest('DELETE', '/container/' + container.name);
     },
 
-    fetch : function(key)
+    fetch : function(container)
     {
-        return this.apiRequest('GET', '/container/' + key);
+        return this.apiRequest('GET', '/container/' + container.name);
     },
 
     fetchAll : function()

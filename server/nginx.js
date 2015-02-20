@@ -18,8 +18,8 @@ module.exports = {
         return Q.promise(function (resolve, reject) {
             redisClient.keys('*').then(function (keys) {
                 if (keys.length) {
-                    db.hgetall(keys).then(function (containers) {
-                        var serverConf = Tmpl('server.conf', {containers : containers});
+                    redisClient.mget(keys).then(function (containers) {
+                        var serverConf = Tmpl('servers.conf', {containers : containers});
                         Fs.writeFile('/home/ubuntu/servers.conf', serverConf, function (err) {
                             if (err) {
                                 reject();

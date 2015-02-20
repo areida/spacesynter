@@ -13,7 +13,7 @@ var options = {
     ghClientId     : process.env.GH_CLIENT_ID,
     ghClientSecret : process.env.GH_CLIENT_SECRET,
     ghLoginUrl     : 'https://github.com/login',
-    baseUrl        : process.env.GH_BASE_URL || 'http://' + (config.app.hostname + ':' + config.app.port),
+    baseUrl        : process.env.HOSTNAME || 'http://' + (config.app.hostname + ':' + config.app.port),
     callbackUri    : '/gh-callback',
     scope          : 'gist'
 };

@@ -11,7 +11,8 @@
   },
   "scripts" : {
         "start"   : "rm -rf ./build && webpack && node webpack",
-        "server"  : "rm -rf ./build && SERVER=true webpack && SERVER=true node server/app",
+        "api"     : "SERVER=true node server/api",
+        "app"     : "rm -rf ./build && SERVER=true webpack && SERVER=true node server/app",
         "webpack" : "rm -rf ./build && webpack",
         "dist"    : "./dist.sh",
         "test"    : "cd __tests__ && rm -rf ./build && webpack && node webpack",
@@ -54,6 +55,7 @@
   },
   "dependencies": {
     "fluxxor"         : "1.5.1",
+    "immutable"       : "3.6.0",
     "q"               : "1.0.1",
     "react"           : "0.12.1",
     "react-router"    : "0.11.4",

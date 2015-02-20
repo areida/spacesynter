@@ -11,38 +11,35 @@ containers   = new Express();
 illegalNames = ['api'];
 redisClient  = Redis.createClient(config.redis.containers);
 
-containers.delete('/container/:id', function(req, res) {
-    redisClient.hget(req.params.id).then(function (container) {
+containers.disable('etag');
+
+containers.delete('/container/:name', function(req, res) {
+    redisClient.get(req.params.name).then(function (container) {
         if (container) {
-            docker.kill(container.id).then(function () {
-                    redisClient.hdel(req.params.id);
+            docker.kill(container.name).then(function () {
+                    redisClient.hdel(req.params.name);
                     redisClient.publish('container', 'removed');
-                    res.end();
+                    res.sendStatus(204);
                },
                 function (error) {
                     res.sendStatus(500);
                     res.send(error);
-                    res.end();
                 }
             );
         } else {
             res.sendStatus(404);
         }
-
-        res.end();
     });
 });
 
-containers.get('/container/:id', function(req, res) {
-    redisClient.exists(req.params.id).then(function (exists) {
+containers.get('/container/:name', function(req, res) {
+    redisClient.exists(req.params.name).then(function (exists) {
         if (exists) {
-            redisClient.hget(req.params.id).then(function (item) {
-                res.send(item);
-                res.end();
+            redisClient.get(req.params.name).then(function (containers) {
+                res.send(containers);
             });
         } else {
             res.sendStatus(404);
-            res.end();
         }
     });
 });
@@ -50,13 +47,11 @@ containers.get('/container/:id', function(req, res) {
 containers.get('/containers', function(req, res) {
     redisClient.keys('*').then(function (keys) {
         if (keys) {
-            redisClient.hgetall(keys).then(function (items) {
-                res.send(items);
-                res.end();
+            redisClient.mget(keys).then(function (containers) {
+                res.send(containers);
             });
         } else {
-            res.send([]);
-            res.end();
+            res.json([]);
         }
     });
 });
@@ -64,10 +59,8 @@ containers.get('/containers', function(req, res) {
 containers.post('/container', function(req, res) {
     redisClient.exists(req.body.name).then(function (exists) {
         if (exists || illegalNames.indexOf(req.body.name) !== -1) {
+            res.status(422);
             res.send({message : '`' + req.body.name + '` already exists'});
-            res.sendStatus(422);
-
-            res.end();
         } else {
             docker.create(req.body.name).then(
                 function (response, options) {
@@ -77,43 +70,37 @@ containers.post('/container', function(req, res) {
                         host : options.Hostname
                     };
 
-                    docker.inspect(data.id).then(
+                    docker.inspect(data.name).then(
                         function (response) {
                             data.ports = {
                                 22 : _.findWhere(response.HostConfig.Ports, {PrivatePort : 22}).PublicPort,
                                 80 : _.findWhere(response.HostConfig.Ports, {PrivatePort : 80}).PublicPort
                             };
 
-                            data.state = JSON.stringify(response.state);
+                            data.state = response.state;
 
-                            redisClient.hmset(data.id, data);
+                            redisClient.set(data.name, JSON.stringify(data));
                             redisClient.publish('container', 'created');
-                            res.send(data);
-                            res.end();
+                            res.json(data);
                         },
                         function (error) {
                             res.sendStatus(500);
-                            res.send(error);
-                            res.end();
                         }
                     );
                },
                 function (error) {
                     res.sendStatus(500);
-                    res.send(error);
-                    res.end();
                 }
             );
         }
     });
 });
 
-containers.put('/container/:id', function(req, res) {
+containers.put('/container/:name', function(req, res) {
     res.sendStatus(501);
-    res.end();
-    /*redisClient.exists(req.params.id).then(function (exists) {
+    /*redisClient.exists(req.params.name).then(function (exists) {
         if (exists) {
-            redisClient.hmset(req.params.id, req.body);
+            redisClient.set(req.params.name, req.body);
             redisClient.publish('container', 'updated');
             res.send(req.body);
         } else {

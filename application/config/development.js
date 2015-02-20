@@ -34,12 +34,12 @@ module.exports = {
         containers : {
             host     : 'localhost',
             port     : 6379,
-            database : 0
+            database : 4
         },
         cookies : {
             host     : 'localhost',
             port     : 6379,
-            database : 1,
+            database : 5,
             secret   : 'abcdefghijklmnopqrstuvwxyz1234567890'
         }
     }

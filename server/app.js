@@ -57,8 +57,6 @@ app.get(/^([^.]+)$/, function (req, res, next) {
                 host : config.api.hostname + ':' + config.api.port,
                 html : React.renderToString(new Factory({flux : flux})),
             }));
-
-            res.end();
         });
     });
 });

@@ -16,6 +16,7 @@ module.exports = React.createClass({
         return (
             <div>
                 <h2>Actions</h2>
+                <p>this.props.container.name</p>
                 <a onDoubleClick={this.destroy}>Delete (double-click)</a>
             </div>
         );

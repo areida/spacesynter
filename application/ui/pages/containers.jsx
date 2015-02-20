@@ -10,10 +10,17 @@ var _               = require('underscore');
 var NewContainer = require('../components/container/new');
 var Container    = require('../components/container/existing');
 
-module.exports = React.createClass({
+var ContainersPage = React.createClass({
     displayName : 'Container',
 
     mixins : [FluxMixin, new StoreWatchMixin('ContainerStore')],
+
+    statics : {
+        //fetchData : function(flux)
+        //{
+        //    return flux.actions.container.fetchAll();
+        //}
+    },
 
     getInitialState : function()
     {
@@ -25,6 +32,13 @@ module.exports = React.createClass({
         return {
             containers : this.getFlux().store('ContainerStore').getAll()
         };
+    },
+
+    componentDidMount : function()
+    {
+        if (! this.getFlux().store('ContainerStore').isLoaded()) {
+            this.getFlux().actions.container.fetchAll();
+        }
     },
 
     renderContainer : function(container)
@@ -42,3 +56,5 @@ module.exports = React.createClass({
         );
     }
 });
+
+module.exports = ContainersPage;

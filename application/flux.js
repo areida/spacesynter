@@ -48,7 +48,7 @@ Flux.prototype.fromObject = function(object)
     var stores = this.stores;
 
     _.each(object, function (state, name) {
-        stores[name].setState(state);
+        stores[name].fromObject(state);
     });
 
     return this;
@@ -59,7 +59,7 @@ Flux.prototype.toObject = function()
     var data = {};
 
     _.each(this.stores, function (store, name) {
-        data[name] = store.getState();
+        data[name] = store.toObject();
     });
 
     return data;

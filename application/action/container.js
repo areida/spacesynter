@@ -24,7 +24,7 @@ module.exports = {
 
         this.dispatch(constants.CONTAINER_DESTROY, container);
 
-        return containerClient.destroy(container.id).then(
+        return containerClient.destroy(container).then(
             function (response) {
                 flux.dispatch(constants.CONTAINER_DESTROY_SUCCESS, response);
             }
@@ -35,9 +35,9 @@ module.exports = {
     {
         var flux = this;
 
-        this.dispatch(constants.CONTAINER_FETCH_ALL, container);
+        this.dispatch(constants.CONTAINER_FETCH, container);
 
-        return containerClient.fetch(container.id).then(
+        return containerClient.fetch(container).then(
             function (response) {
                 flux.dispatch(constants.CONTAINER_FETCH_SUCCESS, response);
             }

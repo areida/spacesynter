@@ -21,6 +21,7 @@ redisClient = Redis.createClient(config.redis.containers);
 
 api = new Express();
 
+api.disable('etag');
 api.use(bodyParser.json());
 api.use(new CookieParser());
 api.use(new Session({
@@ -30,14 +31,27 @@ api.use(new Session({
     store             : new RedisStore(config.redis.cookies)
 }));
 
+api.use(function(req, res, next) {
+    res.header(
+        'Access-Control-Allow-Origin',
+        process.env.HOSTNAME || ('http://' + config.app.hostname + ':' + config.app.port)
+    );
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Content-Type', 'application/json');
+    res.header('If-None-Match', '*');
+    res.header('Last-Modified', (new Date()).toUTCString());
+    next();
+});
+
 if (config.api.auth) {
-    app.use(auth.check);
+    api.use(auth.check);
 }
 
 if (config.api.docker) {
     api.use(containers);
 } else {
-    app.use(mockContainers);
+    api.use(mockContainers);
 }
 
 httpServer = api.listen(
