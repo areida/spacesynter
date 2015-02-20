@@ -38,13 +38,12 @@ var ContainersPage = React.createClass({
     {
         if (! this.getFlux().store('ContainerStore').isLoaded()) {
             ContainersPage.fetchData(this.getFlux());
-            //this.getFlux().actions.container.fetchAll();
         }
     },
 
-    renderContainer : function(container)
+    renderContainer : function(container, index)
     {
-        return <Container container={container} />;
+        return <Container container={container} key={index} />;
     },
 
     render : function()
@@ -52,7 +51,7 @@ var ContainersPage = React.createClass({
         return (
             <div>
                 <NewContainer />
-                {this.state.containers.map(this.renderContainer)}
+                {this.state.containers.map(this.renderContainer).toArray()}
             </div>
         );
     }

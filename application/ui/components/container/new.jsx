@@ -48,7 +48,7 @@ module.exports = React.createClass({
     render : function()
     {
         return (
-            <div>
+            <div className='container__container-new'>
                 <h2>New Container</h2>
                 <form className='form new-container-form' onSubmit={this.onSubmit}>
                     <TextInput

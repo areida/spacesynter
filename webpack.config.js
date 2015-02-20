@@ -51,7 +51,7 @@ module.exports = {
     output : {
         filename   : 'app.js',
         path       : __dirname + '/build',
-        publicPath : 'http://localhost:9090/'
+        publicPath : 'http://localhost:9000/'
     },
     module : {
         preLoaders : [

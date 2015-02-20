@@ -14,7 +14,7 @@ module.exports = React.createClass({
     render : function()
     {
         return (
-            <div>
+            <div className='container__container-existing'>
                 <h2>Actions</h2>
                 <p>this.props.container.name</p>
                 <a onDoubleClick={this.destroy}>Delete (double-click)</a>

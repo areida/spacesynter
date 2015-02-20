@@ -48,7 +48,7 @@ var ContainerStore = APIStoreFactory.createStore({
     onFetchAllSuccess : function(containers)
     {
         this.state.loaded = true;
-        this.state.containers.merge(containers);
+        this.state.containers = this.state.containers.merge(containers);
 
         this.emit('change');
     }
