@@ -1,5 +1,5 @@
 /* jshint globalstrict: true */
-/* global window, __ENVIRONMENT__, __SERVER__, io */
+/* global window, __ENVIRONMENT__ */
 'use strict';
 
 var React  = require('react');
@@ -12,18 +12,6 @@ var routes = require('./routes');
 var flux = new Flux();
 
 var state = window.document.getElementById('server-state');
-
-if (__SERVER__) {
-    var socket = io('http://' + config.api.hostname + ':' + config.api.port);
-
-    socket.on('connected', function () {
-        window.console.log('socket.io connected');
-    });
-
-    socket.on('container', function (data) {
-        window.console.log(data.message);
-    });
-}
 
 require('./ui/scss/app.scss');
 

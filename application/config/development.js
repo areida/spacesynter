@@ -22,7 +22,7 @@ module.exports = {
     },
     devServer : {
         hostname : 'localhost',
-        port     : 9090
+        port     : 9000
     },
     github : {
         hostname  : 'api.github.com',

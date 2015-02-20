@@ -25,6 +25,19 @@
         {% }%}
     </head>
     <body>
+        {% if (o.flux) { %}
+        <script type="text/javascript">
+            var socket = io('http://{%=o.host%}');
+
+            socket.on('connected', function () {
+                window.console.log('socket.io connected');
+            });
+
+            socket.on('container', function (data) {
+                window.console.log(data.message);
+            });
+        </script>
+        {% } %}
         {% if (o.html) { %}
         {%#o.html%}
         {% } %}

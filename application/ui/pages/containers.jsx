@@ -7,8 +7,8 @@ var FluxMixin       = require('fluxxor').FluxMixin(React);
 var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 var _               = require('underscore');
 
-var NewContainer = require('../components/container/new');
 var Container    = require('../components/container/existing');
+var NewContainer = require('../components/container/new');
 
 var ContainersPage = React.createClass({
     displayName : 'Container',
@@ -16,10 +16,10 @@ var ContainersPage = React.createClass({
     mixins : [FluxMixin, new StoreWatchMixin('ContainerStore')],
 
     statics : {
-        //fetchData : function(flux)
-        //{
-        //    return flux.actions.container.fetchAll();
-        //}
+        fetchData : function(flux)
+        {
+            return flux.actions.container.fetchAll();
+        }
     },
 
     getInitialState : function()
@@ -37,7 +37,8 @@ var ContainersPage = React.createClass({
     componentDidMount : function()
     {
         if (! this.getFlux().store('ContainerStore').isLoaded()) {
-            this.getFlux().actions.container.fetchAll();
+            ContainersPage.fetchData(this.getFlux());
+            //this.getFlux().actions.container.fetchAll();
         }
     },
 

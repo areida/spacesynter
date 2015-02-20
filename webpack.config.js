@@ -26,7 +26,7 @@ if (environment === 'development') {
     config.plugins.push(new WebpackError(process.platform));
 
     if (! process.env.SERVER) {
-        config.entry.unshift('webpack-dev-server/client?http://localhost:9090')
+        config.entry.unshift('webpack-dev-server/client?http://localhost:9000')
         config.entry.unshift('webpack/hot/dev-server')
         config.plugins.push(new Webpack.HotModuleReplacementPlugin());
         config.plugins.push(new HtmlWebpack({template : './templates/index.html'}));

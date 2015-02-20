@@ -5,9 +5,13 @@ var Reloader = require('nginx-reload');
 var Tmpl     = require('blueimp-tmpl').tmpl;
 
 var config = require('../application/config');
-var redisClient, reloader = new Reloader();
+var redisClient, reloader;
 
 redisClient = Redis.createClient(config.redis.containers);
+
+if (config.api.nginx) {
+    reloader = new Reloader();
+}
 
 Tmpl.load = function (name) {
     return Fs.readFileSync(process.cwd() + '/templates/' + name, 'utf8');
