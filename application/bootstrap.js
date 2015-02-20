@@ -13,15 +13,17 @@ var flux = new Flux();
 
 var state = window.document.getElementById('server-state');
 
-var socket = io('http://' + config.server.host + ':' + config.server.port);
+if (__SERVER__) {
+    var socket = io('http://' + config.server.hostname + ':' + config.server.port);
 
-socket.on('connected', function () {
-    window.console.log('socket.io connected');
-});
+    socket.on('connected', function () {
+        window.console.log('socket.io connected');
+    });
 
-socket.on('spacesynter', function (data) {
-    window.console.log(data.message);
-});
+    socket.on('container', function (data) {
+        window.console.log(data.message);
+    });
+}
 
 require('./ui/scss/app.scss');
 

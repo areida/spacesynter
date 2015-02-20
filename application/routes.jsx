@@ -9,7 +9,6 @@ var LoggedInLayout  = require('./ui/layouts/logged-in');
 var LoggedOutLayout = require('./ui/layouts/logged-out');
 var SiteLayout      = require('./ui/layouts/site');
 
-var GistsPage      = require('./ui/pages/gists');
 var InstancesPage  = require('./ui/pages/instances');
 var LoginPage      = require('./ui/pages/login');
 var NotFoundPage   = require('./ui/pages/404');

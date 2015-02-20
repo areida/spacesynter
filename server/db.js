@@ -18,7 +18,7 @@ dbServer.use(bodyParser.json());
 dbServer.delete('/db/instance/:id', function(req, res) {
     db.hget(req.params.id).then(function (instance) {
         if (instance) {
-            docker.kill(instance.id).then(
+            docker.kill(instance.id).then(function () {
                     db.hdel(req.params.id);
                     db.publish('container', 'removed');
                     res.end();
@@ -53,7 +53,7 @@ dbServer.get('/db/instance/:id', function(req, res) {
 
 dbServer.get('/db/instances', function(req, res) {
     db.keys('*').then(function (keys) {
-        if (keys.length) {
+        if (keys) {
             db.hgetall(keys).then(function (items) {
                 res.send(items);
                 res.end();
@@ -70,7 +70,7 @@ dbServer.post('/db/instance', function(req, res) {
         if (! exists) {
             docker.create(req.body.name).then(
                 function (response, options) {
-                    var data = {,
+                    var data = {
                         id   : response.Id,
                         name : req.body.name,
                         host : options.Hostname

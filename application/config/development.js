@@ -22,7 +22,7 @@ module.exports = {
         userAgent : 'areida/spacesynter'
     },
     redis : {
-        host     : 'localhost',
+        hostname : 'localhost',
         port     : 6379,
         database : 3
     },

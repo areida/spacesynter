@@ -10,8 +10,9 @@ var config = {
     entry   : ['./application/bootstrap.js'],
     plugins : [
         new Webpack.DefinePlugin({
-            __BACKEND__     : process.env.BACKEND,
-            __ENVIRONMENT__ : '\''+environment+'\''
+            __BACKEND__     : '\''+process.env.BACKEND+'\'',
+            __ENVIRONMENT__ : '\''+environment+'\'',
+            __SERVER__      : '\''+process.env.SERVER+'\''
         })
     ],
     reactLoaders : ['jsx?insertPragma=React.DOM&harmony'],
@@ -28,7 +29,7 @@ if (environment === 'development') {
         config.entry.unshift('webpack-dev-server/client?http://localhost:9090')
         config.entry.unshift('webpack/hot/dev-server')
         config.plugins.push(new Webpack.HotModuleReplacementPlugin());
-        config.plugins.push(new HtmlWebpack({template : './application/index.html'}));
+        config.plugins.push(new HtmlWebpack({template : './templates/index.html'}));
         config.reactLoaders.unshift('react-hot');
     }
 }

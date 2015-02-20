@@ -2,6 +2,7 @@ bower_components
 build
 cache
 node_modules
+npm-debug.log
 .DS_Store
 .vagrant
 *.zip

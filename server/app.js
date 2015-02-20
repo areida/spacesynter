@@ -18,10 +18,6 @@ var ghClient = new Github({
     scope          : 'gist'
 });
 
-Tmpl.load = function () {
-    return Fs.readFileSync(process.cwd() + '/application/index.html', 'utf8');
-};
-
 var app = new Express();
 
 app.get(/^([^.]+)$/, function (req, res, next) {
@@ -36,7 +32,7 @@ app.get(/^([^.]+)$/, function (req, res, next) {
             flux.fetchData(state).done(function () {
                 var Factory = React.createFactory(Handler);
 
-                res.send(Tmpl('page', {
+                res.send(Tmpl('index.html', {
                     flux : JSON.stringify(flux.toObject()),
                     host : config.server.hostname + ':' + config.server.port,
                     html : React.renderToString(new Factory({flux : flux})),

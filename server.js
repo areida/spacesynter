@@ -8,11 +8,13 @@ global.localStorage    = require('localStorage');
 global.navigator       = require('navigator');
 
 var Express      = require('express');
+var Fs           = require('fs');
 var Session      = require('express-session');
 var CookieParser = require('cookie-parser');
 var RedisStore   = require('connect-redis')(Session);
 var Redis        = require('then-redis');
 var Io           = require('socket.io');
+var Tmpl         = require('blueimp-tmpl').tmpl;
 
 var app    = require('./server/app');
 var auth   = require('./server/auth');
@@ -20,6 +22,10 @@ var db     = require('./server/db');
 var config = require('./application/config');
 
 var dbClient, io, httpServer, server;
+
+Tmpl.load = function (name) {
+    return Fs.readFileSync(process.cwd() + '/templates/' + name, 'utf8');
+};
 
 dbClient = Redis.createClient(config.redis);
 
@@ -38,7 +44,7 @@ server.use(new Session({
 }));
 
 server.use(Express.static(process.cwd() + '/build'));
-server.use(auth);
+//server.use(auth);
 server.use(db);
 server.use(app);
 
@@ -55,14 +61,15 @@ io.on('connection', function (socket) {
 dbClient.on('message', function (channel, message) {
     if (['created', 'killed', 'recreated'].indexOf(message) !== -1) {
         dbClient.keys('*').then(function (keys) {
+            console.log(keys);
             if (keys.length) {
-                db.hgetall(keys).then(function (items) {
-                    nginx.reload({containers : items}, function () {
+                db.hgetall(keys).then(function (containers) {
+                    nginx.reload(containers, function () {
                         io.emit(channel, {message : messsage});
                     });
                 });
             } else {
-                nginx.reload({containers : []}, function () {
+                nginx.reload(function () {
                     io.emit(channel, {message : messsage});
                 });
             }
