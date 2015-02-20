@@ -17,7 +17,8 @@ var ContainerStore = APIStoreFactory.createStore({
 
         this.bindActions(
             constants.CONTAINER_FETCH_ALL, 'onFetchAll',
-            constants.CONTAINER_FETCH_ALL_SUCCESS, 'onFetchAllSuccess'
+            constants.CONTAINER_FETCH_ALL_SUCCESS, 'onFetchAllSuccess',
+            constants.CONTAINER_CREATE_SUCCESS, 'onCreateSuccess'
         );
     },
 
@@ -36,6 +37,13 @@ var ContainerStore = APIStoreFactory.createStore({
     getAll : function()
     {
         return this.state.containers;
+    },
+
+    onCreateSuccess : function(container)
+    {
+        this.state.containers = this.state.containers.merge([container]);
+
+        this.emit('change');
     },
 
     onFetchAll : function()

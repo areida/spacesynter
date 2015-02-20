@@ -15,11 +15,13 @@ module.exports = React.createClass({
 
     render : function()
     {
-        console.log(this.props.container);
         return (
             <div className='container existing row'>
                 <div className='medium-2 columns'>
-                    <p>{this.props.container.name}</p>
+                    <p>{this.props.container.get('name')}</p>
+                </div>
+                <div className='medium-2 columns'>
+                    <p>{this.props.container.get('host')}</p>
                 </div>
                 <Button size='small'>
                     <a onDoubleClick={this.kill}>Kill</a>
