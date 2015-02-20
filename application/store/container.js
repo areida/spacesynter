@@ -25,7 +25,6 @@ var ContainerStore = APIStoreFactory.createStore({
 
     fromObject : function(object)
     {
-
         this.state = {
             containers : new Immutable.List(object.containers),
             loaded     : object.loaded,
