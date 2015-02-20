@@ -17,10 +17,11 @@ var RedisStore   = require('connect-redis')(Session);
 var Redis        = require('then-redis');
 var Tmpl         = require('blueimp-tmpl').tmpl;
 
-var auth       = require('./auth');
-var config     = require('../application/config');
-var Flux       = require('../application/flux');
-var routes     = require('../application/routes');
+var auth   = require('./auth');
+var config = require('../application/config');
+var Flux   = require('../application/flux');
+var github = require('./github');
+var routes = require('../application/routes');
 
 var app = new Express();
 
@@ -37,10 +38,10 @@ app.use(new Session({
 }));
 
 if (config.app.auth) {
-    app.use(auth.check);
+    app.use(auth);
 }
 
-app.use(auth.github);
+app.use(github);
 
 app.get(/^([^.]+)$/, function (req, res, next) {
     localStorage.setItem('token', req.session.ghToken ? JSON.stringify(req.session.ghToken) : null);

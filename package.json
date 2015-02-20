@@ -11,7 +11,7 @@
   },
   "scripts" : {
         "start"   : "rm -rf ./build && webpack && node webpack",
-        "server"  : "rm -rf ./build && SERVER=true webpack && SERVER=true node server",
+        "server"  : "rm -rf ./build && SERVER=true webpack && SERVER=true node server/app",
         "webpack" : "rm -rf ./build && webpack",
         "dist"    : "./dist.sh",
         "test"    : "cd __tests__ && rm -rf ./build && webpack && node webpack",

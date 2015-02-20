@@ -1,4 +1,5 @@
 var crypto    = require('crypto');
+var Express   = require('express');
 var HttpError = require('synapse-common/http/error');
 var Q         = require('q');
 var qs        = require('querystring');
