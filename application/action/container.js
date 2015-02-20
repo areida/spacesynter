@@ -24,7 +24,7 @@ module.exports = {
 
         this.dispatch(constants.CONTAINER_FETCH, name);
 
-        return containerClient.fetch(container).then(
+        return containerClient.fetch(name).then(
             function (response) {
                 flux.dispatch(constants.CONTAINER_FETCH_SUCCESS, response);
             }

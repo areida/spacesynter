@@ -6,13 +6,14 @@ var FluxMixin       = require('fluxxor').FluxMixin(React);
 var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 var _               = require('underscore');
 
-var Button      = require('../buttons/button');
-var SelectInput = require('../form/inputs/select');
-var TextInput   = require('../form/inputs/text');
+var Button = require('../buttons/button');
+var Select = require('../form/inputs/select');
+var Text   = require('../form/inputs/text');
+var Upload = require('../form/inputs/upload');
 
 module.exports = React.createClass({
 
-    displayName : 'NewContaienr',
+    displayName : 'NewContainer',
     mixins      : [FluxMixin, new StoreWatchMixin('ContainerStore')],
 
     getInitialState : function()
@@ -26,6 +27,11 @@ module.exports = React.createClass({
     getStateFromFlux : function()
     {
         return {};
+    },
+
+    onDrop: function (files)
+    {
+        console.log('Received files: ', files);
     },
 
     onFormChange : function(value, element)
@@ -48,7 +54,11 @@ module.exports = React.createClass({
 
     render : function()
     {
-        var buttonStyle, formStyle, inputStyle;
+        var buttonStyle, formStyle, inputStyle, uploadStyle;
+
+        uploadStyle = {
+            textAlign : 'center'
+        };
 
         return (
             <div className='container new row'>
@@ -58,7 +68,7 @@ module.exports = React.createClass({
                     style     = {formStyle}
                 >
                     <div className='medium-2 columns'>
-                        <TextInput
+                        <Text
                             id           = 'name'
                             initialValue = {this.state.name}
                             onChange     = {this.onFormChange}
@@ -68,13 +78,16 @@ module.exports = React.createClass({
                         />
                     </div>
                     <div className='medium-2 columns'>
-                        <SelectInput
+                        <Select
                             disabled     = {true}
                             id           = 'image'
                             initialValue = {this.state.image}
                             onChange     = {this.onFormChange}
                             options      = {[{text : 'Image', value : null}]}
                         />
+                    </div>
+                    <div className='medium-2 columns' style={uploadStyle}>
+                        <Upload onDrop={this.onDrop}>Add Build</Upload>
                     </div>
                     <Button
                         className = 'button'
