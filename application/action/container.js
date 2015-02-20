@@ -39,7 +39,7 @@ module.exports = {
 
         return containerClient.fetch(container.id).then(
             function (response) {
-                flux.dispatch(constants.CONTAINER_FETCH_ALL_SUCCESS, response);
+                flux.dispatch(constants.CONTAINER_FETCH_SUCCESS, response);
             }
         );
     },

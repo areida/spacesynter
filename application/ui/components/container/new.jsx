@@ -13,7 +13,7 @@ var TextInput   = require('../form/inputs/text');
 module.exports = React.createClass({
 
     displayName : 'NewContaienr',
-    mixins      : [FluxMixin, new StoreWatchMixin('ContaienrStore')],
+    mixins      : [FluxMixin, new StoreWatchMixin('ContainerStore')],
 
     getInitialState : function()
     {

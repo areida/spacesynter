@@ -1,3 +1,6 @@
+global.__BACKEND__     = process.env.BACKEND || '';
+global.__ENVIRONMENT__ = process.env.APP_ENV || 'development';
+
 var bodyParser   = require('body-parser');
 var CookieParser = require('cookie-parser');
 var Express      = require('express');
@@ -6,10 +9,11 @@ var Redis        = require('then-redis');
 var Session      = require('express-session');
 var RedisStore   = require('connect-redis')(Session);
 
-var config     = require('../application/config');
-var containers = require('../containers');
-var docker     = require('./docker');
-var nginx      = require('./nginx');
+var config         = require('../application/config');
+var containers     = require('./containers');
+var mockContainers = require('./mock-containers');
+var docker         = require('./docker');
+var nginx          = require('./nginx');
 
 var api, redisClient;
 
@@ -30,7 +34,11 @@ if (config.api.auth) {
     app.use(auth.check);
 }
 
-api.use(containers);
+if (config.api.docker) {
+    api.use(containers);
+} else {
+    app.use(mockContainers);
+}
 
 httpServer = api.listen(
     config.api.port,

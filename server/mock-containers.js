@@ -2,8 +2,6 @@ var Express = require('express');
 var Redis   = require('then-redis');
 
 var config = require('../application/config');
-var docker = require('./docker');
-var nginx  = require('./nginx');
 
 var containers, illegalContainerNames, redisClient;
 
@@ -14,17 +12,9 @@ redisClient  = Redis.createClient(config.redis.containers);
 containers.delete('/container/:id', function(req, res) {
     redisClient.hget(req.params.id).then(function (container) {
         if (container) {
-            docker.kill(container.id).then(function () {
-                    redisClient.hdel(req.params.id);
-                    redisClient.publish('container', 'removed');
-                    res.end();
-               },
-                function (error) {
-                    res.sendStatus(500);
-                    res.send(error);
-                    res.end();
-                }
-            );
+            redisClient.hdel(req.params.id);
+            redisClient.publish('container', 'removed');
+            res.end();
         } else {
             res.sendStatus(404);
         }
@@ -69,41 +59,22 @@ containers.post('/container', function(req, res) {
 
             res.end();
         } else {
-            docker.create(req.body.name).then(
-                function (response, options) {
-                    var data = {
-                        id   : response.Id,
-                        name : req.body.name,
-                        host : options.Hostname
-                    };
+            var id = guid();
+            var data = {
+                id    : id,
+                name  : req.body.name,
+                host  : id + '.' + config.app.hostname + ':' + config.app.port,
+                ports : {
+                    22 : 45123,
+                    80 : 42341
+                },
+                state : {}
+            };
 
-                    docker.inspect(data.id).then(
-                        function (response) {
-                            data.ports = {
-                                22 : _.findWhere(response.HostConfig.Ports, {PrivatePort : 22}).PublicPort,
-                                80 : _.findWhere(response.HostConfig.Ports, {PrivatePort : 80}).PublicPort
-                            };
-
-                            data.state = JSON.stringify(response.state);
-
-                            redisClient.hmset(data.id, data);
-                            redisClient.publish('container', 'created');
-                            res.send(data);
-                            res.end();
-                        },
-                        function (error) {
-                            res.sendStatus(500);
-                            res.send(error);
-                            res.end();
-                        }
-                    );
-               },
-                function (error) {
-                    res.sendStatus(500);
-                    res.send(error);
-                    res.end();
-                }
-            );
+            redisClient.hmset(data.id, data);
+            redisClient.publish('container', 'created');
+            res.send(data);
+            res.end();
         }
     });
 });

@@ -3,9 +3,11 @@
 
 module.exports = {
     api : {
-        auth      : false,
-        hostname  : 'api.spacesynter.com',
-        port      : 80
+        auth     : false,
+        docker   : true,
+        hostname : 'api.spacesynter.com',
+        nginx    : true,
+        port     : 80
     },
     server : {
         auth      : false,

@@ -24,13 +24,17 @@ module.exports = {
                             if (err) {
                                 reject();
                             } else {
-                                reloader.reload(function (err) {
-                                    if (err) {
-                                        reject();
-                                    } else {
-                                        resolve();
-                                    }
-                                });
+                                if (config.api.nginx) {
+                                    reloader.reload(function (err) {
+                                        if (err) {
+                                            reject();
+                                        } else {
+                                            resolve();
+                                        }
+                                    });
+                                } else {
+                                    resolve();
+                                }
                             }
                         });
                     });
