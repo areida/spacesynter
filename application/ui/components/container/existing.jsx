@@ -1,16 +1,19 @@
 /* jshint globalstrict: true */
 'use strict';
 
-var React = require('react');
+var React     = require('react');
+var FluxMixin = require('fluxxor').FluxMixin(React);
 
 var Button = require('../buttons/button');
 
 module.exports = React.createClass({
     displayName : 'ExistingContainer',
 
+    mixins : [FluxMixin],
+
     kill : function()
     {
-        this.getFlux().actions.container.kill(this.props.container);
+        this.getFlux().actions.container.kill(this.props.container.get('name'));
     },
 
     render : function()

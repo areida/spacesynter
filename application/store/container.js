@@ -18,7 +18,8 @@ var ContainerStore = APIStoreFactory.createStore({
         this.bindActions(
             constants.CONTAINER_FETCH_ALL, 'onFetchAll',
             constants.CONTAINER_FETCH_ALL_SUCCESS, 'onFetchAllSuccess',
-            constants.CONTAINER_CREATE_SUCCESS, 'onCreateSuccess'
+            constants.CONTAINER_CREATE_SUCCESS, 'onCreateSuccess',
+            constants.CONTAINER_KILL, 'onKill'
         );
     },
 
@@ -57,6 +58,15 @@ var ContainerStore = APIStoreFactory.createStore({
     {
         this.state.loaded = true;
         this.state.containers = this.state.containers.merge(containers);
+
+        this.emit('change');
+    },
+
+    onKill : function(name)
+    {
+        this.state.containers = this.state.containers.filterNot(function (container) {
+            return container.get('name') === name;
+        });
 
         this.emit('change');
     }

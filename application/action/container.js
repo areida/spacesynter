@@ -18,24 +18,11 @@ module.exports = {
         );
     },
 
-    destroy : function(container)
+    fetch : function(name)
     {
         var flux = this;
 
-        this.dispatch(constants.CONTAINER_DESTROY, container);
-
-        return containerClient.destroy(container).then(
-            function (response) {
-                flux.dispatch(constants.CONTAINER_DESTROY_SUCCESS, response);
-            }
-        );
-    },
-
-    fetch : function(container)
-    {
-        var flux = this;
-
-        this.dispatch(constants.CONTAINER_FETCH, container);
+        this.dispatch(constants.CONTAINER_FETCH, name);
 
         return containerClient.fetch(container).then(
             function (response) {
@@ -53,6 +40,19 @@ module.exports = {
         return containerClient.fetchAll().then(
             function (response) {
                 flux.dispatch(constants.CONTAINER_FETCH_ALL_SUCCESS, response);
+            }
+        );
+    },
+
+    kill : function(name)
+    {
+        var flux = this;
+
+        this.dispatch(constants.CONTAINER_KILL, name);
+
+        return containerClient.kill(name).then(
+            function (response) {
+                flux.dispatch(constants.CONTAINER_KILL_SUCCESS, response);
             }
         );
     }

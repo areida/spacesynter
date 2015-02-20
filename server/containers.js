@@ -16,11 +16,13 @@ containers.disable('etag');
 containers.delete('/container/:name', function(req, res) {
     redisClient.get(req.params.name).then(function (container) {
         if (container) {
-            docker.kill(container.name).then(function () {
-                    redisClient.hdel(req.params.name);
-                    redisClient.publish('container', 'killed');
-                    res.sendStatus(204);
-               },
+            docker.kill(container.name).then(
+                function () {
+                    redisClient.del(req.params.name).then(function () {
+                        redisClient.publish('container', 'removed');
+                        res.sendStatus(204);
+                    });
+                },
                 function (error) {
                     res.status(500);
                     res.send(error);

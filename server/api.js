@@ -36,8 +36,8 @@ api.use(function(req, res, next) {
         'Access-Control-Allow-Origin',
         process.env.HOSTNAME || ('http://' + config.app.hostname + ':' + config.app.port)
     );
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
+    res.header('Access-Control-Allow-Methods', 'DELETE, GET, HEAD, OPTIONS, POST, PUT');
     res.header('Content-Type', 'application/json');
     res.header('If-None-Match', '*');
     res.header('Last-Modified', (new Date()).toUTCString());
