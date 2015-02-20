@@ -48,9 +48,9 @@ module.exports = {
     {
         var flux = this;
 
-        this.dispatch(constants.INSTANCE_FETCH_ALL, name);
+        this.dispatch(constants.INSTANCE_FETCH_ALL);
 
-        return instanceClient.fetchAll(name).then(
+        return instanceClient.fetchAll().then(
             function (data) {
                 flux.dispatch(constants.INSTANCE_FETCH_ALL_SUCCESS, data);
             }

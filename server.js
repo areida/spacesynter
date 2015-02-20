@@ -42,7 +42,9 @@ server.use(auth);
 server.use(db);
 server.use(app);
 
-httpServer = server.listen(config.server.port);
+httpServer = server.listen(config.server.port, config.server.hostname, 10, function () {
+    console.log('Listening on ' + config.server.hostname + ':' + config.server.port);
+});
 
 io = new Io(httpServer);
 
@@ -69,5 +71,3 @@ dbClient.on('message', function (channel, message) {
 });
 
 dbClient.subscribe('container');
-
-console.log('Listening on ' + config.server.hostname + ':' + config.server.port);

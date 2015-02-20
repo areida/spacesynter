@@ -18,7 +18,7 @@ module.exports = {
         database : 1
     },
     server : {
-        hostname : 127.0.0.1,
+        hostname : '127.0.0.1',
         port     : 3000
     }
 };

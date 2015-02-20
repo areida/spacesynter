@@ -16,11 +16,11 @@ var state = window.document.getElementById('server-state');
 var socket = io('http://' + config.server.host + ':' + config.server.port);
 
 socket.on('connected', function () {
-    console.log('socket.io connected');
+    window.console.log('socket.io connected');
 });
 
 socket.on('spacesynter', function (data) {
-    console.log(data.message);
+    window.console.log(data.message);
 });
 
 require('./ui/scss/app.scss');
