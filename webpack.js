@@ -6,7 +6,7 @@ var request          = require('request');
 var WebpackDevServer = require('webpack-dev-server');
 var webpack          = require('webpack');
 var webpackConfig    = require('./webpack.config');
-var config           = require('./application/config');
+var config           = require('./server/config');
 
 var server = new WebpackDevServer(webpack(webpackConfig), {
     contentBase : __dirname + '/build',
