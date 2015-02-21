@@ -1,13 +1,13 @@
 {
   "author"      : "Synapse Studios",
-  "name"        : "frontend-template",
+  "name"        : "spacesynter",
   "version"     : "0.0.0",
-  "description" : "A quickstart frontend template that expects to be paired with a backend based off of synapsestudios/api-template",
+  "description" : "An app for quickly launching other apps",
   "license"     : "MIT",
   "private"     : true,
   "repository"  : {
     "type" : "git",
-    "url"  : "https://github.com/synapsestudios/frontend-template.git"
+    "url"  : "https://github.com/areida/spacesynter.git"
   },
   "scripts" : {
         "start"   : "rm -rf ./build && webpack && node webpack",

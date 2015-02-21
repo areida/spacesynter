@@ -9,11 +9,10 @@ var Redis        = require('then-redis');
 var Session      = require('express-session');
 var RedisStore   = require('connect-redis')(Session);
 
-var config         = require('../application/config');
-var containers     = require('./containers');
-var mockContainers = require('./mock-containers');
-var docker         = require('./docker');
-var nginx          = require('./nginx');
+var config     = require('../application/config');
+var containers = require('./containers');
+var docker     = require('./docker');
+var nginx      = require('./nginx');
 
 var api, redisClient;
 
@@ -48,11 +47,7 @@ if (config.api.auth) {
     api.use(auth.check);
 }
 
-if (config.api.docker) {
-    api.use(containers);
-} else {
-    api.use(mockContainers);
-}
+api.use(containers);
 
 httpServer = api.listen(
     config.api.port,

@@ -1,9 +1,15 @@
 var Express = require('express');
 var Redis   = require('then-redis');
+var _       = require('underscore');
 
 var config = require('../application/config');
-var docker = require('./docker');
 var nginx  = require('./nginx');
+
+if (config.api.docker) {
+    var docker = require('./docker');
+} else {
+    var docker = require('./mock-docker');
+}
 
 var containers, illegalContainerNames, redisClient;
 
@@ -16,46 +22,50 @@ containers.disable('etag');
 containers.delete('/container/:name', function(req, res) {
     redisClient.get(req.params.name).then(function (container) {
         if (container) {
-            docker.kill(container.name).then(
+            docker.kill(container.id).then(
                 function () {
                     redisClient.del(req.params.name).then(function () {
                         redisClient.publish('container', 'removed');
                         res.sendStatus(204);
-                    });
+                    })
+                    .done();
                 },
                 function (error) {
                     res.status(500);
                     res.send(error);
                 }
-            );
+            )
+            .done();
         } else {
             res.sendStatus(404);
         }
-    });
+    })
+    .done();
 });
 
 containers.get('/container/:name', function(req, res) {
-    redisClient.exists(req.params.name).then(function (exists) {
-        if (exists) {
-            redisClient.get(req.params.name).then(function (container) {
-                res.send(container);
-            });
+    redisClient.get(req.params.name).then(function (container) {
+        if (container) {
+            res.send(container);
         } else {
             res.sendStatus(404);
         }
-    });
+    })
+    .done();
 });
 
 containers.get('/containers', function(req, res) {
     redisClient.keys('*').then(function (keys) {
-        if (keys) {
+        if (keys.length) {
             redisClient.mget(keys).then(function (containers) {
-                res.json(containers.map(function (container) { return JSON.parse(container); }));
-            });
+                res.send(containers.map(function (container) { return JSON.parse(container); }));
+            })
+            .done();
         } else {
             res.json([]);
         }
-    });
+    })
+    .done();
 });
 
 containers.post('/container', function(req, res) {
@@ -65,11 +75,11 @@ containers.post('/container', function(req, res) {
             res.send({message : '`' + req.body.name + '` already exists'});
         } else {
             docker.create(req.body.name).then(
-                function (response, options) {
+                function (response) {
                     var data = {
                         id   : response.Id,
                         name : req.body.name,
-                        host : options.Hostname
+                        host : response.Hostname
                     };
 
                     docker.inspect(data.name).then(
@@ -83,21 +93,24 @@ containers.post('/container', function(req, res) {
 
                             redisClient.set(data.name, JSON.stringify(data));
                             redisClient.publish('container', 'created');
-                            res.json(data);
+                            res.send(data);
                         },
                         function (error) {
                             res.status(500);
                             res.send(error);
                         }
-                    );
+                    )
+                    .done();
                },
                 function (error) {
                     res.status(500);
                     res.send(error);
                 }
-            );
+            )
+            .done();
         }
-    });
+    })
+    .done();
 });
 
 containers.put('/container/:name', function(req, res) {
@@ -112,7 +125,8 @@ containers.put('/container/:name', function(req, res) {
         }
 
         res.end();
-    });*/
+    })
+    .done();*/
 });
 
 module.exports = containers;
