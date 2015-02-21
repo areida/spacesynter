@@ -11,7 +11,7 @@ module.exports = {
     {
         var options = {
             name       : name,
-            HostName   : name + '.' + config.app.hostname,
+            Hostname   : name + '.' + config.app.hostname,
             HostConfig : {
                 PublishAllPorts : true,
                 VolumesFrom     : [process.cwd(), '/srv/www']

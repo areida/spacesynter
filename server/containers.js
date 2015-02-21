@@ -77,9 +77,10 @@ containers.post('/container', function(req, res) {
             docker.create(req.body.name).then(
                 function (response) {
                     var data = {
-                        id   : response.Id,
-                        name : req.body.name,
-                        host : response.Hostname
+                        id    : response.Id,
+                        image : response.Image,
+                        name  : req.body.name,
+                        host  : response.Hostname
                     };
 
                     docker.inspect(data.name).then(
