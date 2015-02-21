@@ -38,8 +38,8 @@ $button-hover-text-shadow : -1px -1px 1px rgba($white, .5) !default;
 
 // button display and spacing vars
 $button-display       : inline-block !default;
-$button-margin-sides  : rem-calc(3)  !default;
-$button-margin-bottom : rem-calc(15) !default;
+$button-margin-sides  : rem-calc(0)  !default;
+$button-margin-bottom : rem-calc(0) !default;
 
 // set opacity of disabled buttons
 $button-disabled-opacity : .3 !default;

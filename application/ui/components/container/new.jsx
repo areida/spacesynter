@@ -89,14 +89,16 @@ module.exports = React.createClass({
                     <div className='medium-2 columns' style={uploadStyle}>
                         <Upload onDrop={this.onDrop}>Add Build</Upload>
                     </div>
-                    <Button
-                        className = 'button'
-                        type      = 'submit'
-                        size      = 'small'
-                        style     = {buttonStyle}
-                    >
-                        <a onClick={this.onSubmit}>Create</a>
-                    </Button>
+                    <div class='medium-2 columns'>
+                        <Button
+                            className = 'button'
+                            type      = 'submit'
+                            size      = 'small'
+                            style     = {buttonStyle}
+                        >
+                            <a onClick={this.onSubmit}>Create</a>
+                        </Button>
+                    </div>
                 </form>
             </div>
         );

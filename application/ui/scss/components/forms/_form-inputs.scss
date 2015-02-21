@@ -20,7 +20,6 @@ $form-placeholder-font-color : $gray-theme--400 !default;
 // input container element
 .input-wrap {
     position : relative;
-    margin   : 0 0 rem-calc(24);
     display  : block;
 
     // let validation container handle bottom margin
@@ -159,4 +158,8 @@ $form-placeholder-font-color : $gray-theme--400 !default;
         display: inline-block;
     }
 
+}
+
+.dropzone {
+    padding : rem-calc(9);
 }

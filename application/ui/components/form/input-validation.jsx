@@ -65,7 +65,7 @@ module.exports = React.createClass({
     {
         var inputValidationClasses = classSet({
             'validation'             : true,
-            'validation--visible'    : this.props.validation,
+            'validation--visible'    : this.props.validation && this.props.validation.status,
             'validation--error'      : this.props.validation && this.props.validation.status === 'error',
             'validation--warning'    : this.props.validation && this.props.validation.status === 'warning',
             'validation--success'    : this.props.validation && this.props.validation.status === 'success',
