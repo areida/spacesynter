@@ -103,7 +103,7 @@ module.exports = React.createClass({
                     <div className='medium-2 columns' style={uploadStyle}>
                         <Upload onDrop={this.onDrop}>Add Build</Upload>
                     </div>
-                    <div class='medium-2 columns'>
+                    <div className='medium-2 columns'>
                         <Button
                             className = 'button'
                             type      = 'submit'

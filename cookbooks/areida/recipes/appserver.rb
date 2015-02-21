@@ -6,3 +6,5 @@ packages.each do |pkg|
         version node[:versions][pkg]
     end
 end
+
+execute 'npm install -g docker.io';

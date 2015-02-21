@@ -12,6 +12,7 @@ zip -r `git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` \
     server.js \
     templates \
     -x node_modules/chai/**\* \
+    -x node_modules/docker.io/**\* \
     -x node_modules/es5-shim/**\* \
     -x node_modules/karma/**\* \
     -x node_modules/karma-chrome-launcher/**\* \
