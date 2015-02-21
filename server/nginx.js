@@ -4,7 +4,8 @@ var Redis    = require('then-redis');
 var Reloader = require('nginx-reload');
 var Tmpl     = require('blueimp-tmpl').tmpl;
 
-var config = require('../application/config');
+var config = require('./config');
+
 var redisClient, reloader;
 
 redisClient = Redis.createClient(config.redis.containers);

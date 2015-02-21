@@ -1,6 +1,6 @@
 var Q = require('q');
 
-var config = require('../application/config');
+var config = require('./config');
 
 module.exports = {
     create : function(name, image)

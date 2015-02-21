@@ -7,7 +7,8 @@ var request   = require('request');
 var url       = require('url');
 var _         = require('underscore');
 
-var config = require('../application/config');
+var appConfig = require('../application/config');
+var config    = require('./config');
 
 var options = {
     ghClientId     : process.env.GH_CLIENT_ID,
@@ -72,7 +73,7 @@ github.get('/gh-login/?', function (req, res) {
 
 github.get('/gh-callback/?', function (req, res) {
     if (! req.query.code || ! req.session.ghState) {
-        res.redirect(302, config.app.loginUri);
+        res.redirect(302, appConfig.loginUri);
         res.end();
     } else {
         ghClient.callback(req.query.code, req.session.state)
@@ -101,7 +102,7 @@ github.get('/logout/?', function (req, res) {
     if (req.headers['content-type'] === 'application/json') {
         res.end();
     } else {
-        res.redirect(302, config.app.loginUri);
+        res.redirect(302, appConfig.loginUri);
         res.end(); 
     }
 });

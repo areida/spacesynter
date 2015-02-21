@@ -37,7 +37,7 @@ module.exports = (
         </Route>
         <Route handler={LoggedOutLayout}>
             {getEnvironmentDependentRoutes()}
-            <Route path={config.app.loginUri} name='login' handler={LoginPage} />
+            <Route path={config.loginUri} name='login' handler={LoginPage} />
             <Route path='*' name='404' handler={NotFoundPage} />
         </Route>
     </Route>

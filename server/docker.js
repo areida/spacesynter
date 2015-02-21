@@ -1,10 +1,9 @@
-var Docker  = require('docker.io');
-var Q       = require('q');
-var config  = require('../application/config');
+var Docker = require('docker.io');
+var Q      = require('q');
 
-var docker;
+var config = require('./config');
 
-docker = new Docker({socketPath : '/var/run/docker.sock'});
+var docker = new Docker({socketPath : '/var/run/docker.sock'});
 
 module.exports = {
     create : function(name, image)

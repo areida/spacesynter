@@ -9,7 +9,7 @@ var Redis        = require('then-redis');
 var Session      = require('express-session');
 var RedisStore   = require('connect-redis')(Session);
 
-var config     = require('../application/config');
+var config     = require('./config');
 var containers = require('./containers');
 var docker     = require('./docker');
 var nginx      = require('./nginx');

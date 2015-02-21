@@ -2,7 +2,7 @@ var Express = require('express');
 var Redis   = require('then-redis');
 var _       = require('underscore');
 
-var config = require('../application/config');
+var config = require('./config');
 var nginx  = require('./nginx');
 
 if (config.api.docker) {

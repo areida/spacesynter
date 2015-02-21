@@ -46,7 +46,7 @@ var GithubClient = AuthGateway.extend({
         };
 
         if (typeof window === 'undefined') {
-            headers['User-Agent:'] = config.userAgent;
+            headers['User-Agent'] = config.userAgent;
         }
 
         token = store.get('token');

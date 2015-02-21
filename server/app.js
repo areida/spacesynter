@@ -18,7 +18,7 @@ var Redis        = require('then-redis');
 var Tmpl         = require('blueimp-tmpl').tmpl;
 
 var auth   = require('./auth');
-var config = require('../application/config');
+var config = require('./config');
 var Flux   = require('../application/flux');
 var github = require('./github');
 var routes = require('../application/routes');
