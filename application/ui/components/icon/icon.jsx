@@ -3,18 +3,18 @@
 
 var React = require('react');
 var cx    = require('react/lib/cx');
+var _     = require('underscore');
 
-var Navicon          = require('./icons/navicon');
-var Caret            = require('./icons/caret');
+var iconMap = {
+    caret   : require('./icons/caret'),
+    navicon : require('./icons/navicon')
+};
 
 module.exports = React.createClass({
     displayName : 'Icon',
 
     propTypes : {
-        icon : React.PropTypes.oneOf([
-            'caret',
-            'navicon'
-        ]),
+        icon : React.PropTypes.oneOf(_.keys(iconMap)),
         size : React.PropTypes.oneOf([
             'default',
             'x-large',
@@ -50,22 +50,11 @@ module.exports = React.createClass({
 
     render : function()
     {
-        var Component,
-            modifierClasses,
-            classes,
-            thisIcon      = this.props.icon,
-            thisIconClass = 'icon--' + thisIcon;
+        var classes,
+            Component;
 
-        switch (thisIcon) {
-            case 'caret':
-                Component = Caret;
-                break;
-            case 'navicon':
-                Component = Navicon;
-                break;
-        }
-
-        modifierClasses = cx({
+        classes = cx({
+            'icon'             : true,
             'icon--x-large'    : this.props.size   === 'x-large',
             'icon--large'      : this.props.size   === 'large',
             'icon--medium'     : this.props.size   === 'medium',
@@ -83,14 +72,10 @@ module.exports = React.createClass({
             'icon--tertiary'   : this.props.color  === 'tertiary'
         });
 
-        classes = [
-            'icon',
-            thisIconClass,
-            modifierClasses
-        ].join(' ');
+        Component = iconMap[this.props.icon];
 
         return (
-            <span className={classes}>
+            <span className={'icon--' + this.props.icon + ' ' + classes}>
                 <Component />
             </span>
         );
