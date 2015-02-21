@@ -1,4 +1,5 @@
 /* jshint globalstrict: true */
+/* global console */
 'use strict';
 
 var React           = require('react');
@@ -29,6 +30,21 @@ module.exports = React.createClass({
         return {};
     },
 
+    componentDidMount : function()
+    {
+        this.getFlux().store('ContainerStore').addListener('created', this.onCreated);
+    },
+
+    componentWillUnmount : function()
+    {
+        this.getFlux().store('ContainerStore').removeListener('created'. this.onCreated);
+    },
+
+    onCreated : function()
+    {
+        this.setState(this.getInitialState());
+    },
+
     onDrop: function (files)
     {
         console.log('Received files: ', files);
@@ -48,8 +64,6 @@ module.exports = React.createClass({
         event.preventDefault();
 
         this.getFlux().actions.container.create({name : this.state.name});
-
-        this.setState(this.getInitialState());
     },
 
     render : function()

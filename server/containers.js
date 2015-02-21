@@ -25,7 +25,7 @@ containers.delete('/container/:name', function(req, res) {
             docker.kill(container.id).then(
                 function () {
                     redisClient.del(req.params.name).then(function () {
-                        redisClient.publish('container', 'removed');
+                        redisClient.publish('container', 'killed');
                         res.sendStatus(204);
                     })
                     .done();

@@ -23,8 +23,9 @@ module.exports = {
             redisClient.keys('*').then(function (keys) {
                 if (keys.length) {
                     redisClient.mget(keys).then(function (containers) {
-                        var serverConf = Tmpl('servers.conf', {containers : containers});
-                        Fs.writeFile('/home/ubuntu/servers.conf', serverConf, function (err) {
+                        containers = containers.map(function (container) { return JSON.parse(container); });
+
+                        Fs.writeFile('/home/ubuntu/servers.conf', Tmpl('servers.conf', {containers : containers}), function (err) {
                             if (err) {
                                 reject();
                             } else {

@@ -5,15 +5,6 @@ var config = require('../application/config');
 module.exports = {
     create : function(name, image)
     {
-        var options = {
-            name       : name,
-            ,
-            HostConfig : {
-                PublishAllPorts : true,
-                VolumesFrom     : [process.cwd(), '/srv/www']
-            },
-        };
-
         return Q.fcall(function () {
             return {
                 Id       : Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 7),

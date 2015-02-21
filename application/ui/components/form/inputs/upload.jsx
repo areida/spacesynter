@@ -10,7 +10,7 @@ var Upload = React.createClass({
 
     propTypes : {
         onDrop : React.PropTypes.func.isRequired,
-        size   : React.PropTypes.number,
+        size   : React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.numeber]),
         style  : React.PropTypes.object
     },
 

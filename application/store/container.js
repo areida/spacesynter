@@ -41,9 +41,10 @@ var ContainerStore = APIStoreFactory.createStore({
 
     onCreateSuccess : function(container)
     {
-        this.state.containers = this.state.containers.merge([container]);
+        this.state.containers = this.state.containers.push(new Immutable.Map(container));
 
         this.emit('change');
+        this.emit('created');
     },
 
     onFetchAll : function()
