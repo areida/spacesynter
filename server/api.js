@@ -4,6 +4,7 @@ global.__ENVIRONMENT__ = process.env.APP_ENV || 'development';
 var bodyParser   = require('body-parser');
 var CookieParser = require('cookie-parser');
 var Express      = require('express');
+var Fs           = require('fs');
 var Io           = require('socket.io');
 var Redis        = require('then-redis');
 var Session      = require('express-session');
@@ -46,6 +47,24 @@ api.use(function(req, res, next) {
 if (config.api.auth) {
     api.use(auth.check);
 }
+
+api.use('/upload/:name', function(req, res, next) {
+    var data = new Buffer('');
+
+    req.on('data', function (chunk) {
+        data = Buffer.concat([data, chunk]);
+    });
+
+    req.on('end', function  () {
+        req.rawBody = data;
+        next();
+    });
+});
+
+api.post('/upload/:name', function (req, res) {
+    console.log(req);
+    res.sendStatus(204);
+});
 
 api.use(containers);
 

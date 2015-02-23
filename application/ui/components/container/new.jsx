@@ -1,5 +1,4 @@
 /* jshint globalstrict: true */
-/* global console */
 'use strict';
 
 var React           = require('react');
@@ -10,7 +9,6 @@ var _               = require('underscore');
 var Button = require('../buttons/button');
 var Select = require('../form/inputs/select');
 var Text   = require('../form/inputs/text');
-var Upload = require('../form/inputs/upload');
 
 module.exports = React.createClass({
 
@@ -45,11 +43,6 @@ module.exports = React.createClass({
         this.setState(this.getInitialState());
     },
 
-    onDrop: function (files)
-    {
-        console.log('Received files: ', files);
-    },
-
     onFormChange : function(value, element)
     {
         var state = this.state;
@@ -68,11 +61,7 @@ module.exports = React.createClass({
 
     render : function()
     {
-        var buttonStyle, formStyle, inputStyle, uploadStyle;
-
-        uploadStyle = {
-            textAlign : 'center'
-        };
+        var buttonStyle, formStyle, inputStyle;
 
         return (
             <div className='container new row'>
@@ -100,10 +89,7 @@ module.exports = React.createClass({
                             options      = {[{text : 'Image', value : null}]}
                         />
                     </div>
-                    <div className='medium-2 columns' style={uploadStyle}>
-                        <Upload onDrop={this.onDrop}>Add Build</Upload>
-                    </div>
-                    <div className='medium-2 columns'>
+                    <div className='medium-8 columns'>
                         <Button
                             className = 'button'
                             type      = 'submit'

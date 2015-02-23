@@ -10,6 +10,7 @@ var Upload = React.createClass({
 
     propTypes : {
         onDrop : React.PropTypes.func.isRequired,
+        percent: React.PropTypes.number,
         size   : React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.numeber]),
         style  : React.PropTypes.object
     },
@@ -17,7 +18,8 @@ var Upload = React.createClass({
     getDefaultProps : function()
     {
         return {
-            size : '100%'
+            percent : 0,
+            size    : '100%'
         };
     },
 
@@ -31,6 +33,9 @@ var Upload = React.createClass({
     onClick : function()
     {
         this.refs.fileInput.getDOMNode().click();
+        this.setState({
+            dragActive : true
+        });
     },
 
     onDragLeave : function()
@@ -53,7 +58,7 @@ var Upload = React.createClass({
     onDrop : function(event)
     {
         var files;
-
+console.log(event);
         event.preventDefault();
 
         this.setState({
@@ -73,7 +78,15 @@ var Upload = React.createClass({
 
     render : function()
     {
-        var classes, style;
+        var background, classes, style;
+
+        background = (
+            '-webkit-linear-gradient(' + 
+                'left, ' + 
+                'green ' + this.props.percent  + '%, ' + 
+                'white ' + this.props.percent  + '%' + 
+            ')'
+        );
 
         classes = cx({
             active   : this.state.dragActive,
@@ -81,7 +94,8 @@ var Upload = React.createClass({
         });
 
         style = {
-            borderStyle : this.state.dragActive  ? 'solid' : 'dashed',
+            background  : background,
+            borderStyle : (this.state.dragActive || this.props.percent)  ? 'solid' : 'dashed',
             borderWidth : 5,
             height      : this.props.size,
             width       : this.props.size
