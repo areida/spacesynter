@@ -26,7 +26,7 @@ module.exports = React.createClass({
         var component = this;
 
         if (typeof FileReader !== 'undefined') {
-            var reader = new FileReader();  
+            var reader = new FileReader();
             var xhr    = new XMLHttpRequest();
 
             xhr.upload.addEventListener('progress', function (event) {
@@ -38,13 +38,19 @@ module.exports = React.createClass({
             }, false);
 
             xhr.upload.addEventListener('load', function (event) {
-                component.setState({uploadPercent : 100});
+                component.setState({
+                    dragActive    : false,
+                    uploadPercent : 0
+                });
             }, false);
-            
-            xhr.open('POST', 'http://' + config.api.hostname + ':' + config.api.port + '/upload/' + this.props.container.get('name'));
-            
+
+            xhr.open(
+                'POST',
+                'http://' + config.api.hostname + ':' + config.api.port + '/containers/' + this.props.container.get('name') + '/build?name=' + files[0].name
+            );
+
             xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
-            
+
             reader.onload = function(event) {
                 if (! xhr.sendAsBinary) {
                     xhr.sendAsBinary = function(dataString) {
@@ -54,7 +60,7 @@ module.exports = React.createClass({
                             .call(dataString, function byteValue(x) {
                                 return x.charCodeAt(0) & 0xff;
                             });
-                        
+
                         this.send(new Uint8Array(ords));
                     };
                 }
@@ -87,7 +93,7 @@ module.exports = React.createClass({
                 </div>
                 <div className='medium-6 columns'>
                     <Button size='small'>
-                        <a onDoubleClick={this.onKill}>Kill</a>
+                        <a onDoubleClick={this.onKill} title='Double Click'>Kill</a>
                     </Button>
                 </div>
             </div>

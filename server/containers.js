@@ -1,4 +1,5 @@
 var Express = require('express');
+var Fs      = require('fs');
 var Redis   = require('then-redis');
 var _       = require('underscore');
 
@@ -13,11 +14,26 @@ if (config.api.docker) {
 
 var containers, illegalContainerNames, redisClient;
 
-containers   = new Express();
-illegalNames = ['api'];
-redisClient  = Redis.createClient(config.redis.containers);
+containers    = new Express();
+illegalNames  = ['api'];
+redisClient2  = Redis.createClient(config.redis.builds);
+redisClient   = Redis.createClient(config.redis.containers);
 
 containers.disable('etag');
+
+// Capture any uploaded file in a buffer
+containers.use(function(req, res, next) {
+    var data = new Buffer('');
+
+    req.on('data', function (chunk) {
+        data = Buffer.concat([data, chunk]);
+    });
+
+    req.on('end', function  () {
+        req.rawBody = data;
+        next();
+    });
+});
 
 containers.delete('/container/:name', function(req, res) {
     redisClient.get(req.params.name).then(function (container) {
@@ -72,7 +88,7 @@ containers.post('/container', function(req, res) {
     redisClient.exists(req.body.name).then(function (exists) {
         if (exists || illegalNames.indexOf(req.body.name) !== -1) {
             res.status(422);
-            res.send({message : '`' + req.body.name + '` already exists'});
+            res.send({message : 'Container `' + req.body.name + '` already exists'});
         } else {
             docker.create(req.body.name).then(
                 function (response) {
@@ -112,6 +128,41 @@ containers.post('/container', function(req, res) {
         }
     })
     .done();
+});
+
+containers.post('/container/:name/build', function (req, res) {
+    redisClient.get(req.params.name).then(
+        function (container) {
+            var filepath, writeStream;
+
+            if (container) {
+                container = JSON.parse(container);
+
+                redisClient2.exists(conainer.name + '--' + req.query.name).then(
+                    function (exists) {
+                        if (! exists) {
+                            writeStream = Fs.createWriteStream('containers/' + container.name + '/' + req.query.name);
+
+                            writeStream.write(req.rawBody);
+                            writeStream.end();
+
+                            redisClient.
+
+                            res.sendStatus(204);
+                        } else {
+                            res.status(422);
+                            res.send({message : 'Build `' + req.query.name + '` already exists'});
+                        }
+                    },
+                    function () {
+                        res.sendStatus(500);
+                    }
+                );
+            } else {
+                res.sendStatus(404);
+            }
+        }
+    );
 });
 
 containers.put('/container/:name', function(req, res) {

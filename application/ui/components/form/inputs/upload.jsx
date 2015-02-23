@@ -58,7 +58,7 @@ var Upload = React.createClass({
     onDrop : function(event)
     {
         var files;
-console.log(event);
+
         event.preventDefault();
 
         this.setState({
@@ -81,10 +81,10 @@ console.log(event);
         var background, classes, style;
 
         background = (
-            '-webkit-linear-gradient(' + 
-                'left, ' + 
-                'green ' + this.props.percent  + '%, ' + 
-                'white ' + this.props.percent  + '%' + 
+            '-webkit-linear-gradient(' +
+                'left, ' +
+                'green ' + this.props.percent  + '%, ' +
+                'white ' + this.props.percent  + '%' +
             ')'
         );
 

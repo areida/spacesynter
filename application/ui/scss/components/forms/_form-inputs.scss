@@ -161,7 +161,7 @@ $form-placeholder-font-color : $gray-theme--400 !default;
 }
 
 .dropzone {
-    padding : rem-calc(9);
-
-    cursor : pointer;
+    cursor     : pointer;
+    padding    : rem-calc(9);
+    text-align : center;
 }
