@@ -26,13 +26,15 @@ Flux.prototype.fetchData = function(state)
     flux   = this;
     params = _.extend({}, state.query, state.params);
 
-    return Q.all(state.routes
-        .filter(function (route) {
-            return route.handler.fetchData;
-        })
-        .reduce(function (promises, route) {
-            return promises.push(route.handler.fetchData(flux, params));
-        }, []));
+    return Q.all(
+        state.routes
+            .filter(function (route) {
+                return route.handler.fetchData;
+            })
+            .reduce(function (promises, route) {
+                return promises.push(route.handler.fetchData(flux, params);
+            }), [])
+    );
 };
 
 Flux.prototype.fromObject = function(object)
