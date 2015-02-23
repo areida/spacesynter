@@ -133,22 +133,27 @@ containers.post('/container', function(req, res) {
 containers.post('/container/:name/build', function (req, res) {
     redisClient.get(req.params.name).then(
         function (container) {
-            var filepath, writeStream;
+            var buildName, filepath, writeStream;
 
             if (container) {
                 container = JSON.parse(container);
+                buildName = conainer.name + '--' + req.query.name;
 
-                redisClient2.exists(conainer.name + '--' + req.query.name).then(
+                redisClient2.exists(buildName).then(
                     function (exists) {
                         if (! exists) {
-                            writeStream = Fs.createWriteStream('containers/' + container.name + '/' + req.query.name);
 
-                            writeStream.write(req.rawBody);
-                            writeStream.end();
-
-                            redisClient.
-
-                            res.sendStatus(204);
+                            Fs.writeFile(
+                                'containers/' + container.name + '/' + req.query.name,
+                                req.rawBody,
+                                function () {
+                                    redisClient2.set(buildName, JSON.stringify({
+                                        container : container.name,
+                                        filename  : req.query.name
+                                    }));
+                                    res.sendStatus(204);
+                                }
+                            );
                         } else {
                             res.status(422);
                             res.send({message : 'Build `' + req.query.name + '` already exists'});
