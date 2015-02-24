@@ -15,7 +15,7 @@ var config = {
             __SERVER__      : '\''+process.env.SERVER+'\''
         })
     ],
-    reactLoaders : ['jsx?insertPragma=React.DOM&harmony'],
+    reactLoaders : ['js?insertPragma=React.DOM&harmony'],
     sassLoader   : {
         test   : /\.scss$/,
         loader : 'style-loader!css-loader!sass-loader?outputStyle=nested&includePaths[]=' + npmDir
@@ -57,11 +57,6 @@ module.exports = {
         preLoaders : [
             {
                 test    : /\.js?/,
-                loader  : 'jshint-loader',
-                exclude : npmDir
-            },
-            {
-                test    : /\.js?/,
                 loader  : 'jsxhint-loader',
                 exclude : npmDir
             }
@@ -73,7 +68,7 @@ module.exports = {
                 query  : {name : '[path][name].[ext]'}
             },
             {
-                test    : /\.(js|jsx)$/,
+                test    : /\.js$/,
                 loaders : config.reactLoaders,
                 exclude : npmDir
             },

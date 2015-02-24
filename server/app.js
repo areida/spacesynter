@@ -1,6 +1,5 @@
 require('node-jsx').install({
-    extension : '.jsx',
-    harmony   : true
+    harmony : true
 });
 
 global.__BACKEND__     = process.env.BACKEND || '';
