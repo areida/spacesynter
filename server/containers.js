@@ -18,7 +18,7 @@ containers = new Express();
 
 containers.disable('etag');
 
-containers.delete('/container/:name', function(req, res) {
+containers.delete('/container/:name', function (req, res) {
     Container.remove({name : req.params.name}).exec()
         .then(
             function (containers) {
@@ -28,7 +28,7 @@ containers.delete('/container/:name', function(req, res) {
         );
 });
 
-containers.get('/container/:name', function(req, res) {
+containers.get('/container/:name', function (req, res) {
     Container.find({name : req.params.name}).exec()
         .then(
             function (containers) {
@@ -41,7 +41,7 @@ containers.get('/container/:name', function(req, res) {
         );
 });
 
-containers.get('/containers', function(req, res) {
+containers.get('/containers', function (req, res) {
     Container.find({}).exec()
         .then(
             function (containers) {
@@ -50,7 +50,7 @@ containers.get('/containers', function(req, res) {
         );
 });
 
-containers.post('/container', function(req, res) {
+containers.post('/container', function (req, res) {
     Container.find({name : req.body.name}).exec()
         .then(
             function (containers) {
@@ -61,10 +61,11 @@ containers.post('/container', function(req, res) {
                     docker.create(req.body.name).then(
                         function (response) {
                             var data = {
-                                id    : response.Id,
-                                image : response.Image,
-                                name  : req.body.name,
-                                host  : response.Hostname
+                                builds : [],
+                                host   : response.Hostname,
+                                id     : response.Id,
+                                image  : response.Image,
+                                name   : req.body.name
                             };
 
                             docker.inspect(data.name).then(
@@ -129,60 +130,38 @@ containers.use('/container/:name/build', function (req, res, next) {
 });
 
 containers.post('/container/:name/build', function (req, res) {
-    req.db.get(req.params.name).then(
-        function (container) {
-            var buildName;
+    Container.find({name : req.params.name}).exec()
+        .then(
+            function (containers) {
+                if (containers.length) {
+                    if (! _.findWhere(containers[0].builds, {name : req.query.name})) {
+                        var path = 'containers/' + containers[0].name + '/builds/' + req.query.name;
 
-            if (container) {
-                container = JSON.parse(container);
-                buildName = container.name + '--' + req.query.name;
+                        Fs.writeFile(
+                            path,
+                            req.rawBody,
+                            function (err) {
+                                if (err) throw err;
 
-                buildClient.exists(buildName).then(
-                    function (exists) {
-                        if (! exists) {
-
-                            Fs.writeFile(
-                                'containers/' + container.name + '/builds/' + req.query.name,
-                                req.rawBody,
-                                function (err) {
-                                    if (err) throw err;
-                                    buildClient.set(buildName, JSON.stringify({
-                                        container : container.name,
-                                        filename  : req.query.name
-                                    }));
+                                containers[0].builds.push({name : req.query.name, path : path});
+                                containers[0].save(function () {
                                     res.sendStatus(204);
-                                }
-                            );
-                        } else {
-                            res.status(422);
-                            res.send({message : 'Build `' + req.query.name + '` already exists'});
-                        }
-                    },
-                    function () {
-                        res.sendStatus(500);
+                                });
+                            }
+                        );
+                    } else {
+                        res.status(422);
+                        res.send({message : 'Build `' + req.query.name + '` already exists'});
                     }
-                );
-            } else {
-                res.sendStatus(404);
+                } else {
+                    res.sendStatus(404);
+                }
             }
-        }
-    );
+        );
 });
 
-containers.put('/container/:name', function(req, res) {
+containers.put('/container/:name', function (req, res) {
     res.sendStatus(501);
-    /*req.db.exists(req.params.name).then(function (exists) {
-        if (exists) {
-            req.db.set(req.params.name, req.body);
-            req.db.publish('container', 'updated');
-            res.send(req.body);
-        } else {
-            res.sendStatus(404);
-        }
-
-        res.end();
-    })
-    .done();*/
 });
 
 module.exports = containers;
