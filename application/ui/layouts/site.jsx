@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 var React        = require('react');
@@ -11,7 +11,8 @@ module.exports = React.createClass({
 
     mixins : [FluxMixin],
 
-    render : function() {
+    render()
+    {
         return (
             <div className='l--app-wrapper'>
                 <RouteHandler />

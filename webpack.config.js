@@ -61,7 +61,7 @@ module.exports = {
                 exclude : npmDir
             },
             {
-                test    : /\.jsx?/,
+                test    : /\.js?/,
                 loader  : 'jsxhint-loader',
                 exclude : npmDir
             }
@@ -73,7 +73,7 @@ module.exports = {
                 query  : {name : '[path][name].[ext]'}
             },
             {
-                test    : /\.jsx$/,
+                test    : /\.(js|jsx)$/,
                 loaders : config.reactLoaders,
                 exclude : npmDir
             },

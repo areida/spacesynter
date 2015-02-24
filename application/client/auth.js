@@ -1,16 +1,16 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 var AuthGateway = require('synapse-common/http/auth-gateway');
 var store       = require('store');
 
-var config      = require('../config');
+var config = require('../config');
 
 var AuthClient = AuthGateway.extend({
 
     config : config.api,
 
-    logout : function()
+    logout()
     {
         return this.apiRequest('GET', '/logout');
     }

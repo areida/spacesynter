@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 var Immutable = require('immutable');
@@ -7,7 +7,7 @@ var constants       = require('../constants');
 var APIStoreFactory = require('./api-store-factory');
 
 var ContainerStore = APIStoreFactory.createStore({
-    initialize : function()
+    initialize()
     {
         this.state = {
             containers : new Immutable.List(),
@@ -23,7 +23,7 @@ var ContainerStore = APIStoreFactory.createStore({
         );
     },
 
-    fromObject : function(object)
+    fromObject(object)
     {
         this.state = {
             containers : new Immutable.List(object.containers),
@@ -34,12 +34,12 @@ var ContainerStore = APIStoreFactory.createStore({
         return this;
     },
 
-    getAll : function()
+    getAll()
     {
         return this.state.containers;
     },
 
-    onCreateSuccess : function(container)
+    onCreateSuccess(container)
     {
         this.state.containers = this.state.containers.push(new Immutable.Map(container));
 
@@ -47,14 +47,14 @@ var ContainerStore = APIStoreFactory.createStore({
         this.emit('created');
     },
 
-    onFetchAll : function()
+    onFetchAll()
     {
         this.state.loading = true;
 
         this.emit('change');
     },
 
-    onFetchAllSuccess : function(containers)
+    onFetchAllSuccess(containers)
     {
         this.state.loaded = true;
         this.state.containers = this.state.containers.merge(containers);
@@ -62,11 +62,9 @@ var ContainerStore = APIStoreFactory.createStore({
         this.emit('change');
     },
 
-    onKill : function(name)
+    onKill(name)
     {
-        this.state.containers = this.state.containers.filterNot(function (container) {
-            return container.get('name') === name;
-        });
+        this.state.containers = this.state.containers.filterNot(container => container.get('name') === name);
 
         this.emit('change');
     }

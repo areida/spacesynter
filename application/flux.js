@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 var Fluxxor = require('fluxxor');
@@ -7,56 +7,48 @@ var _       = require('underscore');
 var stores  = require('./stores');
 var actions = require('./actions');
 
-var Flux = function() {
-    var Stores = {};
+class Flux extends Fluxxor.Flux {
+    constructor()
+    {
+        var Stores = {};
 
-    _.each(stores, function(Store, name) {
-        Stores[name] = new Store();
-    });
+        _.each(stores, (Store, name) => Stores[name] = new Store());
 
-    Fluxxor.Flux.call(this, Stores, actions);
-};
+        super(Stores, actions);
+    }
 
-Flux.prototype = Object.create(Fluxxor.Flux.prototype);
+    fetchData(state)
+    {
+        var flux, params;
 
-Flux.prototype.fetchData = function(state)
-{
-    var flux, params;
+        flux   = this;
+        params = _.extend({}, state.query, state.params);
 
-    flux   = this;
-    params = _.extend({}, state.query, state.params);
+        return Q.all(
+            state.routes
+                .filter(route => route.handler.fetchData)
+                .reduce(
+                    (promises, route) => promises.push(route.handler.fetchData(flux, params)),
+                    []
+                )
+        );
+    }
 
-    return Q.all(
-        state.routes
-            .filter(function (route) {
-                return route.handler.fetchData;
-            })
-            .reduce(function (promises, route) {
-                return promises.push(route.handler.fetchData(flux, params);
-            }), [])
-    );
-};
+    fromObject(object)
+    {
+        _.each(object, (state, name) => this.stores[name].fromObject(state), this);
 
-Flux.prototype.fromObject = function(object)
-{
-    var stores = this.stores;
+        return this;
+    }
 
-    _.each(object, function (state, name) {
-        stores[name].fromObject(state);
-    });
+    toObject()
+    {
+        var data = {};
 
-    return this;
-};
+        _.each(this.stores, (store, name) => data[name] = store.toObject());
 
-Flux.prototype.toObject = function()
-{
-    var data = {};
-
-    _.each(this.stores, function (store, name) {
-        data[name] = store.toObject();
-    });
-
-    return data;
-};
+        return data;
+    }
+}
 
 module.exports = Flux;

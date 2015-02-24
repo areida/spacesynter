@@ -1,10 +1,10 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 var AuthGateway = require('synapse-common/http/auth-gateway');
 var store       = require('store');
 
-var config      = require('../config');
+var config = require('../config');
 
 var GithubClient = AuthGateway.extend({
 
@@ -12,12 +12,12 @@ var GithubClient = AuthGateway.extend({
 
     state : null,
 
-    getRateLimit : function()
+    getRateLimit()
     {
         return this.apiRequest('GET', '/rate_limit');
     },
 
-    getUsersGists : function(username)
+    getUsersGists(username)
     {
         if (username) {
             return this.apiRequest('GET', '/users/' + username + '/gists');
@@ -26,7 +26,7 @@ var GithubClient = AuthGateway.extend({
         }
     },
 
-    getRequestOptions : function(method, path, data)
+    getRequestOptions(method, path, data)
     {
         var config, headers, queryString, token;
 

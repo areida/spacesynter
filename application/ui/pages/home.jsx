@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 var React           = require('react');
@@ -14,26 +14,26 @@ module.exports = React.createClass({
 
     mixins : [FluxMixin, Navigation, new StoreWatchMixin('TokenStore')],
 
-    getInitialState : function()
+    getInitialState()
     {
         return {
             username : ''
         };
     },
 
-    getStateFromFlux : function()
+    getStateFromFlux()
     {
         return {
             loggedIn : this.getFlux().store('TokenStore').isLoggedIn()
         };
     },
 
-    onChange : function(value)
+    onChange(value)
     {
         this.setState({username : value});
     },
 
-    onLogout : function(event)
+    onLogout(event)
     {
         event.preventDefault();
         event.stopPropagation();
@@ -45,7 +45,7 @@ module.exports = React.createClass({
         }
     },
 
-    onSubmit : function(event)
+    onSubmit(event)
     {
         event.preventDefault();
         event.stopPropagation();
@@ -57,7 +57,8 @@ module.exports = React.createClass({
         }
     },
 
-    render : function() {
+    render()
+    {
         return (
             <form method='get' action='/gists' onSubmit={this.onSubmit}>
                 <h1 className='h1'>Github Gists</h1>

@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 var React = require('react');
@@ -7,7 +7,8 @@ module.exports = React.createClass({
 
     displayName : '404',
 
-    render : function() {
+    render()
+    {
         var style1,
             style2;
 

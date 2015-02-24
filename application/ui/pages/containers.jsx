@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 /* global window */
 'use strict';
 
@@ -16,37 +16,37 @@ var ContainersPage = React.createClass({
     mixins : [FluxMixin, new StoreWatchMixin('ContainerStore')],
 
     statics : {
-        fetchData : function(flux)
+        fetchData(flux)
         {
             return flux.actions.container.fetchAll();
         }
     },
 
-    getInitialState : function()
+    getInitialState()
     {
         return {};
     },
 
-    getStateFromFlux : function()
+    getStateFromFlux()
     {
         return {
            containers : this.getFlux().store('ContainerStore').getAll()
         };
     },
 
-    componentDidMount : function()
+    componentDidMount()
     {
         if (! this.getFlux().store('ContainerStore').isLoaded()) {
             ContainersPage.fetchData(this.getFlux()).done();
         }
     },
 
-    renderContainer : function(container, index)
+    renderContainer(container, index)
     {
         return <Container container={container} key={index} />;
     },
 
-    render : function()
+    render()
     {
         return (
             <div>

@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 /* global console, FileReader, Uint8Array, XMLHttpRequest */
 'use strict';
 
@@ -14,14 +14,14 @@ module.exports = React.createClass({
 
     mixins : [FluxMixin],
 
-    getInitialState : function()
+    getInitialState()
     {
         return {
             percent : 0
         };
     },
 
-    onDrop: function (files, progress)
+    onDrop(files, progress)
     {
         var component = this;
 
@@ -73,12 +73,12 @@ module.exports = React.createClass({
         }
     },
 
-    onKill : function()
+    onKill()
     {
         this.getFlux().actions.container.kill(this.props.container.get('name'));
     },
 
-    render : function()
+    render()
     {
         return (
             <div className='container existing row'>

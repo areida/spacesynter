@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 var React           = require('react');
@@ -13,31 +13,32 @@ module.exports = React.createClass({
 
     mixins : [FluxMixin, Navigation, new StoreWatchMixin('TokenStore')],
 
-    getStateFromFlux : function()
+    getStateFromFlux()
     {
         return {
             loggedIn : this.getFlux().store('TokenStore').isLoggedIn()
         };
     },
 
-    componentDidMount : function()
+    componentDidMount()
     {
         this.authenticate();
     },
 
-    componentDidUpdate : function()
+    componentDidUpdate()
     {
         this.authenticate();
     },
 
-    authenticate : function()
+    authenticate()
     {
         if (! this.state.loggedIn) {
             //this.transitionTo('login');
         }
     },
 
-    render : function() {
+    render()
+    {
         return (
             <div className='l--app-wrapper'>
                 <RouteHandler />

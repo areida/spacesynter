@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 var React           = require('react');
@@ -15,7 +15,7 @@ module.exports = React.createClass({
     displayName : 'NewContainer',
     mixins      : [FluxMixin, new StoreWatchMixin('ContainerStore')],
 
-    getInitialState : function()
+    getInitialState()
     {
         return {
             image : '',
@@ -23,27 +23,27 @@ module.exports = React.createClass({
         };
     },
 
-    getStateFromFlux : function()
+    getStateFromFlux()
     {
         return {};
     },
 
-    componentDidMount : function()
+    componentDidMount()
     {
         this.getFlux().store('ContainerStore').addListener('created', this.onCreated);
     },
 
-    componentWillUnmount : function()
+    componentWillUnmount()
     {
         this.getFlux().store('ContainerStore').removeListener('created'. this.onCreated);
     },
 
-    onCreated : function()
+    onCreated()
     {
         this.setState(this.getInitialState());
     },
 
-    onFormChange : function(value, element)
+    onFormChange(value, element)
     {
         var state = this.state;
 
@@ -52,14 +52,14 @@ module.exports = React.createClass({
         this.setState(state);
     },
 
-    onSubmit : function(event)
+    onSubmit(event)
     {
         event.preventDefault();
 
         this.getFlux().actions.container.create({name : this.state.name});
     },
 
-    render : function()
+    render()
     {
         var buttonStyle, formStyle, inputStyle;
 

@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 /* global window, __ENVIRONMENT__ */
 'use strict';
 
@@ -28,6 +28,6 @@ if (state) {
     state.remove();
 }
 
-Router.run(routes, Router.HistoryLocation, function (Handler, state) {
+Router.run(routes, Router.HistoryLocation, (Handler, state) => {
     React.render(React.createElement(Handler, {flux : flux}), window.document.body);
 });

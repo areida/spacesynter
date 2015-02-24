@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 var AuthGateway = require('synapse-common/http/auth-gateway');
@@ -9,22 +9,22 @@ var AuthClient = AuthGateway.extend({
 
     config : config.api,
 
-    create : function(container)
+    create(container)
     {
         return this.apiRequest('POST', '/container/', {name : container.name});
     },
 
-    fetch : function(name)
+    fetch(name)
     {
         return this.apiRequest('GET', '/container/' + name);
     },
 
-    fetchAll : function()
+    fetchAll()
     {
         return this.apiRequest('GET', '/containers');
     },
 
-    kill : function(name)
+    kill(name)
     {
         return this.apiRequest('DELETE', '/container/' + name);
     }

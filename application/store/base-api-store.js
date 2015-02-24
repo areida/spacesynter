@@ -1,36 +1,37 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true, esnext: true */
 'use strict';
 
-var BaseAPIStore = function () {};
+class BaseAPIStore {
+    isLoading()
+    {
+        return this.state.loading;
+    }
 
-BaseAPIStore.prototype.isLoading = function()
-{
-    return this.state.loading;
-};
+    isLoaded()
+    {
+        return this.state.loaded;
+    }
 
-BaseAPIStore.prototype.isLoaded = function()
-{
-    return this.state.loaded;
-};
+    isSaving()
+    {
+        return this.state.saving;
+    }
 
-BaseAPIStore.prototype.isSaving = function()
-{
-    return this.state.saving;
-};
+    isSaved()
+    {
+        return this.state.saved;
+    }
 
-BaseAPIStore.prototype.isSaved = function()
-{
-    return this.state.saved;
-};
+    fromObject(object)
+    {
+        this.state = object;
+    }
 
-BaseAPIStore.prototype.fromObject = function(object)
-{
-    this.state = object;
-};
+    toObject()
+    {
+        return this.state;
+    }
 
-BaseAPIStore.prototype.toObject = function()
-{
-    return this.state;
-};
+}
 
 module.exports = BaseAPIStore;

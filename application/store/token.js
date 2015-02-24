@@ -1,4 +1,4 @@
-/* jshint globalstrict: true */
+/* jshint globalstrict: true , esnext: true*/
 'use strict';
 
 var constants       = require('../constants');
@@ -7,7 +7,7 @@ var store           = require('store');
 
 var TokenStore = APIStoreFactory.createStore({
 
-    initialize : function()
+    initialize()
     {
         this.state = {
            error    : false,
@@ -21,7 +21,7 @@ var TokenStore = APIStoreFactory.createStore({
         );
     },
 
-    onLogout : function()
+    onLogout()
     {
         store.remove('token');
         this.state.loggedIn = false;
@@ -30,17 +30,17 @@ var TokenStore = APIStoreFactory.createStore({
         this.emit('change');
     },
 
-    getTokenData : function()
+    getTokenData()
     {
         return store.get('token');
     },
 
-    isLoggedIn : function()
+    isLoggedIn()
     {
         return this.state.loggedIn;
     },
 
-    setState : function(state)
+    setState(state)
     {
         this.state = state;
 
