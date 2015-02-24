@@ -2,7 +2,7 @@
 'use strict';
 
 var React = require('react');
-var Icon  = require('../../icon/icon');
+var Icon  = require('../../../components/icon/icon');
 
 module.exports = React.createClass({
 

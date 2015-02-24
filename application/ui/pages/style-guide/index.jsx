@@ -6,11 +6,11 @@ var React      = require('react');
 var FluxMixin  = require('fluxxor').FluxMixin(React);
 var StateMixin = require('react-router').State;
 
-var SGHeader            = require('../components/style-guide/sg-header');
-var ButtonSection       = require('../components/style-guide/sections/sg-buttons');
-var FormElementsSection = require('../components/style-guide/sections/sg-form-elements');
-var IconSection         = require('../components/style-guide/sections/sg-icons');
-var TypographySection   = require('../components/style-guide/sections/sg-typography');
+var SGHeader            = require('./header');
+var ButtonSection       = require('./sections/buttons');
+var FormElementsSection = require('./sections/form-elements');
+var IconSection         = require('./sections/icons');
+var TypographySection   = require('./sections/typography');
 
 module.exports = React.createClass({
 

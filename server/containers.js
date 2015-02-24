@@ -12,12 +12,11 @@ if (config.api.docker) {
     var docker = require('./mock-docker');
 }
 
-var containers, illegalContainerNames, redisClient;
+var buildClient, containerClient, containers;
 
-containers    = new Express();
-illegalNames  = ['api'];
-redisClient2  = Redis.createClient(config.redis.builds);
-redisClient   = Redis.createClient(config.redis.containers);
+buildClient     = Redis.createClient(config.redis.builds);
+containerClient = Redis.createClient(config.redis.containers);
+containers      = new Express();
 
 containers.disable('etag');
 
@@ -36,12 +35,12 @@ containers.use(function(req, res, next) {
 });
 
 containers.delete('/container/:name', function(req, res) {
-    redisClient.get(req.params.name).then(function (container) {
+    containerClient.get(req.params.name).then(function (container) {
         if (container) {
             docker.kill(container.id).then(
                 function () {
-                    redisClient.del(req.params.name).then(function () {
-                        redisClient.publish('container', 'killed');
+                    containerClient.del(req.params.name).then(function () {
+                        containerClient.publish('container', 'killed');
                         res.sendStatus(204);
                     })
                     .done();
@@ -60,7 +59,7 @@ containers.delete('/container/:name', function(req, res) {
 });
 
 containers.get('/container/:name', function(req, res) {
-    redisClient.get(req.params.name).then(function (container) {
+    containerClient.get(req.params.name).then(function (container) {
         if (container) {
             res.send(container);
         } else {
@@ -71,9 +70,9 @@ containers.get('/container/:name', function(req, res) {
 });
 
 containers.get('/containers', function(req, res) {
-    redisClient.keys('*').then(function (keys) {
+    containerClient.keys('*').then(function (keys) {
         if (keys.length) {
-            redisClient.mget(keys).then(function (containers) {
+            containerClient.mget(keys).then(function (containers) {
                 res.send(containers.map(function (container) { return JSON.parse(container); }));
             })
             .done();
@@ -85,8 +84,8 @@ containers.get('/containers', function(req, res) {
 });
 
 containers.post('/container', function(req, res) {
-    redisClient.exists(req.body.name).then(function (exists) {
-        if (exists || illegalNames.indexOf(req.body.name) !== -1) {
+    containerClient.exists(req.body.name).then(function (exists) {
+        if (exists || ['api'].indexOf(req.body.name) !== -1) {
             res.status(422);
             res.send({message : 'Container `' + req.body.name + '` already exists'});
         } else {
@@ -108,8 +107,8 @@ containers.post('/container', function(req, res) {
 
                             data.state = response.state;
 
-                            redisClient.set(data.name, JSON.stringify(data));
-                            redisClient.publish('container', 'created');
+                            containerClient.set(data.name, JSON.stringify(data));
+                            containerClient.publish('container', 'created');
                             res.send(data);
                         },
                         function (error) {
@@ -131,23 +130,24 @@ containers.post('/container', function(req, res) {
 });
 
 containers.post('/container/:name/build', function (req, res) {
-    redisClient.get(req.params.name).then(
+    containerClient.get(req.params.name).then(
         function (container) {
-            var buildName, filepath, writeStream;
+            var buildName;
 
             if (container) {
                 container = JSON.parse(container);
                 buildName = conainer.name + '--' + req.query.name;
 
-                redisClient2.exists(buildName).then(
+                buildClient.exists(buildName).then(
                     function (exists) {
                         if (! exists) {
 
                             Fs.writeFile(
-                                'containers/' + container.name + '/' + req.query.name,
+                                'containers/' + container.name + '/builds/' + req.query.name,
                                 req.rawBody,
-                                function () {
-                                    redisClient2.set(buildName, JSON.stringify({
+                                function (err) {
+                                    if (err) throw err;
+                                    buildClient.set(buildName, JSON.stringify({
                                         container : container.name,
                                         filename  : req.query.name
                                     }));
@@ -172,10 +172,10 @@ containers.post('/container/:name/build', function (req, res) {
 
 containers.put('/container/:name', function(req, res) {
     res.sendStatus(501);
-    /*redisClient.exists(req.params.name).then(function (exists) {
+    /*containerClient.exists(req.params.name).then(function (exists) {
         if (exists) {
-            redisClient.set(req.params.name, req.body);
-            redisClient.publish('container', 'updated');
+            containerClient.set(req.params.name, req.body);
+            containerClient.publish('container', 'updated');
             res.send(req.body);
         } else {
             res.sendStatus(404);

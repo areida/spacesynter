@@ -21,7 +21,12 @@ module.exports = {
         userAgent : 'areida/spacesynter'
     },
     redis : {
-            containers : {
+        builds     : {
+            host     : 'localhost',
+            port     : 6379,
+            database : 2
+        },
+        containers : {
             host     : 'localhost',
             port     : 6379,
             database : 0

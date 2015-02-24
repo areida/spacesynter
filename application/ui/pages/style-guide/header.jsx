@@ -3,7 +3,7 @@
 
 var React     = require('react');
 var FluxMixin = require('fluxxor').FluxMixin(React);
-var SGNavItem = require('./sg-nav-item');
+var SGNavItem = require('./nav-item');
 
 module.exports = React.createClass({
 

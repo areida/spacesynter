@@ -2,13 +2,13 @@
 'use strict';
 
 var React           = require('react');
-var TextInput       = require('../../form/inputs/text');
-var TextareaInput   = require('../../form/inputs/textarea');
-var SelectInput     = require('../../form/inputs/select');
-var RadioInput      = require('../../form/inputs/radio');
-var RadioInputGroup = require('../../form/inputs/radio-group');
-var CheckboxInput   = require('../../form/inputs/checkbox');
-var CheckboxGroup   = require('../../form/inputs/checkbox-group');
+var TextInput       = require('../../../components/form/inputs/text');
+var TextareaInput   = require('../../../components/form/inputs/textarea');
+var SelectInput     = require('../../../components/form/inputs/select');
+var RadioInput      = require('../../../components/form/inputs/radio');
+var RadioInputGroup = require('../../../components/form/inputs/radio-group');
+var CheckboxInput   = require('../../../components/form/inputs/checkbox');
+var CheckboxGroup   = require('../../../components/form/inputs/checkbox-group');
 
 module.exports = React.createClass({
 
