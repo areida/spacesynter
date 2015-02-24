@@ -1,4 +1,4 @@
-packages = %w{docker.io git nodejs npm redis-server unzip}
+packages = %w{docker.io git mongodb nodejs npm redis-server unzip}
 
 packages.each do |pkg|
     package pkg do
@@ -7,4 +7,4 @@ packages.each do |pkg|
     end
 end
 
-execute 'npm install -g docker.io';
+execute 'npm install -g docker.io mongodb mongoose'

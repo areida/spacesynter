@@ -4,7 +4,9 @@ global.__ENVIRONMENT__ = process.env.APP_ENV || 'development';
 var bodyParser   = require('body-parser');
 var CookieParser = require('cookie-parser');
 var Express      = require('express');
+var http         = require('http');
 var Io           = require('socket.io');
+var mongoose     = require('mongoose');
 var Redis        = require('then-redis');
 var Session      = require('express-session');
 var RedisStore   = require('connect-redis')(Session);
@@ -14,11 +16,16 @@ var containers = require('./containers');
 var docker     = require('./docker');
 var nginx      = require('./nginx');
 
-var api, redisClient;
+var api, mongoClient;
 
-redisClient = Redis.createClient(config.redis.containers);
+mongoClient = mongoose.connect('localhost', 'test');
 
 api = new Express();
+io  = new Io(http.createServer(api));
+
+io.on('connection', function (socket) {
+    socket.emit('connected');
+});
 
 api.disable('etag');
 api.use(bodyParser.json());
@@ -40,6 +47,8 @@ api.use(function(req, res, next) {
     res.header('Content-Type', 'application/json');
     res.header('If-None-Match', '*');
     res.header('Last-Modified', (new Date()).toUTCString());
+    req.db = mongoClient;
+    req.io = io;
     next();
 });
 
@@ -49,7 +58,7 @@ if (config.api.auth) {
 
 api.use(containers);
 
-httpServer = api.listen(
+api.listen(
     config.api.port,
     config.api.hostname,
     10,
@@ -57,22 +66,3 @@ httpServer = api.listen(
         console.log('Listening on ' + config.api.hostname + ':' + config.api.port);
     }
 );
-
-io = new Io(httpServer);
-
-io.on('connection', function (socket) {
-    socket.emit('connected');
-});
-
-redisClient.on('message', function (channel, message) {
-    if (
-        channel === 'container' &&
-        ['created', 'killed', 'recreated'].indexOf(message) !== -1
-    ) {
-        nginx.reload().then(function () {
-            io.emit(channel, {message : messsage});
-        });
-    }
-});
-
-redisClient.subscribe('container');
