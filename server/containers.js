@@ -16,12 +16,10 @@ var containers;
 
 containers = new Express();
 
-containers.disable('etag');
-
 containers.delete('/container/:name', function (req, res) {
     Container.remove({name : req.params.name}).exec()
         .then(
-            function (containers) {
+            function () {
                 req.io.emit('container-killed');
                 res.sendStatus(204);
             }

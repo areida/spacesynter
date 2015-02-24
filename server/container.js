@@ -1,18 +1,21 @@
 var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
 
-var containerSchema = new Schema({
-    name   : { type : String, index : true},
-    id     : String,
-    image  : String,
-    host   : String,
-    builds : [{
-        date : Date,
-        name : String,
-        path : String
+var Container, containerSchema;
+
+containerSchema = new Schema({
+    name    : { type : String, index : true},
+    host    : String,
+    id      : String,
+    image   : String,
+    created : {type : Date, default : new Date.now},
+    builds  : [{
+        created : {type : Date, default : new Date.now},
+        name    : String,
+        path    : String
     }]
 });
 
-var Container = mongoose.model('Container', containerSchema);
+Container = mongoose.model('Container', containerSchema);
 
 module.exports = Container;

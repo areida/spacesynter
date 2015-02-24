@@ -47,7 +47,6 @@ api.use(function(req, res, next) {
     res.header('Content-Type', 'application/json');
     res.header('If-None-Match', '*');
     res.header('Last-Modified', (new Date()).toUTCString());
-    req.db = mongoClient;
     req.io = io;
     next();
 });
