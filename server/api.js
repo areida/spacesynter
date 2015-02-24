@@ -42,7 +42,7 @@ api.use(function(req, res, next) {
         process.env.HOSTNAME || ('http://' + config.app.hostname + ':' + config.app.port)
     );
     res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
-    res.header('Access-Control-Allow-Methods', 'DELETE, GET, HEAD, OPTIONS, POST, PUT');
+    res.header('Access-Control-Allow-Methods', 'DELETE, GET, HEAD, OPTIONS, PATCH, POST');
     res.header('Content-Type', 'application/json');
     res.header('If-None-Match', '*');
     res.header('Last-Modified', (new Date()).toUTCString());

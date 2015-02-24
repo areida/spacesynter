@@ -9,11 +9,16 @@ containerSchema = new Schema({
     id      : String,
     image   : String,
     created : {type : Date, default : Date.now},
+    state   : String,
     builds  : [{
         created : {type : Date, default : Date.now},
         name    : String,
         path    : String
-    }]
+    }],
+    ports : {
+        22 : String,
+        80 : String
+    }
 });
 
 Container = mongoose.model('Container', containerSchema);

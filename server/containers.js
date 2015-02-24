@@ -15,14 +15,39 @@ if (config.api.docker) {
 
 var containers;
 
+
+function changeWorkingBuild(container, build, callback) {
+    exec(
+        'rm -rf containers/' + container + '/working && unzip containers/' + container + '/builds/' + build + ' -d containers/' + container + '/working',
+        callback
+    );
+}
+
 containers = new Express();
 
 containers.delete('/container/:name', function (req, res) {
-    Container.remove({name : req.params.name}).exec()
+    Container.find({name : req.params.name}).exec()
         .then(
-            function () {
-                req.io.emit('container-killed');
-                res.sendStatus(204);
+            function (containers) {
+                if (containers.length) {
+                    docker.kill(containers[0].id).then(
+                        function () {
+                            exec('rm -rf containers/' + containers[0].name);
+                            Container.remove({name : containers[0].name}).exec()
+                                .then(
+                                    function () {
+                                        req.io.emit('container-killed');
+                                        res.sendStatus(204);
+                                    }
+                                );
+                        },
+                        function () {
+                            res.sendStatus(500);
+                        }
+                    );
+                } else {
+                    res.sendStatus(404);
+                }
             }
         );
 });
@@ -49,6 +74,28 @@ containers.get('/containers', function (req, res) {
         );
 });
 
+containers.patch('/container/:name', function (req, res) {
+    Container.find({name : req.params.name}).exec()
+        .then(
+            function (containers) {
+                if (containers.length && req.body.build) {
+                    changeWorkingBuild(
+                        containers[0].name,
+                        build,
+                        function (error, stdout, stderr) {
+                            containers[0].activeBuild = build;
+                            containers[0].save(function () {
+                                res.send(containers[0]);
+                            });
+                        }
+                    );
+                } else {
+                    res.sendStatus(404);
+                }
+            }
+        );
+});
+
 containers.post('/container', function (req, res) {
     Container.find({name : req.body.name}).exec()
         .then(
@@ -59,26 +106,22 @@ containers.post('/container', function (req, res) {
                 } else {
                     docker.create(req.body.name).then(
                         function (response) {
-                            var data = {
+                            var container = new Container({
                                 builds : [],
                                 host   : response.Hostname,
                                 id     : response.Id,
                                 image  : response.Image,
                                 name   : req.body.name
-                            };
+                            });
 
                             docker.inspect(data.name).then(
                                 function (response) {
-                                    var container;
-
-                                    data.ports = {
+                                    container.ports = {
                                         22 : _.findWhere(response.HostConfig.Ports, {PrivatePort : 22}).PublicPort,
                                         80 : _.findWhere(response.HostConfig.Ports, {PrivatePort : 80}).PublicPort
                                     };
 
-                                    data.state = response.state;
-
-                                    container = new Container(data);
+                                    container.state = response.state;
 
                                     container.save(
                                         function () {
@@ -141,12 +184,14 @@ containers.post('/container/:name/build', function (req, res) {
                             req.rawBody,
                             function (err) {
                                 if (err) throw err;
-                                exec(
-                                    'rm -rf containers/' + containers[0].name + '/working && unzip containers/' + containers[0].name + '/builds/' + req.query.name + ' -d containers/' + containers[0].name + '/working',
+                                changeWorkingBuild(
+                                    containers[0].name,
+                                    req.query.name,
                                     function (error, stdout, stderr) {
                                         containers[0].builds.push({name : req.query.name, path : path});
+                                        containers[0].activeBuild = req.query.name;
                                         containers[0].save(function () {
-                                            res.sendStatus(204);
+                                            res.send(containers[0]);
                                         });
                                     }
                                 );
@@ -161,10 +206,6 @@ containers.post('/container/:name/build', function (req, res) {
                 }
             }
         );
-});
-
-containers.put('/container/:name', function (req, res) {
-    res.sendStatus(501);
 });
 
 module.exports = containers;
