@@ -8,9 +8,9 @@ containerSchema = new Schema({
     host    : String,
     id      : String,
     image   : String,
-    created : {type : Date, default : new Date.now},
+    created : {type : Date, default : Date.now},
     builds  : [{
-        created : {type : Date, default : new Date.now},
+        created : {type : Date, default : Date.now},
         name    : String,
         path    : String
     }]

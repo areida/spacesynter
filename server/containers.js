@@ -1,3 +1,4 @@
+var exec     = require('child_process').exec;
 var Express  = require('express');
 var Fs       = require('fs');
 var _        = require('underscore');
@@ -140,11 +141,15 @@ containers.post('/container/:name/build', function (req, res) {
                             req.rawBody,
                             function (err) {
                                 if (err) throw err;
-
-                                containers[0].builds.push({name : req.query.name, path : path});
-                                containers[0].save(function () {
-                                    res.sendStatus(204);
-                                });
+                                exec(
+                                    'rm -rf containers/' + containers[0].name + '/working && unzip containers/' + containers[0].name + '/builds/' + req.query.name + ' -d containers/' + containers[0].name + '/working',
+                                    function (error, stdout, stderr) {
+                                        containers[0].builds.push({name : req.query.name, path : path});
+                                        containers[0].save(function () {
+                                            res.sendStatus(204);
+                                        });
+                                    }
+                                );
                             }
                         );
                     } else {

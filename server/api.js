@@ -7,7 +7,6 @@ var Express      = require('express');
 var http         = require('http');
 var Io           = require('socket.io');
 var mongoose     = require('mongoose');
-var Redis        = require('then-redis');
 var Session      = require('express-session');
 var RedisStore   = require('connect-redis')(Session);
 
