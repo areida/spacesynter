@@ -1,4 +1,3 @@
-/* jshint globalstrict: true */
 /* global __ENVIRONMENT__ */
 'use strict';
 

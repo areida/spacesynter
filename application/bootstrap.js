@@ -1,4 +1,3 @@
-/* jshint globalstrict: true, esnext: true */
 /* global window, __ENVIRONMENT__ */
 'use strict';
 

@@ -89,4 +89,8 @@ module.exports = {
         extensions : ['', '.js', '.json', '.jsx', '.webpack.js', '.web.js']
     },
     devtool : '#inline-source-map',
+    jshint  : {
+        esnext       : true,
+        globalstrict : true
+    }
 };

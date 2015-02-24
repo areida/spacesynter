@@ -1,4 +1,4 @@
-/* jshint globalstrict: true, unused: false */
+/* jshint unused: false */
 /* globals __ENVIRONMENT__ */
 'use strict';
 

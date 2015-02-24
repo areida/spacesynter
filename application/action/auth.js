@@ -1,4 +1,3 @@
-/* jshint globalstrict: true */
 /* global window */
 'use strict';
 

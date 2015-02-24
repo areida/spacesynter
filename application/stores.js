@@ -1,4 +1,3 @@
-/* jshint globalstrict: true */
 'use strict';
 
 var ContainerStore = require('./store/container');

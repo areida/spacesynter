@@ -1,4 +1,3 @@
-/* jshint globalstrict: true, esnext: true */
 'use strict';
 
 class BaseAPIStore {
