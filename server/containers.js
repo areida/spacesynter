@@ -114,7 +114,7 @@ containers.post('/container', function (req, res) {
                                 name   : req.body.name
                             });
 
-                            docker.inspect(data.name).then(
+                            docker.inspect(req.body.name).then(
                                 function (response) {
                                     container.ports = {
                                         22 : _.findWhere(response.HostConfig.Ports, {PrivatePort : 22}).PublicPort,
@@ -134,7 +134,7 @@ containers.post('/container', function (req, res) {
                                                 }
 
                                                 req.io.emit('container:created');
-                                                res.send(data);
+                                                res.send(container.toObject());
                                             });
                                         }
                                     );
