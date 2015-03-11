@@ -15,7 +15,7 @@ var config = {
             __SERVER__      : '\''+process.env.SERVER+'\''
         })
     ],
-    reactLoaders : ['js?insertPragma=React.DOM&harmony'],
+    reactLoaders : ['jsx-loader?insertPragma=React.DOM&harmony'],
     sassLoader   : {
         test   : /\.scss$/,
         loader : 'style-loader!css-loader!sass-loader?outputStyle=nested&includePaths[]=' + npmDir

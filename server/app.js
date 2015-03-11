@@ -14,7 +14,6 @@ var Router       = require('react-router');
 var Session      = require('express-session');
 var CookieParser = require('cookie-parser');
 var RedisStore   = require('connect-redis')(Session);
-var Redis        = require('then-redis');
 var Tmpl         = require('blueimp-tmpl').tmpl;
 
 var auth   = require('./auth');
