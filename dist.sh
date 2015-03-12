@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 rm -rf ./build && \
-APP_ENV=production webpack -p && \
+APP_ENV=production NODE_ENV=production webpack -p && \
 zip -r `git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` \
     application \
     build \
@@ -43,4 +43,4 @@ zip -r `git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` \
     -x node_modules/url-loader/**\* \
     -x node_modules/webpack/**\* \
     -x node_modules/webpack-dev-server/**\* \
-    -x node_modules/webpack-error-notification/**\* 
+    -x node_modules/webpack-error-notification/**\*

@@ -110,7 +110,6 @@ var Upload = React.createClass({
                 style       = {this.props.style || style}
             >
                 <input
-                    multiple = 'multiple'
                     onChange = {this.onDrop}
                     ref      = 'fileInput'
                     style    = {{display : 'none' }}

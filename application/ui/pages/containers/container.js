@@ -6,12 +6,10 @@ var FluxMixin = require('fluxxor').FluxMixin(React);
 var Button = require('../../components/buttons/button');
 var Upload = require('../../components/form/inputs/upload');
 
-var DragAndDropMixin = require('../../mixins/drag-and-drop');
-
 module.exports = React.createClass({
     displayName : 'ExistingContainer',
 
-    mixins : [DragAndDropMixin, FluxMixin],
+    mixins : [FluxMixin],
 
     getInitialState()
     {
@@ -24,6 +22,16 @@ module.exports = React.createClass({
     onKill()
     {
         this.getFlux().actions.container.kill(this.props.container.get('name'));
+    },
+
+    onDrop(files)
+    {
+        this.getFlux().actions.build.create(this.props.container, files, this.onProgress);
+    },
+
+    onProgress(percent)
+    {
+        this.setState({percent : percent});
     },
 
     onToggleBuilds()
@@ -61,7 +69,7 @@ module.exports = React.createClass({
                         <p><a href={'http://' + host} target='_blank'>{host}</a></p>
                     </div>
                     <div className='medium-2 columns' title='Click or Drag Build Here'>
-                        <Upload onDrop={this.onDrop} percent={this.state.uploadPercent}>Add Build</Upload>
+                        <Upload onDrop={this.onDrop} percent={this.state.percent}>Add Build</Upload>
                     </div>
                     <div className='medium-2 columns'>
                         <Button size='small'>
