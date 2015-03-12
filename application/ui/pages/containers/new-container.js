@@ -5,9 +5,9 @@ var FluxMixin       = require('fluxxor').FluxMixin(React);
 var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 var _               = require('underscore');
 
-var Button = require('../buttons/button');
-var Select = require('../form/inputs/select');
-var Text   = require('../form/inputs/text');
+var Button = require('../../components/buttons/button');
+var Select = require('../../components/form/inputs/select');
+var Text   = require('../../components/form/inputs/text');
 
 module.exports = React.createClass({
 

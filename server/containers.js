@@ -15,10 +15,9 @@ if (config.api.docker) {
 
 var containers;
 
-
 function changeWorkingBuild(container, build, callback) {
     exec(
-        'rm -rf containers/' + container + '/working && unzip containers/' + container + '/builds/' + build + ' -d containers/' + container + '/working',
+        'rm -rf .containers/' + container + '/working && unzip .containers/' + container + '/builds/' + build + ' -d .containers/' + container + '/working',
         callback
     );
 }
@@ -32,7 +31,7 @@ containers.delete('/container/:name', function (req, res) {
                 if (containers.length) {
                     docker.kill(containers[0].id).then(
                         function () {
-                            exec('rm -rf containers/' + containers[0].name);
+                            exec('rm -rf .containers/' + containers[0].name);
                             Container.remove({name : containers[0].name}).exec()
                                 .then(
                                     function () {
@@ -125,12 +124,12 @@ containers.post('/container', function (req, res) {
 
                                     container.save(
                                         function () {
-                                            Fs.mkdir('containers/' + req.body.name, function (err) {
+                                            Fs.mkdir('.containers/' + req.body.name, function (err) {
                                                 if (err && err.code !== 'EEXIST') throw err;
 
                                                 if (! err) {
-                                                    Fs.mkdir('containers/' + req.body.name + '/builds');
-                                                    Fs.mkdir('containers/' + req.body.name + '/working');
+                                                    Fs.mkdir('.containers/' + req.body.name + '/builds');
+                                                    Fs.mkdir('.containers/' + req.body.name + '/working');
                                                 }
 
                                                 req.io.emit('container:created');
@@ -165,7 +164,7 @@ containers.use('/container/:name/build', function (req, res, next) {
         data = Buffer.concat([data, chunk]);
     });
 
-    req.on('end', function  () {
+    req.on('end', function () {
         req.rawBody = data;
         next();
     });
@@ -177,7 +176,7 @@ containers.post('/container/:name/build', function (req, res) {
             function (containers) {
                 if (containers.length) {
                     if (! _.findWhere(containers[0].builds, {name : req.query.name})) {
-                        var path = 'containers/' + containers[0].name + '/builds/' + req.query.name;
+                        var path = '.containers/' + containers[0].name + '/builds/' + req.query.name;
 
                         Fs.writeFile(
                             path,

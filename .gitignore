@@ -1,7 +1,7 @@
 bower_components
 build
 cache
-containers/
+.containers
 node_modules
 npm-debug.log
 .DS_Store

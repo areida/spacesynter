@@ -6,8 +6,8 @@ var FluxMixin       = require('fluxxor').FluxMixin(React);
 var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
 var _               = require('underscore');
 
-var Container    = require('../components/container/existing');
-var NewContainer = require('../components/container/new');
+var Container    = require('./container');
+var NewContainer = require('./new-container');
 
 var ContainersPage = React.createClass({
     displayName : 'Container',

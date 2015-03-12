@@ -5,8 +5,8 @@ var React     = require('react');
 var FluxMixin = require('fluxxor').FluxMixin(React);
 
 var config = require('../../../config');
-var Button = require('../buttons/button');
-var Upload = require('../form/inputs/upload');
+var Button = require('../../components/buttons/button');
+var Upload = require('../../components/form/inputs/upload');
 
 module.exports = React.createClass({
     displayName : 'ExistingContainer',
@@ -23,6 +23,10 @@ module.exports = React.createClass({
     onDrop(files, progress)
     {
         var component = this;
+
+        if (files[0].type !== 'application/zip') {
+            return;
+        }
 
         if (typeof FileReader !== 'undefined') {
             var reader = new FileReader();
@@ -45,7 +49,7 @@ module.exports = React.createClass({
 
             xhr.open(
                 'POST',
-                'http://' + config.api.hostname + ':' + config.api.port + '/containers/' + this.props.container.get('name') + '/build?name=' + files[0].name
+                'http://' + config.api.hostname + ':' + config.api.port + '/container/' + this.props.container.get('name') + '/build?name=' + files[0].name
             );
 
             xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
