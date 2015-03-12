@@ -15,6 +15,7 @@ containerSchema = new Schema({
         name    : String,
         path    : String
     }],
+    activeBuild : String,
     ports : {
         22 : String,
         80 : String
