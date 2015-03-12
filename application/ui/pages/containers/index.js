@@ -41,7 +41,6 @@ var ContainersPage = React.createClass({
 
     renderContainer(container, index)
     {
-        window.console.log(container.toObject());
         return <Container container={container} key={index} />;
     },
 

@@ -41,7 +41,7 @@ var ContainerStore = APIStoreFactory.createStore({
 
     onBuildCreateSuccess(container)
     {
-        console.log(container);
+        this.state.containers = this.state.containers.merge([container]);
 
         this.emit('change');
     },

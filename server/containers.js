@@ -29,10 +29,12 @@ containers.delete('/container/:name', function (req, res) {
         .then(
             function (containers) {
                 if (containers.length) {
-                    docker.kill(containers[0].id).then(
+                    var container = containers[0];
+
+                    docker.kill(container.id).then(
                         function () {
-                            exec('rm -rf __containers__/' + containers[0].name, function () {
-                                Container.remove({name : containers[0].name})
+                            exec('rm -rf __containers__/' + container.name, function () {
+                                Container.remove({name : container.name})
                                     .exec()
                                     .then(
                                         function () {
@@ -62,7 +64,7 @@ containers.get('/container/:name', function (req, res) {
         .then(
             function (containers) {
                 if (containers.length) {
-                    res.send(containers[0]);
+                    res.send(containers[0].toObject());
                 } else {
                     res.sendStatus(404);
                 }
@@ -85,14 +87,16 @@ containers.patch('/container/:name', function (req, res) {
         .then(
             function (containers) {
                 if (containers.length && req.body.build) {
+                    var container = containers[0];
+
                     changeWorkingBuild(
-                        containers[0].name,
+                        container.name,
                         build,
                         function (error, stdout, stderr) {
-                            containers[0].activeBuild = build;
-                            containers[0].save(
+                            container.activeBuild = build;
+                            container.save(
                                 function () {
-                                    res.send(containers[0]);
+                                    res.send(containers[0].toObject());
                                 }
                             );
                         }
@@ -186,8 +190,10 @@ containers.post('/container/:name/build', function (req, res) {
         .then(
             function (containers) {
                 if (containers.length) {
-                    if (! _.findWhere(containers[0].builds, {name : req.query.name})) {
-                        var path = '__containers__/' + containers[0].name + '/builds/' + req.query.name;
+                    var container = containers[0];
+
+                    if (! _.findWhere(container.builds, {name : req.query.name})) {
+                        var path = '__containers__/' + container.name + '/builds/' + req.query.name;
 
                         Fs.writeFile(
                             path,
@@ -195,14 +201,14 @@ containers.post('/container/:name/build', function (req, res) {
                             function (err) {
                                 if (err) throw err;
                                 changeWorkingBuild(
-                                    containers[0].name,
+                                    container.name,
                                     req.query.name,
                                     function (error, stdout, stderr) {
-                                        containers[0].builds.push({name : req.query.name, path : path});
-                                        containers[0].activeBuild = req.query.name;
-                                        containers[0].save(
+                                        container.builds.push({name : req.query.name, path : path});
+                                        container.activeBuild = req.query.name;
+                                        container.save(
                                             function () {
-                                                res.send(containers[0]);
+                                                res.send(container.toObject());
                                             }
                                         );
                                     }

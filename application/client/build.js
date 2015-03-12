@@ -25,9 +25,17 @@ class BuildClient {
                         }
                     }, false);
 
-                    xhr.upload.addEventListener('load', function (event) {
-                        resolve(event);
+                    xhr.upload.addEventListener('load', function () {
+                        notify(0);
                     }, false);
+
+                    xhr.addEventListener('load', function () {
+                        if (xhr.status === 200) {
+                            resolve(JSON.parse(xhr.response));
+                        } else {
+                            reject(xhr);
+                        }
+                    });
 
                     xhr.open(
                         'POST',
