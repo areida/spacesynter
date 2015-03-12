@@ -200,9 +200,11 @@ containers.post('/container/:name/build', function (req, res) {
                                     function (error, stdout, stderr) {
                                         containers[0].builds.push({name : req.query.name, path : path});
                                         containers[0].activeBuild = req.query.name;
-                                        containers[0].save(function () {
-                                            res.send(containers[0]);
-                                        });
+                                        containers[0].save(
+                                            function () {
+                                                res.send(containers[0]);
+                                            }
+                                        );
                                     }
                                 );
                             }
