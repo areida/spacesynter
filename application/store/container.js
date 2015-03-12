@@ -1,4 +1,3 @@
-/* global window */
 'use strict';
 
 var Immutable = require('immutable');
@@ -16,6 +15,7 @@ var ContainerStore = APIStoreFactory.createStore({
         };
 
         this.bindActions(
+            constants.BUILD_CREATE_SUCCESS, 'onBuildCreateSuccess',
             constants.CONTAINER_FETCH_ALL, 'onFetchAll',
             constants.CONTAINER_FETCH_ALL_SUCCESS, 'onFetchAllSuccess',
             constants.CONTAINER_CREATE_SUCCESS, 'onCreateSuccess',
@@ -37,6 +37,13 @@ var ContainerStore = APIStoreFactory.createStore({
     getAll()
     {
         return this.state.containers;
+    },
+
+    onBuildCreateSuccess(container)
+    {
+        console.log(container);
+
+        this.emit('change');
     },
 
     onCreateSuccess(container)

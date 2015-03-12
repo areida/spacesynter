@@ -4,7 +4,7 @@ var AuthGateway = require('synapse-common/http/auth-gateway');
 
 var config = require('../config');
 
-var AuthClient = AuthGateway.extend({
+var ContainerClient = AuthGateway.extend({
 
     config : config.api,
 
@@ -29,4 +29,4 @@ var AuthClient = AuthGateway.extend({
     }
 });
 
-module.exports = new AuthClient();
+module.exports = new ContainerClient();

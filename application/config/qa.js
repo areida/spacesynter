@@ -1,4 +1,3 @@
-/* global __BACKEND__ */
 'use strict';
 
 module.exports = {

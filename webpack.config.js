@@ -86,6 +86,12 @@ module.exports = {
     devtool : '#inline-source-map',
     jshint  : {
         esnext       : true,
-        globalstrict : true
+        globalstrict : true,
+        globals      : {
+            __BACKEND__     : true,
+            console         : true,
+            __ENVIRONMENT__ : true,
+            window          : true
+        }
     }
 };

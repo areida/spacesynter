@@ -1,6 +1,8 @@
 'use strict';
 
 module.exports = {
+    BUILD_CREATE                : 'BUILD_CREATE',
+    BUILD_CREATE_SUCCESS        : 'BUILD_CREATE_SUCCESS',
     CLEAR_GISTS                 : 'CLEAR_GISTS',
     CONTAINER_CREATE            : 'CONTAINER_CREATE',
     CONTAINER_CREATE_SUCCESS    : 'CONTAINER_CREATE_SUCCESS',

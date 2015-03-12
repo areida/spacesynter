@@ -1,4 +1,4 @@
-/* global console, FileReader, Uint8Array, XMLHttpRequest */
+/* global FileReader, Uint8Array, XMLHttpRequest */
 'use strict';
 
 var config = require('../../config');

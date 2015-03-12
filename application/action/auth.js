@@ -1,4 +1,3 @@
-/* global window */
 'use strict';
 
 var authClient = require('../client/auth');

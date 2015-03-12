@@ -1,4 +1,3 @@
-/* global window, __ENVIRONMENT__ */
 'use strict';
 
 var React  = require('react');
