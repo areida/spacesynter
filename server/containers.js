@@ -35,8 +35,12 @@ containers.delete('/container/:name', function (req, res) {
                             Container.remove({name : containers[0].name}).exec()
                                 .then(
                                     function () {
-                                        req.io.emit('container-killed');
-                                        res.sendStatus(204);
+                                        nginx.reload().then(
+                                            function () {
+                                                req.io.emit('container-killed');
+                                                res.sendStatus(204);
+                                            }
+                                        );
                                     }
                                 );
                         },
@@ -116,11 +120,9 @@ containers.post('/container', function (req, res) {
                             docker.inspect(req.body.name).then(
                                 function (response) {
                                     container.ports = {
-                                        22 : _.findWhere(response.HostConfig.Ports, {PrivatePort : 22}).PublicPort,
-                                        80 : _.findWhere(response.HostConfig.Ports, {PrivatePort : 80}).PublicPort
+                                        22 : parseInt(_.findWhere(response.HostConfig.Ports, {PrivatePort : 22}).PublicPort, 10),
+                                        80 : parseInt(_.findWhere(response.HostConfig.Ports, {PrivatePort : 80}).PublicPort, 10)
                                     };
-
-                                    container.state = response.state;
 
                                     container.save(
                                         function () {
@@ -132,8 +134,12 @@ containers.post('/container', function (req, res) {
                                                     Fs.mkdir('.containers/' + req.body.name + '/working');
                                                 }
 
-                                                req.io.emit('container:created');
-                                                res.send(container.toObject());
+                                                nginx.reload().then(
+                                                    function () {
+                                                        req.io.emit('container:created');
+                                                        res.send(container.toObject());
+                                                    }
+                                                );
                                             });
                                         }
                                     );

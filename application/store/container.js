@@ -1,3 +1,4 @@
+/* global window */
 'use strict';
 
 var Immutable = require('immutable');
@@ -40,6 +41,9 @@ var ContainerStore = APIStoreFactory.createStore({
 
     onCreateSuccess(container)
     {
+        container.builds = new Immutable.List(container.builds);
+        container.ports  = new Immutable.Map(container.ports);
+
         this.state.containers = this.state.containers.push(new Immutable.Map(container));
 
         this.emit('change');

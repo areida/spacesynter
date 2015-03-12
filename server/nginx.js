@@ -1,14 +1,12 @@
 var Fs       = require('fs');
 var Q        = require('q');
-var Redis    = require('then-redis');
 var Reloader = require('nginx-reload');
 var Tmpl     = require('blueimp-tmpl').tmpl;
 
-var config = require('./config');
+var config    = require('./config');
+var Container = require('./container');
 
-var redisClient, reloader;
-
-redisClient = Redis.createClient(config.redis.containers);
+var reloader;
 
 if (config.api.nginx) {
     reloader = new Reloader();
@@ -20,34 +18,40 @@ Tmpl.load = function (name) {
 
 module.exports = {
     reload : function() {
-        return Q.promise(function (resolve, reject) {
-            redisClient.keys('*').then(function (keys) {
-                if (keys.length) {
-                    redisClient.mget(keys).then(function (containers) {
-                        containers = containers.map(function (container) { return JSON.parse(container); });
+        return Q.promise(
+            function (resolve, reject) {
+                Container.find({})
+                    .exec()
+                    .then(
+                        function (containers) {
+                            var conf = Tmpl('servers.conf', {containers : containers});
 
-                        Fs.writeFile('/home/ubuntu/servers.conf', Tmpl('servers.conf', {containers : containers}), function (err) {
-                            if (err) {
-                                reject();
-                            } else {
-                                if (config.api.nginx) {
-                                    reloader.reload(function (err) {
-                                        if (err) {
-                                            reject();
+                            Fs.writeFile(
+                                '/home/andrew/servers.conf',
+                                conf,
+                                function (err) {
+                                    if (err) {
+                                        reject();
+                                    } else {
+                                        if (config.api.nginx) {
+                                            reloader.reload(
+                                                function (err) {
+                                                    if (err) {
+                                                        reject();
+                                                    } else {
+                                                        resolve();
+                                                    }
+                                                }
+                                            );
                                         } else {
                                             resolve();
                                         }
-                                    });
-                                } else {
-                                    resolve();
+                                    }
                                 }
-                            }
-                        });
-                    });
-                } else {
-                    resolve();
-                }
-            });
-        });
+                            );
+                        }
+                    );
+            }
+        );
     }
 }
