@@ -42,8 +42,7 @@ var ContainerStore = APIStoreFactory.createStore({
 
     onActvateBuildSuccess(container)
     {
-        var index = this.state.containers
-            .findIndex(c => c.get('name') === container.name);
+        var index = this.state.containers.findIndex(c => c.get('name') === container.name);
 
         this.state.containers = this.state.containers.set(index, Immutable.fromJS(container));
 
@@ -52,8 +51,7 @@ var ContainerStore = APIStoreFactory.createStore({
 
     onBuildCreateSuccess(container)
     {
-        var index = this.state.containers
-            .findIndex(c => c.get('name') === container.name);
+        var index = this.state.containers.findIndex(c => c.get('name') === container.name);
 
         this.state.containers = this.state.containers.set(index, Immutable.fromJS(container));
 
@@ -85,7 +83,7 @@ var ContainerStore = APIStoreFactory.createStore({
 
     onKill(name)
     {
-        this.state.containers = this.state.containers.filterNot(container => container.get('name') === name);
+        this.state.containers = this.state.containers.filterNot(c => c.get('name') === name);
 
         this.emit('change');
     }
