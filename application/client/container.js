@@ -8,6 +8,11 @@ var ContainerClient = AuthGateway.extend({
 
     config : config.api,
 
+    activateBuild(container, build)
+    {
+        return this.apiRequest('PATCH', '/container/' + container, {build : build});
+    },
+
     create(container)
     {
         return this.apiRequest('POST', '/container/', {name : container.name});

@@ -17,7 +17,7 @@ var containers;
 
 function changeWorkingBuild(container, build, callback) {
     exec(
-        'rm -rf __containers__/' + container + '/working && unzip __containers__/' + container + '/builds/' + build + ' -d __containers__/' + container + '/working',
+        'rm -rf __containers__/' + container + '/working/* && unzip __containers__/' + container + '/builds/' + build + ' -d __containers__/' + container + '/working',
         callback
     );
 }
@@ -91,9 +91,9 @@ containers.patch('/container/:name', function (req, res) {
 
                     changeWorkingBuild(
                         container.name,
-                        build,
+                        req.body.build,
                         function (error, stdout, stderr) {
-                            container.activeBuild = build;
+                            container.activeBuild = req.body.build;
                             container.save(
                                 function () {
                                     res.send(containers[0].toObject());

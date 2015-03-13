@@ -25,7 +25,7 @@ module.exports = React.createClass({
             return;
         }
 
-        console.log(build.get('name'));
+        this.getFlux().actions.container.activateBuild(this.props.container.get('name'), build.get('name'));
     },
 
     onDeleteBuild(build)

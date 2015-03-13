@@ -1,6 +1,8 @@
 'use strict';
 
 module.exports = {
+    ACTIVATE_BUILD              : 'ACTIVATE_BUILD',
+    ACTIVATE_BUILD_SUCCESS      : 'ACTIVATE_BUILD_SUCCESS',
     BUILD_CREATE                : 'BUILD_CREATE',
     BUILD_CREATE_SUCCESS        : 'BUILD_CREATE_SUCCESS',
     CLEAR_GISTS                 : 'CLEAR_GISTS',
