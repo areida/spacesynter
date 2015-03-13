@@ -94,8 +94,9 @@ module.exports = React.createClass({
                             type      = 'submit'
                             size      = 'small'
                             style     = {buttonStyle}
+                            onClick   = {this.onSubmit}
                         >
-                            <a onClick={this.onSubmit}>Create</a>
+                            <a>Create</a>
                         </Button>
                     </div>
                 </form>

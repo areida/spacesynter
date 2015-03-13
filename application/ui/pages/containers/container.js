@@ -72,13 +72,13 @@ module.exports = React.createClass({
                         <Upload onDrop={this.onDrop} percent={this.state.percent}>Add Build</Upload>
                     </div>
                     <div className='medium-2 columns'>
-                        <Button size='small'>
-                            <a onClick={this.onToggleBuilds}>Builds</a>
+                        <Button size='small' onClick={this.onToggleBuilds}>
+                            <a>Builds</a>
                         </Button>
                     </div>
                     <div className='medium-4 columns'>
-                        <Button size='small'>
-                            <a onDoubleClick={this.onKill} title='Double Click'>Kill</a>
+                        <Button size='small' title='Double Click' onDoubleClick={this.onKill}>
+                            <a>Kill</a>
                         </Button>
                     </div>
                 </div>

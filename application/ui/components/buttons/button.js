@@ -36,19 +36,23 @@ module.exports = React.createClass({
             'right',
             null
         ]),
-        block    : React.PropTypes.bool,
-        disabled : React.PropTypes.bool
+        block         : React.PropTypes.bool,
+        disabled      : React.PropTypes.bool,
+        onClick       : React.PropTypes.func,
+        onDoubleClick : React.PropTypes.func,
     },
 
     getDefaultProps : function()
     {
         return {
-            size     : 'default',
-            color    : 'primary',
-            status   : null,
-            split    : null,
-            expand   : false,
-            disabled : false
+            size          : 'default',
+            color         : 'primary',
+            status        : null,
+            split         : null,
+            expand        : false,
+            disabled      : false,
+            onClick       : null,
+            onDoubleClick : null
         };
     },
 
@@ -74,6 +78,14 @@ module.exports = React.createClass({
             'button-disabled'     : this.props.disabled === true
         });
 
-        return <span className={classes}>{this.props.children}</span>;
+        return (
+            <span
+                className     = {classes}
+                onClick       = {this.props.onClick}
+                onDoubleClick = {this.props.onDoubleClick}
+            >
+                {this.props.children}
+            </span>
+        );
     }
 });

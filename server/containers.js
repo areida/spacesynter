@@ -133,6 +133,8 @@ containers.post('/container', function (req, res) {
                                         80 : parseInt(_.findWhere(response.HostConfig.Ports, {PrivatePort : 80}).PublicPort, 10)
                                     };
 
+                                    container.activeBuild = null;
+
                                     container.save(
                                         function () {
                                             Fs.mkdir('__containers__/' + req.body.name, function (err) {
