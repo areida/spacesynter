@@ -56,11 +56,6 @@ if (config.api.auth) {
 
 api.use(containers);
 
-api.listen(
-    config.api.port,
-    config.api.hostname,
-    10,
-    function () {
-        console.log('Listening on ' + config.api.hostname + ':' + config.api.port);
-    }
-);
+api.listen(config.api.port, 10, function () {
+    console.log('Listening on ' + config.api.hostname + ':' + config.api.port);
+});

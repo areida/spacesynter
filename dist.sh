@@ -11,6 +11,8 @@ zip -r `git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` \
     server \
     server.js \
     templates \
+    -x node_modules/babel-core/**\* \
+    -x node_modules/babel-loader/**\* \
     -x node_modules/chai/**\* \
     -x node_modules/docker.io/**\* \
     -x node_modules/es5-shim/**\* \

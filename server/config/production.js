@@ -7,12 +7,12 @@ module.exports = {
         docker   : false,
         hostname : 'api.spacesynter.com',
         nginx    : false,
-        port     : 80
+        port     : 9000
     },
     app : {
         auth     : false,
         hostname : 'spacesynter.com',
-        port     : 80
+        port     : 8000
     },
     github : {
         hostname  : 'api.github.com',

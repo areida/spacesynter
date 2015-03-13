@@ -62,6 +62,6 @@ app.get(/^([^.]+)$/, function (req, res, next) {
 
 app.use(Express.static(process.cwd() + '/build'));
 
-app.listen(config.app.port, config.app.hostname, 10, function () {
+app.listen(config.app.port, 10, function () {
     console.log('Listening on ' + config.app.hostname + ':' + config.app.port);
 });

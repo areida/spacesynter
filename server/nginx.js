@@ -27,7 +27,7 @@ module.exports = {
                             var conf = Tmpl('servers.conf', {containers : containers});
 
                             Fs.writeFile(
-                                '/home/andrew/servers.conf',
+                                '/home/ubuntu/servers.conf',
                                 conf,
                                 function (err) {
                                     if (err) {
