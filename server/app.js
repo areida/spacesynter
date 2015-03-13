@@ -53,7 +53,7 @@ app.get(/^([^.]+)$/, function (req, res, next) {
 
             res.send(Tmpl('index.html', {
                 flux : JSON.stringify(flux.toObject()),
-                host : config.api.hostname + ':' + config.api.port,
+                host : config.api.hostname,
                 html : React.renderToString(new Factory({flux : flux})),
             }));
         });

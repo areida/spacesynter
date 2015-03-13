@@ -39,7 +39,7 @@ api.use(new Session({
 api.use(function(req, res, next) {
     res.header(
         'Access-Control-Allow-Origin',
-        process.env.HOSTNAME || ('http://' + config.app.hostname + ':' + config.app.port)
+        process.env.HOSTNAME || ('http://' + config.app.hostname)
     );
     res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
     res.header('Access-Control-Allow-Methods', 'DELETE, GET, HEAD, OPTIONS, PATCH, POST');
