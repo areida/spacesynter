@@ -15,6 +15,7 @@ var ContainerStore = APIStoreFactory.createStore({
         };
 
         this.bindActions(
+            constants.ACTIVATE_BUILD_SUCCESS, 'onActvateBuildSuccess',
             constants.BUILD_CREATE_SUCCESS, 'onBuildCreateSuccess',
             constants.CONTAINER_FETCH_ALL, 'onFetchAll',
             constants.CONTAINER_FETCH_ALL_SUCCESS, 'onFetchAllSuccess',
@@ -37,6 +38,16 @@ var ContainerStore = APIStoreFactory.createStore({
     getAll()
     {
         return this.state.containers;
+    },
+
+    onActvateBuildSuccess(container)
+    {
+        var index = this.state.containers
+            .findIndex(c => c.get('name') === container.name);
+
+        this.state.containers = this.state.containers.set(index, Immutable.fromJS(container));
+
+        this.emit('change');
     },
 
     onBuildCreateSuccess(container)
