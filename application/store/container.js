@@ -41,17 +41,17 @@ var ContainerStore = APIStoreFactory.createStore({
 
     onBuildCreateSuccess(container)
     {
-        this.state.containers = this.state.containers.merge([container]);
+        var index = this.state.containers
+            .findIndex(c => c.get('name') === container.name);
+
+        this.state.containers = this.state.containers.set(index, Immutable.fromJS(container));
 
         this.emit('change');
     },
 
     onCreateSuccess(container)
     {
-        container.builds = new Immutable.List(container.builds);
-        container.ports  = new Immutable.Map(container.ports);
-
-        this.state.containers = this.state.containers.push(new Immutable.Map(container));
+        this.state.containers = this.state.containers.push(Immutable.fromJS(container));
 
         this.emit('change');
         this.emit('created');
@@ -66,8 +66,8 @@ var ContainerStore = APIStoreFactory.createStore({
 
     onFetchAllSuccess(containers)
     {
-        this.state.loaded = true;
-        this.state.containers = this.state.containers.merge(containers);
+        this.state.loaded     = true;
+        this.state.containers = Immutable.fromJS(containers);
 
         this.emit('change');
     },
