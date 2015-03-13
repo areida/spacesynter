@@ -13,9 +13,10 @@ module.exports = {
             Hostname   : name + '.' + config.app.hostname,
             HostConfig : {
                 PublishAllPorts : true,
-                VolumesFrom     : [process.cwd(), '/srv/www']
+                Binds           : [process.cwd() + ':/srv/www']
             },
-            Image : image || 'synapse/api-base-image'
+            Cmd   : [],
+            Image : image || 'synapse/api-base'
         };
 
         return new Q.Promise(function (resolve, reject) {
@@ -31,7 +32,7 @@ module.exports = {
     inspect : function(id)
     {
         return new Q.Promise(function (resolve, reject) {
-            docker.containers.inspect({id : id}, function (error, response) {
+            docker.containers.inspect(id, function (error, response) {
                 if (error) {
                     reject(error);
                 } else {
@@ -43,7 +44,7 @@ module.exports = {
     kill : function(id)
     {
         return new Q.Promise(function (resolve, reject) {
-            docker.containers.kill({id : id}, function (error, response) {
+            docker.containers.kill(id, function (error, response) {
                 if (error) {
                     reject(error);
                 } else {

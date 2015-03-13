@@ -118,22 +118,21 @@ containers.post('/container', function (req, res) {
                 } else {
                     docker.create(req.body.name).then(
                         function (response) {
-                            var container = new Container({
-                                builds : [],
-                                host   : response.Hostname,
-                                id     : response.Id,
-                                image  : response.Image,
-                                name   : req.body.name
-                            });
-
-                            docker.inspect(req.body.name).then(
+                            docker.inspect(response.Id).then(
                                 function (response) {
+                                    var container = new Container({
+                                        activeBuild : null,
+                                        builds      : [],
+                                        host        : response.Hostname,
+                                        id          : response.Id,
+                                        image       : response.Image,
+                                        name        : req.body.name
+                                    });
+
                                     container.ports = {
                                         22 : parseInt(_.findWhere(response.HostConfig.Ports, {PrivatePort : 22}).PublicPort, 10),
                                         80 : parseInt(_.findWhere(response.HostConfig.Ports, {PrivatePort : 80}).PublicPort, 10)
                                     };
-
-                                    container.activeBuild = null;
 
                                     container.save(
                                         function () {
