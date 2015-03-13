@@ -14,19 +14,37 @@ module.exports = React.createClass({
     getInitialState()
     {
         return {
-            percent    : 0,
-            showBuilds : false
+            percent     : 0,
+            showBuilds  : false
         };
     },
 
-    onKill()
+    onActivateBuild(build)
     {
-        this.getFlux().actions.container.kill(this.props.container.get('name'));
+        if ((this.props.container.get('activeBuild') === build.get('name'))) {
+            return;
+        }
+
+        console.log(build.get('name'));
+    },
+
+    onDeleteBuild(build)
+    {
+        if ((this.props.container.get('activeBuild') === build.get('name'))) {
+            return;
+        }
+
+        console.log(build.get('name'));
     },
 
     onDrop(files)
     {
         this.getFlux().actions.build.create(this.props.container, files, this.onProgress);
+    },
+
+    onKill()
+    {
+        this.getFlux().actions.container.kill(this.props.container.get('name'));
     },
 
     onProgress(percent)
@@ -41,23 +59,55 @@ module.exports = React.createClass({
 
     renderBuild : function(build, index)
     {
+        var active = (this.props.container.get('activeBuild') === build.get('name'));
+
         return (
             <div className='row' key={index}>
-                <div className='medium-6 columns'></div>
-                <div className='medium-6 columns'>{build.get('name')}</div>
+                <div className='medium-2 columns'>&nbsp;</div>
+                <div className='medium-2 columns'>{build.get('name')}</div>
+                <div className='medium-2 columns'>{build.get('created')}</div>
+                <div className='medium-2 columns'>
+                    <Button
+                        size     = 'tiny'
+                        onClick  = {this.onActivateBuild.bind(this, build)}
+                        disabled = {active}
+                    >
+                        <a>Activate</a>
+                    </Button>
+                </div>
+                <div className='medium-2 columns'>
+                    <Button
+                        size     = 'tiny'
+                        onClick  = {this.onDeleteBuild.bind(this, build)}
+                        disabled = {active}
+                    >
+                        <a>Delete</a>
+                    </Button>
+                </div>
+                <div className='medium-2 columns'></div>
             </div>
         );
     },
 
     render()
     {
-        var buildsStyle, host;
+        var builds, buildsStyle, host;
 
+        builds      = this.props.container.get('builds').map(this.renderBuild).toArray();
         buildsStyle = {
             display : this.state.showBuilds ? 'block' : 'none'
         };
 
         host = this.props.container.get('host');
+
+        if (! builds.length) {
+            builds = (
+                <div className='row'>
+                    <div className='medium-2 columns'></div>
+                    <div className='medium-10 columns'>No builds</div>
+                </div>
+            );
+        }
 
         return (
             <div className='container existing'>
@@ -83,7 +133,7 @@ module.exports = React.createClass({
                     </div>
                 </div>
                 <div className='builds' style={buildsStyle}>
-                    {this.props.container.get('builds').map(this.renderBuild).toArray()}
+                    {builds}
                 </div>
             </div>
         );

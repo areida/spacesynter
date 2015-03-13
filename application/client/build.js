@@ -11,7 +11,7 @@ class BuildClient {
     {
         return Q.promise(
             function (resolve, reject, notify) {
-                if (files[0].type !== 'application/zip') {
+                if (! files.length || files[0].type !== 'application/zip') {
                     reject();
                 }
 
