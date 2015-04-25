@@ -1,0 +1,39 @@
+server {
+    listen <%= @listen %>; ## listen for ipv4; this line is default and implied
+
+    # max upload = 32MB
+    client_max_body_size 32m;
+
+    gzip on;
+    gzip_min_length 1000;
+    gzip_types text/plain application/json application/xml application/atom+xml text/javascript text/css;
+
+    server_name <%= @server_name %>;
+
+    <% if @root %>
+    location / {
+        root <%= @root %>;
+        try_files $url @<%= @server %>;
+    }
+
+    location @<%= @server %> {
+        proxy_pass <%= @proxy_pass %>;
+    }
+    <% else %>
+    location / {
+        proxy_pass <%= @proxy_pass %>
+    }
+    <% end %>
+
+    <% @proxies.each do |location, proxy_pass| %>
+    location /<%= location %> {
+        proxy_pass <%= proxy_pass %>;
+    }
+    <% end %>
+
+    # because we don't care if someone's looking for favicons
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+}
