@@ -10,10 +10,9 @@ var mongoose     = require('mongoose');
 var Session      = require('express-session');
 var RedisStore   = require('connect-redis')(Session);
 
-var config     = require('./config');
-var containers = require('./containers');
-var docker     = require('./docker');
-var nginx      = require('./nginx');
+var config    = require('./config');
+var auth      = require('./middleware/auth');
+var container = require('./middleware/container');
 
 var api, mongoClient;
 
@@ -37,10 +36,7 @@ api.use(new Session({
 }));
 
 api.use(function(req, res, next) {
-    res.header(
-        'Access-Control-Allow-Origin',
-        process.env.HOSTNAME || ('http://' + config.app.hostname)
-    );
+    res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type');
     res.header('Access-Control-Allow-Methods', 'DELETE, GET, HEAD, OPTIONS, PATCH, POST');
     res.header('Content-Type', 'application/json');
@@ -50,12 +46,12 @@ api.use(function(req, res, next) {
     next();
 });
 
-if (config.api.auth) {
-    api.use(auth.check);
+if (config.auth) {
+    api.use(auth);
 }
 
-api.use(containers);
+api.use(container);
 
 api.listen(config.api.port, 10, function () {
-    console.log('Listening on ' + config.api.hostname + ':' + config.api.port);
+    console.log('Listening on localhost:' + config.api.port);
 });

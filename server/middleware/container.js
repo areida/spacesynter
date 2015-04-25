@@ -3,17 +3,15 @@ var Express  = require('express');
 var Fs       = require('fs');
 var _        = require('underscore');
 
-var config    = require('./config');
-var Container = require('./container');
-var nginx     = require('./nginx');
+var config    = require('../config');
+var Container = require('../model/container');
+var nginx     = require('../util/nginx');
 
-if (config.api.docker) {
-    var docker = require('./docker');
+if (config.docker) {
+    var docker = require('../util/docker');
 } else {
-    var docker = require('./mock-docker');
+    var docker = require('../util/mock-docker');
 }
-
-var containers;
 
 function changeWorkingBuild(container, build, callback) {
     exec(
@@ -22,9 +20,9 @@ function changeWorkingBuild(container, build, callback) {
     );
 }
 
-containers = new Express();
+var container = new Express();
 
-containers.delete('/container/:name', function (req, res) {
+container.delete('/container/:name', function (req, res) {
     Container.find({name : req.params.name}).exec()
         .then(
             function (containers) {
@@ -59,7 +57,7 @@ containers.delete('/container/:name', function (req, res) {
         );
 });
 
-containers.get('/container/:name', function (req, res) {
+container.get('/container/:name', function (req, res) {
     Container.find({name : req.params.name}).exec()
         .then(
             function (containers) {
@@ -72,7 +70,7 @@ containers.get('/container/:name', function (req, res) {
         );
 });
 
-containers.get('/containers', function (req, res) {
+container.get('/containers', function (req, res) {
     Container.find({}).exec()
         .then(
             function (containers) {
@@ -81,7 +79,7 @@ containers.get('/containers', function (req, res) {
         );
 });
 
-containers.patch('/container/:name', function (req, res) {
+container.patch('/container/:name', function (req, res) {
     Container.find({name : req.params.name})
         .exec()
         .then(
@@ -108,7 +106,7 @@ containers.patch('/container/:name', function (req, res) {
         );
 });
 
-containers.post('/container', function (req, res) {
+container.post('/container', function (req, res) {
     Container.find({name : req.body.name}).exec()
         .then(
             function (containers) {
@@ -173,7 +171,7 @@ containers.post('/container', function (req, res) {
 });
 
 // Capture any uploaded file in a buffer
-containers.use('/container/:name/build', function (req, res, next) {
+container.use('/container/:name/build', function (req, res, next) {
     var data = new Buffer('');
 
     req.on('data', function (chunk) {
@@ -186,7 +184,7 @@ containers.use('/container/:name/build', function (req, res, next) {
     });
 });
 
-containers.post('/container/:name/build', function (req, res) {
+container.post('/container/:name/build', function (req, res) {
     Container.find({name : req.params.name}).exec()
         .then(
             function (containers) {
@@ -227,4 +225,4 @@ containers.post('/container/:name/build', function (req, res) {
         );
 });
 
-module.exports = containers;
+module.exports = container;

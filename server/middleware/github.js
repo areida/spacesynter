@@ -7,15 +7,15 @@ var request   = require('request');
 var url       = require('url');
 var _         = require('underscore');
 
-var appConfig = require('../application/config');
-var config    = require('./config');
+var appConfig = require('../../application/config');
+var config    = require('../config');
 
 var options = {
+    baseUrl        : __ENVIRONMENT__ === 'production' ? appConfig.api.hostname : 'http://localhost:' + config.dev.port,
+    callbackUri    : '/gh-callback',
     ghClientId     : process.env.GH_CLIENT_ID,
     ghClientSecret : process.env.GH_CLIENT_SECRET,
     ghLoginUrl     : 'https://github.com/login',
-    baseUrl        : process.env.HOSTNAME || 'http://' + (config.app.hostname + ':' + config.app.port),
-    callbackUri    : '/gh-callback',
     scope          : 'gist'
 };
 
@@ -65,18 +65,18 @@ function callback(code, state) {
 }
 
 github.get('/gh-login/?', function (req, res) {
-    req.session.ghState = ghClient.createState();
+    req.session.ghState = createState();
 
-    res.redirect(302, ghClient.authorizeUrl(req.session.state));
+    res.redirect(302, authorizeUrl(req.session.state));
     res.end();
 });
 
 github.get('/gh-callback/?', function (req, res) {
     if (! req.query.code || ! req.session.ghState) {
-        res.redirect(302, appConfig.loginUri);
+        res.redirect(302, appConfig.login_url);
         res.end();
     } else {
-        ghClient.callback(req.query.code, req.session.state)
+        callback(req.query.code, req.session.state)
             .then(
                 function (token) {
                     var redirectUrl = req.session.redirectUrl || '/';
@@ -102,7 +102,7 @@ github.get('/logout/?', function (req, res) {
     if (req.headers['content-type'] === 'application/json') {
         res.end();
     } else {
-        res.redirect(302, appConfig.loginUri);
+        res.redirect(302, appConfig.login_url);
         res.end(); 
     }
 });

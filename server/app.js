@@ -1,32 +1,19 @@
-require('node-jsx').install({
-    harmony : true
-});
-
 global.__BACKEND__     = process.env.BACKEND || '';
 global.__ENVIRONMENT__ = process.env.APP_ENV || 'development';
 global.localStorage    = require('localStorage');
 global.navigator       = require('navigator');
 
 var Express      = require('express');
-var Fs           = require('fs');
-var React        = require('react');
-var Router       = require('react-router');
 var Session      = require('express-session');
 var CookieParser = require('cookie-parser');
 var RedisStore   = require('connect-redis')(Session);
-var Tmpl         = require('blueimp-tmpl').tmpl;
 
-var auth   = require('./auth');
 var config = require('./config');
-var Flux   = require('../application/flux');
-var github = require('./github');
-var routes = require('../application/routes');
+var auth   = require('./middleware/auth');
+var github = require('./middleware/github');
+var render = require('./middleware/render-generated');
 
 var app = new Express();
-
-Tmpl.load = function (name) {
-    return Fs.readFileSync(process.cwd() + '/templates/' + name, 'utf8');
-};
 
 app.use(new CookieParser());
 app.use(new Session({
@@ -36,32 +23,13 @@ app.use(new Session({
     store             : new RedisStore(config.redis.cookies)
 }));
 
-if (config.app.auth) {
+if (config.auth) {
     app.use(auth);
+    app.use(github);
 }
 
-app.use(github);
-
-app.get(/^([^.]+)$/, function (req, res, next) {
-    localStorage.setItem('token', req.session.ghToken ? JSON.stringify(req.session.ghToken) : null);
-
-    Router.run(routes, req.url, function (Handler, state) {
-        var flux = new Flux();
-
-        flux.fetchData(state).done(function () {
-            var Factory = React.createFactory(Handler);
-
-            res.send(Tmpl('index.html', {
-                flux : JSON.stringify(flux.toObject()),
-                host : config.api.hostname,
-                html : React.renderToString(new Factory({flux : flux})),
-            }));
-        });
-    });
-});
-
-app.use(Express.static(process.cwd() + '/build'));
+app.get(/^([^.]+)$/, render);
 
 app.listen(config.app.port, 10, function () {
-    console.log('Listening on ' + config.app.hostname + ':' + config.app.port);
+    console.log('Listening on localhost:' + config.app.port);
 });

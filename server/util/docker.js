@@ -1,7 +1,7 @@
 var Docker = require('docker.io');
 var Q      = require('q');
 
-var config = require('./config');
+var config = require('../config');
 
 var docker = new Docker({socketPath : '/var/run/docker.sock'});
 
