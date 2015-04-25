@@ -1,40 +1,35 @@
 'use strict';
 
-var React           = require('react');
-var Navigation      = require('react-router').Navigation;
-var FluxMixin       = require('fluxxor').FluxMixin(React);
-var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
+var React = require('react');
 
 var Button = require('../components/buttons/button');
 
-module.exports = React.createClass({
-    displayName : 'Login',
-
-    mixins : [FluxMixin, Navigation, new StoreWatchMixin('TokenStore')],
-
-    getStateFromFlux()
+class Login extends React.Component {
+    constructor(props)
     {
-        return {
-            loggedIn : this.getFlux().store('TokenStore').isLoggedIn()
+        super(props);
+
+        this.state = {
+            loggedIn : props.flux.store('TokenStore').isLoggedIn()
         };
-    },
+    }
 
     componentDidMount()
     {
         this.authenticate();
-    },
+    }
 
     componentDidUpdate()
     {
         this.authenticate();
-    },
+    }
 
     authenticate()
     {
         if (this.state.loggedIn) {
-            this.transitionTo('/');
+            this.context.router.transitionTo('/');
         }
-    },
+    }
 
     render()
     {
@@ -44,4 +39,11 @@ module.exports = React.createClass({
             </div>
         );
     }
-});
+}
+
+Login.displayName  = 'Login';
+Login.contextTypes = {
+    router : React.PropTypes.func
+};
+
+module.exports = Login;

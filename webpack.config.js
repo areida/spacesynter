@@ -11,8 +11,7 @@ var config = {
     plugins : [
         new Webpack.DefinePlugin({
             __BACKEND__     : '\''+process.env.BACKEND+'\'',
-            __ENVIRONMENT__ : '\''+environment+'\'',
-            __SERVER__      : '\''+process.env.SERVER+'\''
+            __ENVIRONMENT__ : '\''+environment+'\''
         })
     ],
     reactLoaders : ['jsx-loader?insertPragma=React.DOM&harmony'],
@@ -25,16 +24,14 @@ var config = {
 if (environment === 'development') {
     config.plugins.push(new WebpackError(process.platform));
 
-    if (! process.env.SERVER) {
-        config.entry.unshift('webpack-dev-server/client?http://localhost:9000')
-        config.entry.unshift('webpack/hot/dev-server')
-        config.plugins.push(new Webpack.HotModuleReplacementPlugin());
-        config.plugins.push(new HtmlWebpack({template : './templates/index.html'}));
-        config.reactLoaders.unshift('react-hot');
-    }
+    config.entry.unshift('webpack-dev-server/client?http://localhost:9000');
+    config.entry.unshift('webpack/hot/dev-server');
+    config.plugins.push(new Webpack.HotModuleReplacementPlugin());
+    config.plugins.push(new HtmlWebpack({template : './templates/index.html'}));
+    config.reactLoaders.unshift('react-hot');
 }
 
-if (environment === 'production' || process.env.SERVER) {
+if (environment === 'production') {
     config.plugins.push(new ExtractTextPlugin('app.css', {allChunks : true}));
     config.sassLoader = {
         test   : /\.scss$/,
@@ -49,14 +46,13 @@ module.exports = {
     name   : 'browser bundle',
     entry  : config.entry,
     output : {
-        filename   : 'app.js',
-        path       : __dirname + '/build',
-        publicPath : 'http://localhost:9000/'
+        filename : 'app.js',
+        path     : __dirname + '/build'
     },
     module : {
         preLoaders : [
             {
-                test    : /\.js?/,
+                test    : /\.jsx?/,
                 loader  : 'jsxhint-loader',
                 exclude : npmDir
             }

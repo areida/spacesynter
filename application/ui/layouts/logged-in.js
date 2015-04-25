@@ -1,47 +1,48 @@
 'use strict';
 
-var React           = require('react');
-var Navigation      = require('react-router').Navigation;
-var RouteHandler    = require('react-router').RouteHandler;
-var FluxMixin       = require('fluxxor').FluxMixin(React);
-var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
+var React        = require('react');
+var RouteHandler = require('react-router').RouteHandler;
 
-module.exports = React.createClass({
-
-    displayName : 'LoggedInLayout',
-
-    mixins : [FluxMixin, Navigation, new StoreWatchMixin('TokenStore')],
-
-    getStateFromFlux()
+class LoggedInLayout extends React.Component {
+    constructor(props)
     {
-        return {
-            loggedIn : this.getFlux().store('TokenStore').isLoggedIn()
+        super(props);
+
+        this.state = {
+            loggedIn : props.flux.store('TokenStore').isLoggedIn()
         };
-    },
+    }
 
     componentDidMount()
     {
         this.authenticate();
-    },
+    }
 
     componentDidUpdate()
     {
         this.authenticate();
-    },
+    }
 
     authenticate()
     {
         if (! this.state.loggedIn) {
-            //this.transitionTo('login');
+            //this.context.router.transitionTo('login');
         }
-    },
+    }
 
     render()
     {
         return (
             <div className='l--app-wrapper'>
-                <RouteHandler />
+                <RouteHandler {...this.props} />
             </div>
         );
     }
-});
+}
+
+LoggedInLayout.displayName  = 'LoggedInLayout';
+LoggedInLayout.contextTypes = {
+    router : React.PropTypes.func
+};
+
+module.exports = LoggedInLayout;

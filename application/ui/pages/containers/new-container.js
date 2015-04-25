@@ -1,46 +1,37 @@
 'use strict';
 
-var React           = require('react');
-var FluxMixin       = require('fluxxor').FluxMixin(React);
-var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
-var _               = require('underscore');
+var React = require('react');
+var _     = require('underscore');
 
 var Button = require('../../components/buttons/button');
 var Select = require('../../components/form/inputs/select');
 var Text   = require('../../components/form/inputs/text');
 
-module.exports = React.createClass({
-
-    displayName : 'NewContainer',
-    mixins      : [FluxMixin, new StoreWatchMixin('ContainerStore')],
-
-    getInitialState()
+class NewContainer extends React.Component {
+    constructor(props)
     {
-        return {
+        super(props);
+
+        this.state = {
             image : '',
             name  : ''
         };
-    },
-
-    getStateFromFlux()
-    {
-        return {};
-    },
+    }
 
     componentDidMount()
     {
-        this.getFlux().store('ContainerStore').addListener('created', this.onCreated);
-    },
+        this.props.flux.store('ContainerStore').addListener('created', this.onCreated);
+    }
 
     componentWillUnmount()
     {
-        this.getFlux().store('ContainerStore').removeListener('created'. this.onCreated);
-    },
+        this.props.flux.store('ContainerStore').removeListener('created'. this.onCreated);
+    }
 
     onCreated()
     {
         this.setState(this.getInitialState());
-    },
+    }
 
     onFormChange(value, element)
     {
@@ -49,14 +40,16 @@ module.exports = React.createClass({
         state[element.props.id] = value;
 
         this.setState(state);
-    },
+    }
 
     onSubmit(event)
     {
         event.preventDefault();
 
-        this.getFlux().actions.container.create({name : this.state.name});
-    },
+        this.props.flux.actions.container.create({
+            name : this.state.name
+        });
+    }
 
     render()
     {
@@ -103,4 +96,8 @@ module.exports = React.createClass({
             </div>
         );
     }
-});
+}
+
+NewContainer.displayName = 'NewContainer';
+
+module.exports = NewContainer;

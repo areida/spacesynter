@@ -1,20 +1,27 @@
 'use strict';
 
-// __ENVIRONMENT__ is replaced by webpack during build
+var _ = require('lodash');
+
+var defaults, overrides;
+
+defaults = {
+    api : {
+        hostname : 'spacesynter.vm',
+        port     : 8000
+    },
+    login_url : '/login'
+};
+
 switch(__ENVIRONMENT__)
 {
-    case 'ci':
-        module.exports = require('./config/ci');
-        break;
     case 'development':
-        module.exports = require('./config/development');
-        break;
-    case 'qa':
-        module.exports = require('./config/qa');
+        overrides = require('./config/development');
         break;
     case 'production':
-        module.exports = require('./config/production');
+        overrides = require('./config/production');
         break;
     default:
         throw new Error('Invalid ENVIRONMENT value: ' + __ENVIRONMENT__);
 }
+
+module.exports = _.merge({}, defaults, overrides);

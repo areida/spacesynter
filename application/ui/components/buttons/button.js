@@ -1,64 +1,12 @@
 'use strict';
 
-var React = require('react');
-var cx    = require('react/lib/cx');
+var React      = require('react');
+var classNames = require('classnames');
 
-module.exports = React.createClass({
-    displayName : 'Button',
-
-    propTypes : {
-        size : React.PropTypes.oneOf([
-            'tiny',
-            'small',
-            'medium',
-            'large',
-            'auto',
-            'default'
-        ]),
-        display : React.PropTypes.oneOf([
-            'auto',
-            'default'
-        ]),
-        color : React.PropTypes.oneOf([
-            'primary',
-            'secondary',
-            'tertiary',
-            'inherit'
-        ]),
-        status : React.PropTypes.oneOf([
-            'warning',
-            'warning-alt',
-            'positive',
-            null
-        ]),
-        split : React.PropTypes.oneOf([
-            'left',
-            'right',
-            null
-        ]),
-        block         : React.PropTypes.bool,
-        disabled      : React.PropTypes.bool,
-        onClick       : React.PropTypes.func,
-        onDoubleClick : React.PropTypes.func,
-    },
-
-    getDefaultProps : function()
+class Button extends React.Component {
+    render()
     {
-        return {
-            size          : 'default',
-            color         : 'primary',
-            status        : null,
-            split         : null,
-            expand        : false,
-            disabled      : false,
-            onClick       : null,
-            onDoubleClick : null
-        };
-    },
-
-    render : function()
-    {
-        var classes = cx({
+        var classes = {
             'button'              : true,
             'button--tiny'        : this.props.size === 'tiny',
             'button--small'       : this.props.size === 'small',
@@ -76,11 +24,11 @@ module.exports = React.createClass({
             'button--split-right' : this.props.split === 'right',
             'button--block'       : this.props.block === true,
             'button-disabled'     : this.props.disabled === true
-        });
+        };
 
         return (
             <span
-                className     = {classes}
+                className     = {classNames(classes)}
                 onClick       = {this.props.onClick}
                 onDoubleClick = {this.props.onDoubleClick}
             >
@@ -88,4 +36,54 @@ module.exports = React.createClass({
             </span>
         );
     }
-});
+}
+
+Button.displayName = 'Button';
+Button.propTypes   = {
+    size : React.PropTypes.oneOf([
+        'tiny',
+        'small',
+        'medium',
+        'large',
+        'auto',
+        'default'
+    ]),
+    display : React.PropTypes.oneOf([
+        'auto',
+        'default'
+    ]),
+    color : React.PropTypes.oneOf([
+        'primary',
+        'secondary',
+        'tertiary',
+        'inherit'
+    ]),
+    status : React.PropTypes.oneOf([
+        'warning',
+        'warning-alt',
+        'positive',
+        null
+    ]),
+    split : React.PropTypes.oneOf([
+        'left',
+        'right',
+        null
+    ]),
+    block         : React.PropTypes.bool,
+    disabled      : React.PropTypes.bool,
+    onClick       : React.PropTypes.func,
+    onDoubleClick : React.PropTypes.func,
+};
+
+Button.defaultProps = {
+    size          : 'default',
+    color         : 'primary',
+    status        : null,
+    split         : null,
+    expand        : false,
+    disabled      : false,
+    onClick       : null,
+    onDoubleClick : null
+};
+
+module.exports = Button;

@@ -1,58 +1,21 @@
 'use strict';
 
-var React           = require('react');
-var _               = require('underscore');
-var Label           = require('../label');
+var React = require('react');
+var _     = require('lodash');
+
 var Icon            = require('../../icon/icon');
 var InputValidation = require('../input-validation');
-var FormInputsMixin = require('./form-inputs-mixin');
+var Label           = require('../label');
 
-module.exports = React.createClass({
-
-    displayName : 'SelectInputElement',
-
-    mixins : [FormInputsMixin],
-
-    propTypes : {
-        id                : React.PropTypes.string.isRequired,
-        disabled          : React.PropTypes.bool,
-        label             : React.PropTypes.string,
-        onChange          : React.PropTypes.func,
-        options           : React.PropTypes.arrayOf(
-            React.PropTypes.shape({
-                value      : React.PropTypes.oneOfType([
-                    React.PropTypes.number,
-                    React.PropTypes.string,
-                    React.PropTypes.bool
-                ]),
-                text       : React.PropTypes.string,
-                isSelected : React.PropTypes.bool
-            })
-        ),
-        validationDisplay : React.PropTypes.string,
-        validation        : React.PropTypes.shape({
-            text  : React.PropTypes.string,
-            value : React.PropTypes.oneOfType([
-                React.PropTypes.string,
-                React.PropTypes.number
-            ])
-        }),
-        value : React.PropTypes.any
-    },
-
-    getDefaultProps : function()
+class SelectInput extends React.Component {
+    onChange(event)
     {
-        return {
-            disabled          : false,
-            label             : null,
-            onChange          : null,
-            options           : null,
-            validationDisplay : null,
-            validation        : {}
-        };
-    },
+        if (this.props.onChange) {
+            this.props.onChange(event.currentTarget.value, this, event);
+        }
+    }
 
-    renderLabel : function()
+    renderLabel()
     {
         if (! this.props.label) {
             return null;
@@ -62,64 +25,44 @@ module.exports = React.createClass({
             <Label
                 htmlFor   = {this.props.id}
                 className = 'input-wrap__label'
-                text      = {this.props.label} />
+                text      = {this.props.label}
+            />
         );
-    },
+    }
 
-    renderSelectOptions : function()
+    renderSelectOptions()
     {
-        var selectOptions = [],
-            selected;
+        var selectOptions = [];
 
         if (! this.props.options) {
             return this.props.children;
         }
 
-        this.props.options.map(function(option, index) {
-            selected = option.isSelected ? 'selected' : '';
-
-            selectOptions.push(
+        return this.props.options.map(
+            (item, index) => (
                 <option
-                    value      = {option.value}
-                    isSelected = {selected}
-                    key        = {'select-option-' + index} >
-                    {option.text}
+                    value = {item.value}
+                    key   = {'select-option-' + index}
+                >
+                    {item.text}
                 </option>
-            );
-        });
+            )
+        );
+    }
 
-        return selectOptions;
-    },
-
-    getSelectedValue : function()
-    {
-        var selectedOption;
-
-        if (! _.isUndefined(this.props.value)) {
-            return this.props.value;
-        }
-
-        selectedOption = _.findWhere(this.props.options, {isSelected : true});
-
-        if (! selectedOption) {
-            return;
-        }
-
-        return selectedOption.value;
-    },
-
-    render : function()
+    render()
     {
         return (
             <InputValidation {...this.props}
                 validation = {this.props.validation}
-                display    = {this.props.validationDisplay} >
+                display    = {this.props.validationDisplay}
+            >
                 {this.renderLabel()}
                 <div className='input-wrap input-wrap--select'>
                     <select
                         className = 'input input--select'
                         id        = {this.props.id}
-                        value     = {this.getSelectedValue()}
+                        value     = {this.props.value}
                         onChange  = {this.onChange}
                         disabled  = {this.props.disabled ? 'disabled' : ''}
                     >
@@ -135,5 +78,44 @@ module.exports = React.createClass({
             </InputValidation>
         );
     }
+}
 
-});
+SelectInput.displayName = 'SelectInputElement';
+
+SelectInput.propTypes = {
+    id                : React.PropTypes.string.isRequired,
+    disabled          : React.PropTypes.bool,
+    label             : React.PropTypes.string,
+    onChange          : React.PropTypes.func,
+    options           : React.PropTypes.arrayOf(
+        React.PropTypes.shape({
+            value      : React.PropTypes.oneOfType([
+                React.PropTypes.number,
+                React.PropTypes.string,
+                React.PropTypes.bool
+            ]),
+            text       : React.PropTypes.string,
+            isSelected : React.PropTypes.bool
+        })
+    ),
+    validationDisplay : React.PropTypes.string,
+    validation        : React.PropTypes.shape({
+        text  : React.PropTypes.string,
+        value : React.PropTypes.oneOfType([
+            React.PropTypes.string,
+            React.PropTypes.number
+        ])
+    }),
+    value : React.PropTypes.any
+};
+
+SelectInput.defaultProps = {
+    disabled          : false,
+    label             : null,
+    onChange          : null,
+    options           : null,
+    validationDisplay : null,
+    validation        : {}
+};
+
+module.exports = SelectInput;

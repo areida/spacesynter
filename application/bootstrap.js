@@ -27,5 +27,9 @@ if (state) {
 }
 
 Router.run(routes, Router.HistoryLocation, (Handler, state) => {
-    React.render(React.createElement(Handler, {flux : flux}), window.document.body);
+    React.render(React.createElement(Handler, {
+        flux   : flux,
+        params : state.params,
+        query  : state.query
+    }), window.document.body);
 });

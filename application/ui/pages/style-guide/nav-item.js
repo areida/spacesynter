@@ -1,14 +1,11 @@
 'use strict';
 
 var React     = require('react');
-var FluxMixin = require('fluxxor').FluxMixin(React);
 var Link      = require('react-router').Link;
-var classSet  = require('react/lib/cx');
+var classNames  = require('classnames');
 
 module.exports = React.createClass({
     displayName : 'StyleGuideNavItem',
-
-    mixins : [FluxMixin],
 
     propTypes : {
         active      : React.PropTypes.bool,
@@ -25,23 +22,24 @@ module.exports = React.createClass({
 
     render : function()
     {
-        var linkClasses, linkParams, linkTo;
+        var classes, params, to;
 
-        linkClasses = classSet({
+        classes = {
             'sg-nav__menu-link'             : true,
             'sg-nav__menu-link--is-current' : this.props.active
-        });
+        };
 
-        linkParams = this.props.displayName ? {section : this.props.displayName} : {};
-        linkTo     = this.props.displayName ? 'style-guide-section' : 'style-guide';
+        params = this.props.displayName ? {section : this.props.displayName} : {};
+        to     = this.props.displayName ? 'style-guide-section' : 'style-guide';
 
         return (
             <li className='sg-nav__menu-item'>
                 <Link
-                    to        = {linkTo}
-                    params    = {linkParams}
-                    className = {linkClasses}
-                    onClick   = {this.onClick} >
+                    to        = {to}
+                    params    = {params}
+                    className = {classNames(classes)}
+                    onClick   = {this.onClick}
+                >
                     {this.props.children || this.props.displayName}
                 </Link>
             </li>

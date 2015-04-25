@@ -1,8 +1,6 @@
 'use strict';
 
 var React      = require('react');
-var FluxMixin  = require('fluxxor').FluxMixin(React);
-var StateMixin = require('react-router').State;
 
 var SGHeader            = require('./header');
 var ButtonSection       = require('./sections/buttons');
@@ -13,8 +11,6 @@ var TypographySection   = require('./sections/typography');
 module.exports = React.createClass({
 
     displayName : 'StyleGuide',
-
-    mixins : [FluxMixin, StateMixin],
 
     getComponentConstructors : function()
     {
@@ -28,7 +24,7 @@ module.exports = React.createClass({
 
     renderSections : function()
     {
-        var section = this.getParams().section;
+        var section = this.props.params.section;
 
         return this.getComponentConstructors().map(function(Page) {
             if (section === 'all' || section === Page.displayName) {

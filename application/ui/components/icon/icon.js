@@ -1,58 +1,20 @@
 'use strict';
 
-var React = require('react');
-var cx    = require('react/lib/cx');
-var _     = require('underscore');
+var React      = require('react');
+var classNames = require('classnames');
+var _          = require('lodash');
 
-var iconMap = {
+var Icons = {
     caret   : require('./icons/caret'),
     navicon : require('./icons/navicon')
 };
 
-module.exports = React.createClass({
-    displayName : 'Icon',
-
-    propTypes : {
-        icon : React.PropTypes.oneOf(_.keys(iconMap)),
-        size : React.PropTypes.oneOf([
-            'default',
-            'x-large',
-            'large',
-            'medium',
-            'small',
-            'x-small'
-        ]),
-        rotate : React.PropTypes.oneOf([
-            0,
-            45,
-            90,
-            180,
-            270
-        ]),
-        color : React.PropTypes.oneOf([
-            'white',
-            'black',
-            'primary',
-            'secondary',
-            'tertiary'
-        ])
-    },
-
-    getDefaultProps : function()
+class Icon extends React.Component {
+    render()
     {
-        return {
-            size   : 'default',
-            rotate : 0,
-            color  : 'black'
-        };
-    },
+        var classes, Component;
 
-    render : function()
-    {
-        var classes,
-            Component;
-
-        classes = cx({
+        classes = {
             'icon'             : true,
             'icon--x-large'    : this.props.size   === 'x-large',
             'icon--large'      : this.props.size   === 'large',
@@ -69,14 +31,52 @@ module.exports = React.createClass({
             'icon--primary'    : this.props.color  === 'primary',
             'icon--secondary'  : this.props.color  === 'secondary',
             'icon--tertiary'   : this.props.color  === 'tertiary'
-        });
+        };
 
-        Component = iconMap[this.props.icon];
+        classes['icon--' + this.props.icon] = true;
+
+        Component = Icons[this.props.icon];
 
         return (
-            <span className={'icon--' + this.props.icon + ' ' + classes}>
+            <span className={classNames(classes)}>
                 <Component />
             </span>
         );
     }
-});
+}
+
+Icon.displayName = 'Icon';
+
+Icon.propTypes = {
+    icon : React.PropTypes.oneOf(_.keys(Icons)),
+    size : React.PropTypes.oneOf([
+        'default',
+        'x-large',
+        'large',
+        'medium',
+        'small',
+        'x-small'
+    ]),
+    rotate : React.PropTypes.oneOf([
+        0,
+        45,
+        90,
+        180,
+        270
+    ]),
+    color : React.PropTypes.oneOf([
+        'white',
+        'black',
+        'primary',
+        'secondary',
+        'tertiary'
+    ])
+};
+
+Icon.defaultProps = {
+        size   : 'default',
+        rotate : 0,
+        color  : 'black'
+};
+
+module.exports = Icon;

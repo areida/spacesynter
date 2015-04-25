@@ -2,11 +2,8 @@
 
 module.exports = {
     api : {
-        auth     : false,
-        docker   : false,
-        hostname : 'api.spacesynter.com',
-        nginx    : false,
-        port     : 80
-    },
-    loginUri : '/login',
+        hostname : 'spacesynter.com',
+        port     : 80,
+        prefix   : '/api'
+    }
 };

@@ -1,20 +1,19 @@
 'use strict';
 
 var React        = require('react');
-var FluxMixin    = require('fluxxor').FluxMixin(React);
 var RouteHandler = require('react-router').RouteHandler;
 
-module.exports = React.createClass({
-    displayName : 'LoggedOutLayout',
-
-    mixins : [FluxMixin],
-
+class LoggedOutLayout extends React.Component {
     render()
     {
         return (
             <div className='l--app-wrapper'>
-                <RouteHandler />
+                <RouteHandler {...this.props} />
             </div>
         );
     }
-});
+}
+
+LoggedOutLayout.displayName = 'LoggedOutLayout';
+
+module.exports = LoggedOutLayout;

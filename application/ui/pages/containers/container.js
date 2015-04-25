@@ -1,23 +1,20 @@
 'use strict';
 
-var React     = require('react');
-var FluxMixin = require('fluxxor').FluxMixin(React);
+var React = require('react');
 
 var Button = require('../../components/buttons/button');
 var Upload = require('../../components/form/inputs/upload');
 
-module.exports = React.createClass({
-    displayName : 'ExistingContainer',
-
-    mixins : [FluxMixin],
-
-    getInitialState()
+class ExistingContainer extends React.Component {
+    constructor(props)
     {
-        return {
+        super(props);
+
+        this.state = {
             percent     : 0,
             showBuilds  : false
         };
-    },
+    }
 
     onActivateBuild(build)
     {
@@ -25,8 +22,8 @@ module.exports = React.createClass({
             return;
         }
 
-        this.getFlux().actions.container.activateBuild(this.props.container.get('name'), build.get('name'));
-    },
+        this.props.flux.actions.container.activateBuild(this.props.container.get('name'), build.get('name'));
+    }
 
     onDeleteBuild(build)
     {
@@ -35,29 +32,33 @@ module.exports = React.createClass({
         }
 
         console.log(build.get('name'));
-    },
+    }
 
     onDrop(files)
     {
-        this.getFlux().actions.build.create(this.props.container, files, this.onProgress);
-    },
+        this.props.flux.actions.build.create(this.props.container, files, this.onProgress);
+    }
 
     onKill()
     {
-        this.getFlux().actions.container.kill(this.props.container.get('name'));
-    },
+        this.props.flux.actions.container.kill(this.props.container.get('name'));
+    }
 
     onProgress(percent)
     {
-        this.setState({percent : percent});
-    },
+        this.setState({
+            percent : percent
+        });
+    }
 
     onToggleBuilds()
     {
-        this.setState({showBuilds : ! this.state.showBuilds});
-    },
+        this.setState({
+            showBuilds : ! this.state.showBuilds
+        });
+    }
 
-    renderBuild : function(build, index)
+    renderBuild(build, index)
     {
         var active = (this.props.container.get('activeBuild') === build.get('name'));
 
@@ -87,13 +88,13 @@ module.exports = React.createClass({
                 <div className='medium-2 columns'></div>
             </div>
         );
-    },
+    }
 
     render()
     {
         var builds, buildsStyle, host;
 
-        builds      = this.props.container.get('builds').map(this.renderBuild).toArray();
+        builds      = this.props.container.get('builds').map(this.renderBuild.bind(this)).toArray();
         buildsStyle = {
             display : this.state.showBuilds ? 'block' : 'none'
         };
@@ -138,5 +139,8 @@ module.exports = React.createClass({
             </div>
         );
     }
+}
 
-});
+ExistingContainer.displayName = 'ExistingContainer';
+
+module.exports = ExistingContainer;

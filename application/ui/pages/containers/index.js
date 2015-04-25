@@ -1,58 +1,71 @@
 'use strict';
 
-var React           = require('react');
-var FluxMixin       = require('fluxxor').FluxMixin(React);
-var StoreWatchMixin = require('fluxxor').StoreWatchMixin;
-var _               = require('underscore');
+var React = require('react');
+var _     = require('underscore');
 
 var Container    = require('./container');
 var NewContainer = require('./new-container');
 
-var ContainersPage = React.createClass({
-    displayName : 'Container',
-
-    mixins : [FluxMixin, new StoreWatchMixin('ContainerStore')],
-
-    statics : {
-        fetchData(flux)
-        {
-            return flux.actions.container.fetchAll();
-        }
-    },
-
-    getInitialState()
+class ContainersPage extends React.Component {
+    static fetchData(flux)
     {
-        return {};
-    },
+        return flux.actions.container.fetchAll();
+    }
 
-    getStateFromFlux()
+    constructor(props)
+    {
+        super(props);
+
+        this.state = this.getStateFromProps(props);
+
+        this.onChange = this.onChange.bind(this);
+    }
+
+    getStateFromProps(props)
     {
         return {
-           containers : this.getFlux().store('ContainerStore').getAll()
+            containers : props.flux.store('ContainerStore').getAll()
         };
-    },
+    }
+
+    onChange()
+    {
+        this.setState(this.getStateFromProps(this.props));
+    }
+
+    componentWillMount()
+    {
+        this.props.flux.store('ContainerStore').on('change', this.onChange);
+    }
 
     componentDidMount()
     {
-        if (! this.getFlux().store('ContainerStore').isLoaded()) {
-            ContainersPage.fetchData(this.getFlux()).done();
+        if (! this.props.flux.store('ContainerStore').isLoaded()) {
+            ContainersPage.fetchData(this.props.flux).done();
         }
-    },
+    }
+
+    componentWillUnmount()
+    {
+        this.props.flux.store('ContainerStore').removeListener('change', this.onChange);
+    }
 
     renderContainer(container, index)
     {
         return <Container container={container} key={index} />;
-    },
+    }
 
     render()
     {
         return (
             <div>
-                <NewContainer />
+                <NewContainer {...this.props} />
                 {this.state.containers.map(this.renderContainer).toArray()}
             </div>
         );
     }
-});
+}
+
+ContainersPage.displayName = 'ContainersPage';
 
 module.exports = ContainersPage;

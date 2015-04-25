@@ -1,21 +1,19 @@
 'use strict';
 
-var React        = require('react');
-var RouteHandler = require('react-router').RouteHandler;
-var FluxMixin    = require('fluxxor').FluxMixin(React);
+var React          = require('react');
+var {RouteHandler} = require('react-router');
 
-module.exports = React.createClass({
-
-    displayName : 'SiteLayout',
-
-    mixins : [FluxMixin],
-
+class SiteLayout extends React.Component {
     render()
     {
         return (
             <div className='l--app-wrapper'>
-                <RouteHandler />
+                <RouteHandler {...this.props} />
             </div>
         );
     }
-});
+}
+
+SiteLayout.displayName = SiteLayout;
+
+module.exports = SiteLayout;

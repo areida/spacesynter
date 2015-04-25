@@ -1,50 +1,34 @@
 'use strict';
 
-var React = require('react');
-var cx    = require('react/lib/cx');
+var React      = require('react');
+var classNames = require('classnames');
 
-var Upload = React.createClass({
-
-    displayName : 'Upload',
-
-    propTypes : {
-        onDrop : React.PropTypes.func.isRequired,
-        percent: React.PropTypes.number,
-        size   : React.PropTypes.oneOfType([React.PropTypes.string, React.PropTypes.numeber]),
-        style  : React.PropTypes.object
-    },
-
-    getDefaultProps : function()
+class Upload extends React.Component {
+    constructor(props)
     {
-        return {
-            percent : 0,
-            size    : '100%'
-        };
-    },
+        super(props);
 
-    getInitialState : function()
-    {
-        return {
+        this.state = {
             dragActive : false
         };
-    },
+    }
 
-    onClick : function()
+    onClick()
     {
         this.refs.fileInput.getDOMNode().click();
         this.setState({
             dragActive : true
         });
-    },
+    }
 
-    onDragLeave : function()
+    onDragLeave()
     {
         this.setState({
             dragActive : false
         });
-    },
+    }
 
-    onDragOver : function(event)
+    onDragOver(event)
     {
         event.preventDefault();
         event.dataTransfer.dropEffect = 'copy';
@@ -52,9 +36,9 @@ var Upload = React.createClass({
         this.setState({
             dragActive : true
         });
-    },
+    }
 
-    onDrop : function(event)
+    onDrop(event)
     {
         var files;
 
@@ -73,9 +57,9 @@ var Upload = React.createClass({
         if (this.props.onDrop) {
             this.props.onDrop(files);
         }
-    },
+    }
 
-    render : function()
+    render()
     {
         var background, classes, style;
 
@@ -87,10 +71,10 @@ var Upload = React.createClass({
             ')'
         );
 
-        classes = cx({
+        classes = {
             active   : this.state.dragActive,
             dropzone : true,
-        });
+        };
 
         style = {
             background  : background,
@@ -102,7 +86,7 @@ var Upload = React.createClass({
 
         return (
             <div
-                className   = {classes}
+                className   = {classNames(classes)}
                 onClick     = {this.onClick}
                 onDragLeave = {this.onDragLeave}
                 onDragOver  = {this.onDragOver}
@@ -119,6 +103,23 @@ var Upload = React.createClass({
             </div>
         );
     }
-});
+}
+
+Upload.displayName = 'Upload';
+
+Upload.propTypes = {
+    onDrop  : React.PropTypes.func.isRequired,
+    percent : React.PropTypes.number,
+    size    : React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.numeber
+    ]),
+    style : React.PropTypes.object
+};
+
+Upload.defaultProps = {
+    percent : 0,
+    size    : '100%'
+};
 
 module.exports = Upload;

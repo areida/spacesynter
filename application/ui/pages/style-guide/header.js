@@ -1,14 +1,11 @@
 'use strict';
 
 var React     = require('react');
-var FluxMixin = require('fluxxor').FluxMixin(React);
 var SGNavItem = require('./nav-item');
 
 module.exports = React.createClass({
 
     displayName : 'StyleGuideHeader',
-
-    mixins : [FluxMixin],
 
     propTypes : {
         // Component constructors for sections
