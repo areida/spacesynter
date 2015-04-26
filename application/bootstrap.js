@@ -11,9 +11,8 @@ var flux = new Flux();
 
 var state = window.document.getElementById('server-state');
 
-require('./ui/scss/app.scss');
-
 if (__ENVIRONMENT__ !== 'production') {
+    require('./ui/scss/app.scss');
     require('./ui/scss/style-guide.scss');
 }
 

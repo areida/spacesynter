@@ -25,7 +25,7 @@
         "clean" : "npm run clean:build && npm run clean:dist",
         "dist"  : "npm run clean && npm run dist:api && npm run dist:app && ./dist.sh",
         "start" : "npm run clean && npm run start:all && npm run trap && npm run watch:api",
-        "trap"  : "trap 'npm run clean:servers' 2"
+        "trap"  : "trap 'pm2 delete all' 2"
   },
   "devDependencies": {
     "chai"                     : "1.9.1",
