@@ -1,16 +1,14 @@
-execute 'pm2 delete all' do
-    returns [0, 1]
-end
-
-node[:servers].each do |server, config|
-    execute "pm2 start server/#{server}.js" do
-        cwd '/vagrant'
+node[:deploy].each do |applicaction, deploy|
+    execute "pm2 delete #{applicaction}" do
+        returns [0, 1]
     end
 
-    template "/etc/nginx/sites-available/#{config[:server_name]}" +  do
+    execute "pm2 start #{deploy[:deploy_to]}#{deploy[:current_symlink]}/server/#{applicaction}.js"
+
+    template "/etc/nginx/sites-available/#{deploy[:domains].first}" do
         mode 0644
         source 'nginx.conf.erb'
-        variables node[:webserver].merge(server).merge({:server => server})
+        variables node[:webserver].merge(deploy)
     end
 end
 

@@ -1,14 +1,22 @@
 {
-    "user"    : "deploy",
-    "servers" : {
+    "user" : "deploy",
+    "deploy" : {
+        "api" : {
+            "current_symlink" : "/current",
+            "proxy_pass"      : "http://localhost:8000"
+        },
         "app" : {
             "proxies" : {
                 "api" : "http://localhost:8000"
             },
-            "proxy_pass"  : "http://localhost:9000",
-            "root"        : "/srv/www/spacesynter/current/build",
-            "server_name" : "spacesynter.com"
+            "proxy_pass"      : "http://localhost:9090",
+            "current_symlink" : "/current"
         }
+    },
+    "environment" : {
+        "APP_ENV"  : "production",
+        "APP_NAME" : "spacesynter",
+        "NODE_ENV" : "production"
     },
     "packages" : {
         "apt" : ["docker.io", "git", "mongodb", "nodejs", "npm", "redis-server", "unzip"],
