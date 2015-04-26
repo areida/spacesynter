@@ -12,9 +12,9 @@
   "scripts" : {
         "clean:build"   : "rm -rf ./build",
         "clean:dist"    : "rm -rf ./dist",
-        "clean:servers" : "pm2 delete all",
-        "dist:api"      : "APP_ENV=production NODE_ENV=production webpack --config webpack.server.js -p",
+        "clean:server"  : "pm2 delete all",
         "dist:app"      : "APP_ENV=production NODE_ENV=production webpack -p",
+        "dist:server"   : "APP_ENV=production NODE_ENV=production webpack --config webpack.server.js -p",
         "start:api"     : "pm2 start server/api.js",
         "start:app"     : "pm2 start server/app.js",
         "start:dev"     : "pm2 start server/dev.js",
@@ -22,9 +22,12 @@
         "watch:api"     : "webpack --config webpack.server.js --watch",
         "watch:app"     : "webpack --watch",
 
+        "predist"  : "npm run clean",
+        "prestart" : "npm run clean",
+
         "clean" : "npm run clean:build && npm run clean:dist",
-        "dist"  : "npm run clean && npm run dist:api && npm run dist:app && ./dist.sh",
-        "start" : "npm run clean && npm run start:all && npm run trap && npm run watch:api",
+        "dist"  : "npm run dist:app && npm run dist:server && ./dist.sh",
+        "start" : "npm run start:all && npm run trap && npm run watch:api",
         "trap"  : "trap 'pm2 delete all' 2"
   },
   "devDependencies": {

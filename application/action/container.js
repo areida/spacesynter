@@ -4,7 +4,7 @@ var constants       = require('../constants');
 var containerClient = require('../client/container');
 
 module.exports = {
-    activateBuild : function(container, name)
+    activateBuild(container, name)
     {
         var flux = this;
 
@@ -17,7 +17,7 @@ module.exports = {
         );
     },
 
-    create : function(container)
+    create(container)
     {
         var flux = this;
 
@@ -30,7 +30,7 @@ module.exports = {
         );
     },
 
-    fetch : function(name)
+    fetch(name)
     {
         var flux = this;
 
@@ -43,7 +43,7 @@ module.exports = {
         );
     },
 
-    fetchAll : function()
+    fetchAll()
     {
         var flux = this;
 
@@ -56,7 +56,7 @@ module.exports = {
         );
     },
 
-    kill : function(name)
+    kill(name)
     {
         var flux = this;
 

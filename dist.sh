@@ -42,8 +42,4 @@ zip -r dist/`git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` 
     "node_modules/url-loader/*" \
     "node_modules/webpack/*" \
     "node_modules/webpack-dev-server/*" \
-    "node_modules/webpack-error-notification/*" \
-    "node_modules/fluxxor/*" \
-    "node_modules/immutable/*" \
-    "node_modules/synfrastructure/*" \
-    "node_modules/synapse-common/*" \
+    "node_modules/webpack-error-notification/*"

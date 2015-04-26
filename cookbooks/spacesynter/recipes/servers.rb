@@ -3,6 +3,10 @@ node[:deploy].each do |applicaction, deploy|
         returns [0, 1]
     end
 
+    execute 'npm link docker.io' do
+        cwd "#{deploy[:deploy_to]}#{deploy[:current_symlink]}"
+    end
+
     execute "pm2 start #{deploy[:deploy_to]}#{deploy[:current_symlink]}/server/#{applicaction}.js"
 
     template "/etc/nginx/sites-available/#{deploy[:domains].first}" do

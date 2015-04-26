@@ -4,20 +4,20 @@ var githubClient = require('../client/github');
 var constants    = require('../constants');
 
 module.exports = {
-    clearGists : function()
+    clearGists()
     {
         this.dispatch(constants.CLEAR_GISTS);
     },
 
-    fetchBranches : function()
+    fetchBranches()
     {},
 
-    fetchPulls : function()
+    fetchPulls()
     {},
 
-    getUsersGists : function(username)
+    getUsersGists(username)
     {
-        var flux = this;
+        let flux = this;
 
         flux.dispatch(constants.GET_USERS_GISTS);
 
@@ -30,10 +30,7 @@ module.exports = {
                     flux.dispatch(constants.GET_USERS_GISTS_FAILURE, error);
                 }
             );
-    },
-
-    reset : function()
-    {}
+    }
 };
 
 

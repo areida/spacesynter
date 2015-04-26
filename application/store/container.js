@@ -2,8 +2,8 @@
 
 var Immutable = require('immutable');
 
-var constants = require('../constants');
 var ApiStore  = require('./api-store');
+var constants = require('../constants');
 
 class ContainerStore extends ApiStore {
     constructor()

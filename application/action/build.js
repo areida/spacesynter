@@ -4,7 +4,7 @@ var constants   = require('../constants');
 var buildClient = require('../client/build');
 
 module.exports = {
-    create : function(container, files, progress)
+    create(container, files, progress)
     {
         var flux = this;
 
