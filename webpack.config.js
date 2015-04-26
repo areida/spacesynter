@@ -1,7 +1,6 @@
-var Webpack           = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var HtmlWebpack       = require('html-webpack-plugin');
-var WebpackError      = require('webpack-error-notification');
+var Webpack      = require('webpack');
+var HtmlWebpack  = require('html-webpack-plugin');
+var WebpackError = require('webpack-error-notification');
 
 var environment = (process.env.APP_ENV || 'development');
 var npmDir      = __dirname + '/node_modules';
@@ -27,19 +26,8 @@ if (environment === 'development') {
     config.entry.unshift('webpack-dev-server/client?http://localhost:9000');
     config.entry.unshift('webpack/hot/dev-server');
     config.plugins.push(new Webpack.HotModuleReplacementPlugin());
-    config.plugins.push(new HtmlWebpack({template : './templates/index.html'}));
+    //config.plugins.push(new HtmlWebpack({template : './templates/index.html'}));
     config.reactLoaders.unshift('react-hot');
-}
-
-if (environment === 'production') {
-    config.plugins.push(new ExtractTextPlugin('app.css', {allChunks : true}));
-    config.sassLoader = {
-        test   : /\.scss$/,
-        loader : ExtractTextPlugin.extract(
-            'style-loader',
-            'css-loader!sass-loader?outputStyle=compressed&includePaths[]=' + npmDir
-        )
-    };
 }
 
 module.exports = {

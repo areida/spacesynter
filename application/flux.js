@@ -18,16 +18,13 @@ class Flux extends Fluxxor.Flux {
 
     fetchData(state)
     {
-        var flux, params;
-
-        flux   = this;
-        params = _.extend({}, state.query, state.params);
+        var flux = this;
 
         return Q.all(
             state.routes
                 .filter(route => route.handler.fetchData)
                 .reduce(
-                    (promises, route) => promises.push(route.handler.fetchData(flux, params)),
+                    (promises, route) => promises.concat(route.handler.fetchData(flux, state)),
                     []
                 )
         );

@@ -8,3 +8,4 @@ npm-debug.log
 .vagrant
 *.zip
 servers.temp
+server/middleware/render-generated.js

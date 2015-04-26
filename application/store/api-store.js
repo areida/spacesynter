@@ -29,7 +29,7 @@ class ApiStore extends Store {
 
     fromObject(object)
     {
-        this.state = new Immutable.Map().fromJS(object);
+        this.state = new Immutable.fromJS(object);
 
         return this;
     }

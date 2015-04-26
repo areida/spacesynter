@@ -22,7 +22,7 @@ defaults = {
         secure    : true,
         userAgent : 'areida/spacesynter'
     },
-    nginx : true,
+    nginx : false,
     redis : {
         builds     : {
             host     : 'localhost',
