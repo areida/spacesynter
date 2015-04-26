@@ -10,14 +10,22 @@
     "url"  : "https://github.com/areida/spacesynter.git"
   },
   "scripts" : {
-        "start"   : "rm -rf ./build && webpack && node webpack",
-        "api"     : "SERVER=true node server/api",
-        "app"     : "rm -rf ./build && SERVER=true webpack && SERVER=true node server/app",
-        "webpack" : "rm -rf ./build && webpack",
-        "dist"    : "./dist.sh",
-        "test"    : "cd __tests__ && rm -rf ./build && webpack && node webpack",
-        "karma"   : "./node_modules/karma/bin/karma start karma.conf.js",
-        "clean"   : "rm -rf ./build"
+        "clean:build"   : "rm -rf ./build",
+        "clean:dist"    : "rm -rf ./dist",
+        "clean:servers" : "pm2 delete all",
+        "dist:api"      : "APP_ENV=production NODE_ENV=production webpack --config webpack.server.js -p",
+        "dist:app"      : "APP_ENV=production NODE_ENV=production webpack -p",
+        "start:api"     : "pm2 start server/api.js",
+        "start:app"     : "pm2 start server/app.js",
+        "start:dev"     : "pm2 start server/dev.js",
+        "start:all"     : "npm run start:api && npm run start:app && npm run start:dev",
+        "watch:api"     : "webpack --config webpack.server.js --watch",
+        "watch:app"     : "webpack --watch",
+
+        "clean" : "npm run clean:build && npm run clean:dist",
+        "dist"  : "npm run clean && npm run dist:api && npm run dist:app && ./dist.sh",
+        "start" : "npm run clean && npm run start:all && npm run trap && npm run watch:api",
+        "trap"  : "trap 'npm run clean:servers' 2"
   },
   "devDependencies": {
     "chai"                     : "1.9.1",

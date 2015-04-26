@@ -3,9 +3,10 @@ execute 'pm2 delete all' do
 end
 
 node[:servers].each do |server, config|
-    execute "pm2 start server/#{server} --watch server" do
+    execute "pm2 start server/#{server}.js" do
         cwd '/vagrant'
     end
+
     template "/etc/nginx/sites-available/#{config[:server_name]}" +  do
         mode 0644
         source 'nginx.conf.erb'
