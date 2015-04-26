@@ -33,7 +33,7 @@ module.exports = {
                                     } else {
                                         if (config.nginx) {
                                             exec(
-                                                'nginx reload',
+                                                'service nginx reload',
                                                 function (err) {
                                                     if (err) {
                                                         reject();
