@@ -38,7 +38,6 @@ container.delete('/container/:name', function (req, res) {
                                         function () {
                                             nginx.reload().then(
                                                 function () {
-                                                    req.io.emit('container-killed');
                                                     res.sendStatus(204);
                                                 }
                                             );
@@ -116,7 +115,7 @@ container.post('/container', function (req, res) {
                 } else {
                     docker.create(req.body.name).then(
                         function (response) {
-                            docker.inspect(response.Id).then(
+                            docker.inspect(response.Id, response).then(
                                 function (response) {
                                     var container = new Container({
                                         activeBuild : null,
@@ -144,7 +143,6 @@ container.post('/container', function (req, res) {
 
                                                 nginx.reload().then(
                                                     function () {
-                                                        req.io.emit('container:created');
                                                         res.send(container.toObject());
                                                     }
                                                 );

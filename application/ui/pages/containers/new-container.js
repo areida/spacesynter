@@ -16,11 +16,13 @@ class NewContainer extends React.Component {
             image : '',
             name  : ''
         };
+
+        this.onCreated = this.onCreated.bind(this);
     }
 
     componentDidMount()
     {
-        this.props.flux.store('ContainerStore').addListener('created', this.onCreated);
+        this.props.flux.store('ContainerStore').on('created', this.onCreated);
     }
 
     componentWillUnmount()
@@ -59,14 +61,14 @@ class NewContainer extends React.Component {
             <div className='container new row'>
                 <form
                     className = 'form new-container-form'
-                    onSubmit  = {this.onSubmit}
+                    onSubmit  = {this.onSubmit.bind(this)}
                     style     = {formStyle}
                 >
                     <div className='medium-2 columns'>
                         <Text
                             id           = 'name'
-                            initialValue = {this.state.name}
-                            onChange     = {this.onFormChange}
+                            value        = {this.state.name}
+                            onChange     = {this.onFormChange.bind(this)}
                             placeholder  = 'Name'
                             size         = 'small'
                             type         = 'text'
@@ -76,8 +78,8 @@ class NewContainer extends React.Component {
                         <Select
                             disabled     = {true}
                             id           = 'image'
-                            initialValue = {this.state.image}
-                            onChange     = {this.onFormChange}
+                            value        = {this.state.image}
+                            onChange     = {this.onFormChange.bind(this)}
                             options      = {[{text : 'Image', value : null}]}
                         />
                     </div>
@@ -87,7 +89,7 @@ class NewContainer extends React.Component {
                             type      = 'submit'
                             size      = 'small'
                             style     = {buttonStyle}
-                            onClick   = {this.onSubmit}
+                            onClick   = {this.onSubmit.bind(this)}
                         >
                             <a>Create</a>
                         </Button>

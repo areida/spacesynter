@@ -11,6 +11,8 @@ var config    = require('../config');
 var Flux      = require('../../application/flux');
 var routes    = require('../../application/routes');
 
+require('../../application/ui/scss/app.scss');
+
 tmpl.load = function (name) {
     return fs.readFileSync(process.cwd() + '/templates/' + name, 'utf8');
 };

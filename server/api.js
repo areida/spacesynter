@@ -5,7 +5,6 @@ var bodyParser   = require('body-parser');
 var CookieParser = require('cookie-parser');
 var Express      = require('express');
 var http         = require('http');
-var Io           = require('socket.io');
 var mongoose     = require('mongoose');
 var Session      = require('express-session');
 var RedisStore   = require('connect-redis')(Session);
@@ -19,11 +18,6 @@ var api, mongoClient;
 mongoClient = mongoose.connect('localhost', 'test');
 
 api = new Express();
-io  = new Io(http.createServer(api));
-
-io.on('connection', function (socket) {
-    socket.emit('connected');
-});
 
 api.disable('etag');
 api.use(bodyParser.json());
@@ -42,7 +36,6 @@ api.use(function(req, res, next) {
     res.header('Content-Type', 'application/json');
     res.header('If-None-Match', '*');
     res.header('Last-Modified', (new Date()).toUTCString());
-    req.io = io;
     next();
 });
 

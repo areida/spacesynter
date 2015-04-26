@@ -120,7 +120,7 @@ class ExistingContainer extends React.Component {
                         <p><a href={'http://' + host} target='_blank'>{host}</a></p>
                     </div>
                     <div className='medium-2 columns' title='Click or Drag Build Here'>
-                        <Upload onDrop={this.onDrop} percent={this.state.percent}>Add Build</Upload>
+                        <Upload onDrop={this.onDrop.bind(this)} percent={this.state.percent}>Add Build</Upload>
                     </div>
                     <div className='medium-2 columns'>
                         <Button size='small' onClick={this.onToggleBuilds}>
@@ -128,7 +128,7 @@ class ExistingContainer extends React.Component {
                         </Button>
                     </div>
                     <div className='medium-4 columns'>
-                        <Button size='small' title='Double Click' onDoubleClick={this.onKill}>
+                        <Button size='small' title='Double Click' onDoubleClick={this.onKill.bind(this)}>
                             <a>Kill</a>
                         </Button>
                     </div>

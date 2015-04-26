@@ -30,21 +30,19 @@ class TextInput extends React.Component {
 
     renderLabel()
     {
-        var labelClasses;
+        var classes;
 
         if (! this.props.label) {
             return null;
         }
 
-        labelClasses = {
-            'input-wrap__label' : true
-        };
-        labelClasses['label--size-' + this.props.size] = true;
+        classes = {'input-wrap__label' : true};
+        classes['label--size-' + this.props.size] = true;
 
         return (
             <Label
                 htmlFor   = {this.props.id}
-                className = {classNames(labelClasses)}
+                className = {classNames(classes)}
                 text      = {this.props.label}
             />
         );
@@ -65,9 +63,9 @@ class TextInput extends React.Component {
 
     renderInput()
     {
-        var inputElementClasses;
+        var classes;
 
-        inputElementClasses = [
+        classes = [
             'input',
             'input--'       + this.props.type,
             'input--size-'  + this.props.size,
@@ -82,7 +80,7 @@ class TextInput extends React.Component {
 
         if (this.props.type === 'no-edit') {
             return (
-                <div className={inputElementClasses}>
+                <div className={classes}>
                     <span className='input--no-edit__value'>
                         {this.props.value}
                     </span>
@@ -98,15 +96,15 @@ class TextInput extends React.Component {
 
         return (
             <input
-                className    = {inputElementClasses}
+                className    = {classes}
                 id           = {this.props.id}
                 name         = {this.props.id}
                 type         = {this.props.type}
                 value        = {this.props.value}
                 placeholder  = {this.props.placeholder}
-                onBlur       = {this.onBlur}
-                onChange     = {this.onChange}
-                onKeyDown    = {this.onKeyDown}
+                onBlur       = {this.onBlur.bind(this)}
+                onChange     = {this.onChange.bind(this)}
+                onKeyDown    = {this.onKeyDown.bind(this)}
                 disabled     = {this.props.disabled}
                 autoComplete = {this.props.autoComplete ? 'on' : 'off'}
                 ref          = {'input'}

@@ -87,10 +87,10 @@ class Upload extends React.Component {
         return (
             <div
                 className   = {classNames(classes)}
-                onClick     = {this.onClick}
-                onDragLeave = {this.onDragLeave}
-                onDragOver  = {this.onDragOver}
-                onDrop      = {this.onDrop}
+                onClick     = {this.onClick.bind(this)}
+                onDragLeave = {this.onDragLeave.bind(this)}
+                onDragOver  = {this.onDragOver.bind(this)}
+                onDrop      = {this.onDrop.bind(this)}
                 style       = {this.props.style || style}
             >
                 <input

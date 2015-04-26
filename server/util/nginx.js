@@ -31,16 +31,20 @@ module.exports = {
                                     if (err) {
                                         reject();
                                     } else {
-                                        exec(
-                                            'nginx reload',
-                                            function (err) {
-                                                if (err) {
-                                                    reject();
-                                                } else {
-                                                    resolve();
+                                        if (config.nginx) {
+                                            exec(
+                                                'nginx reload',
+                                                function (err) {
+                                                    if (err) {
+                                                        reject();
+                                                    } else {
+                                                        resolve();
+                                                    }
                                                 }
-                                            }
-                                        );
+                                            );
+                                        } else {
+                                            resolve();
+                                        }
                                     }
                                 }
                             );

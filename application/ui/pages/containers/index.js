@@ -52,7 +52,7 @@ class ContainersPage extends React.Component {
 
     renderContainer(container, index)
     {
-        return <Container container={container} key={index} />;
+        return <Container {...this.props} container={container} key={index} />;
     }
 
     render()
@@ -60,7 +60,7 @@ class ContainersPage extends React.Component {
         return (
             <div>
                 <NewContainer {...this.props} />
-                {this.state.containers.map(this.renderContainer).toArray()}
+                {this.state.containers.map(this.renderContainer.bind(this)).toArray()}
             </div>
         );
     }

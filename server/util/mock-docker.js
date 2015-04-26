@@ -1,6 +1,7 @@
 var Q = require('q');
 
-var config = require('../config');
+var appConfig = require('../../application/config');
+var config    = require('../config');
 
 module.exports = {
     create : function(name, image)
@@ -8,12 +9,12 @@ module.exports = {
         return Q.fcall(function () {
             return {
                 Id       : Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 7),
-                Image    : image || 'synapse/api-base-image',
-                Hostname : name + '.' + config.app.hostname
+                Hostname : name + '.' + appConfig.api.hostname,
+                Image    : image || 'synapse/api-base-image'
             };
         });
     },
-    inspect : function(id)
+    inspect : function(id, response)
     {
         return Q.fcall(function () {
             return {
@@ -26,7 +27,10 @@ module.exports = {
                         PublicPort  : 23456
                     }]
                 },
-                state : {}
+                Hostname : response.Hostname,
+                Id       : id,
+                Image    : response.image,
+                state    : {}
             };
         });
     },

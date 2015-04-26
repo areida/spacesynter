@@ -8,26 +8,10 @@
         {% if (o.flux) { %}
         <link rel="stylesheet" href="/app.css">
         <script id="server-state" type="text/javascript">window.__STATE__ = {%#o.flux%};</script>
-        <script type="text/javascript" src="http://{%=o.host%}:{%=o.appPort%}/socket.io/socket.io.js"></script>
         {% }%}
     </head>
     <body>
-        {% if (o.flux) { %}
-        <script type="text/javascript">
-            var socket = io.connect('http://{%=o.host%}:{%=o.apiPort%}');
-
-            socket.on('connected', function () {
-                window.console.log('socket.io connected');
-            });
-
-            socket.on('container', function (data) {
-                window.console.log(data.message);
-            });
-        </script>
-        {% } %}
-        {% if (o.html) { %}
-        {%#o.html%}
-        {% } %}
+        <div id="app">{% if (o.html) { %}{%#o.html%}{% } %}</div>
         <script src="/app.js"></script>
     </body>
 </html>

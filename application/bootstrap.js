@@ -31,5 +31,5 @@ Router.run(routes, Router.HistoryLocation, (Handler, state) => {
         flux   : flux,
         params : state.params,
         query  : state.query
-    }), window.document.body);
+    }), window.document.getElementById('app'));
 });
