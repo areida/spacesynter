@@ -6,7 +6,6 @@ var Q = require('q');
 var config = require('../config').api;
 
 class BuildClient {
-
     create(container, files)
     {
         return Q.promise(

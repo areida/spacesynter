@@ -3,18 +3,19 @@
 var AuthGateway = require('synapse-common/http/auth-gateway');
 var store       = require('store');
 
-var config = require('../config');
+var config = require('../config').github;
 
-var GithubClient = AuthGateway.extend({
-
-    config : config.github,
-
-    state : null,
+class GithubClient extends AuthGateway {
+    constructor()
+    {
+        this.config = config;
+        super();
+    }
 
     getRateLimit()
     {
         return this.apiRequest('GET', '/rate_limit');
-    },
+    }
 
     getUsersGists(username)
     {
@@ -23,7 +24,7 @@ var GithubClient = AuthGateway.extend({
         } else {
             return this.apiRequest('GET', '/gists');
         }
-    },
+    }
 
     getRequestOptions(method, path, data)
     {
@@ -63,6 +64,6 @@ var GithubClient = AuthGateway.extend({
             headers         : headers
         };
     }
-});
+}
 
 module.exports = new GithubClient();
