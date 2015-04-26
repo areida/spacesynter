@@ -2,17 +2,17 @@
 
 var Immutable = require('immutable');
 
-var constants       = require('../constants');
-var APIStoreFactory = require('./api-store-factory');
+var constants = require('../constants');
+var ApiStore  = require('./api-store');
 
-var ContainerStore = APIStoreFactory.createStore({
-    initialize()
+class ContainerStore extends ApiStore {
+    constructor()
     {
         this.state = {
-            containers : new Immutable.List(),
-            loaded     : false,
-            loading    : false
+            containers : new Immutable.List()
         };
+
+        super();
 
         this.bindActions(
             constants.ACTIVATE_BUILD_SUCCESS, 'onActvateBuildSuccess',
@@ -22,71 +22,81 @@ var ContainerStore = APIStoreFactory.createStore({
             constants.CONTAINER_CREATE_SUCCESS, 'onCreateSuccess',
             constants.CONTAINER_KILL, 'onKill'
         );
-    },
+    }
 
-    fromObject(object)
+    findIndexByName(name)
     {
-        this.state = {
-            containers : new Immutable.List(object.containers),
-            loaded     : object.loaded,
-            loading    : object.loading
-        };
-
-        return this;
-    },
+        return this.state.get('containers').findIndex(c => c.get('name') === name);
+    }
 
     getAll()
     {
-        return this.state.containers;
-    },
+        return this.state.get('containers');
+    }
 
     onActvateBuildSuccess(container)
     {
-        var index = this.state.containers.findIndex(c => c.get('name') === container.name);
+        var containers, index;
 
-        this.state.containers = this.state.containers.set(index, Immutable.fromJS(container));
+        index      = this.findIndexByName(container.name);
+        containers = this.state.get('containers').set(index, Immutable.fromJS(container));
 
-        this.emit('change');
-    },
-
-    onBuildCreateSuccess(container)
-    {
-        var index = this.state.containers.findIndex(c => c.get('name') === container.name);
-
-        this.state.containers = this.state.containers.set(index, Immutable.fromJS(container));
-
-        this.emit('change');
-    },
-
-    onCreateSuccess(container)
-    {
-        this.state.containers = this.state.containers.push(Immutable.fromJS(container));
-
-        this.emit('change');
-        this.emit('created');
-    },
-
-    onFetchAll()
-    {
-        this.state.loading = true;
-
-        this.emit('change');
-    },
-
-    onFetchAllSuccess(containers)
-    {
-        this.state.loaded     = true;
-        this.state.containers = Immutable.fromJS(containers);
-
-        this.emit('change');
-    },
-
-    onKill(name)
-    {
-        this.state.containers = this.state.containers.filterNot(c => c.get('name') === name);
+        this.state = this.state.set('containers', containers);
 
         this.emit('change');
     }
-});
+
+    onBuildCreateSuccess(container)
+    {
+        var containers, index;
+
+        index      = this.findIndexByName(container.name);
+        containers = this.state.get('containers').set(index, Immutable.fromJS(container));
+
+        this.state = this.state.set('containers', containers);
+
+        this.emit('change');
+    }
+
+    onCreateSuccess(container)
+    {
+        var containers = this.state.get('containers').push(Immutable.fromJS(container));
+
+        this.state = this.state.set('containers', containers);
+
+        this.emit('change');
+        this.emit('created');
+    }
+
+    onFetchAll()
+    {
+        this.state = this.state.merge({
+            loaded  : false,
+            loading : true
+        });
+
+        this.emit('change');
+    }
+
+    onFetchAllSuccess(containers)
+    {
+        this.state = new Immutable.fromJS({
+            containers : containers,
+            loaded     : true,
+            loading    : false
+        });
+
+        this.emit('change');
+    }
+
+    onKill(name)
+    {
+        var containers = this.state.get('containers').filterNot(c => c.get('name') === name);
+
+        this.state = this.state.set('containers', containers);
+
+        this.emit('change');
+    }
+}
 
 module.exports = ContainerStore;

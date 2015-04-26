@@ -1,12 +1,12 @@
 'use strict';
 
-var constants       = require('../constants');
-var APIStoreFactory = require('./api-store-factory');
-var store           = require('store');
+var store = require('store');
 
-var TokenStore = APIStoreFactory.createStore({
+var ApiStore  = require('./api-store');
+var constants = require('../constants');
 
-    initialize()
+class TokenStore extends ApiStore {
+    constructor()
     {
         this.state = {
            error    : false,
@@ -15,10 +15,12 @@ var TokenStore = APIStoreFactory.createStore({
            token    : store.get('token')
         };
 
+        super();
+
         this.bindActions(
             constants.LOGOUT, 'onLogout'
         );
-    },
+    }
 
     onLogout()
     {
@@ -27,17 +29,17 @@ var TokenStore = APIStoreFactory.createStore({
         this.state.token    = {};
 
         this.emit('change');
-    },
+    }
 
     getTokenData()
     {
         return store.get('token');
-    },
+    }
 
     isLoggedIn()
     {
         return this.state.loggedIn;
-    },
+    }
 
     setState(state)
     {
@@ -49,6 +51,6 @@ var TokenStore = APIStoreFactory.createStore({
             store.remove('token');
         }
     }
-});
+}
 
 module.exports = TokenStore;
