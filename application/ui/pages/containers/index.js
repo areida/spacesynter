@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var _     = require('underscore');
+var _     = require('lodash');
 
 var Container    = require('./container');
 var NewContainer = require('./new-container');

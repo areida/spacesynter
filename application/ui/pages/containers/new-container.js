@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var _     = require('underscore');
+var _     = require('lodash');
 
 var Button = require('../../components/buttons/button');
 var Select = require('../../components/form/inputs/select');

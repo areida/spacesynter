@@ -1,7 +1,7 @@
 var exec     = require('child_process').exec;
 var Express  = require('express');
 var Fs       = require('fs');
-var _        = require('underscore');
+var _        = require('lodash');
 
 var config    = require('../config');
 var Container = require('../model/container');

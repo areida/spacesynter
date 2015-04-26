@@ -1,7 +1,7 @@
 'use strict';
 
-var React        = require('react');
-var RouteHandler = require('react-router').RouteHandler;
+var React          = require('react');
+var {RouteHandler} = require('react-router');
 
 class LoggedOutLayout extends React.Component {
     render()

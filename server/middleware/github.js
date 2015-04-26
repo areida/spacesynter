@@ -5,7 +5,7 @@ var Q         = require('q');
 var qs        = require('querystring');
 var request   = require('request');
 var url       = require('url');
-var _         = require('underscore');
+var _         = require('lodash');
 
 var appConfig = require('../../application/config');
 var config    = require('../config');
