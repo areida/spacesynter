@@ -21,12 +21,13 @@ server {
     }
     <% else %>
     location / {
-        proxy_pass <%= @proxy_pass %>
+        proxy_pass <%= @proxy_pass %>;
     }
     <% end %>
 
     <% @proxies.each do |location, proxy_pass| %>
     location /<%= location %> {
+        rewrite    /<%= location %>/(.*) /$1 break;
         proxy_pass <%= proxy_pass %>;
     }
     <% end %>

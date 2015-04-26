@@ -1,12 +1,8 @@
 name 'vagrant'
 
 override_attributes(
-    'user'       => 'vagrant',
+    'user'    => 'vagrant',
     'servers' => {
-        'api'  => {
-            'proxy_pass'  => 'http://localhost:8000',
-            'server_name' => 'api.spacesynter.vm'
-        },
         'app' => {
             'proxies' => {
                 'api' => 'http://localhost:8000'
@@ -16,9 +12,13 @@ override_attributes(
             'server_name' => 'spacesynter.vm'
         }
     },
-    'environment' => {
-        'APP_ENV'  => 'development',
-        'APP_NAME' => 'spacesynter'
+    'deploy' => {
+        'spacesynter' => {
+            'environment' => {
+                'APP_ENV'  => 'development',
+                'APP_NAME' => 'spacesynter'
+            }
+        }
     },
     'packages' => {
         'apt' => ['docker.io', 'git', 'mongodb', 'nodejs', 'npm', 'redis-server', 'unzip'],

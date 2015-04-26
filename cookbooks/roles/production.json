@@ -1,0 +1,17 @@
+{
+    "user"    : "deploy",
+    "servers" : {
+        "app" : {
+            "proxies" : {
+                "api" : "http://localhost:8000"
+            },
+            "proxy_pass"  : "http://localhost:9000",
+            "root"        : "/srv/www/spacesynter/current/build",
+            "server_name" : "spacesynter.com"
+        }
+    },
+    "packages" : {
+        "apt" : ["docker.io", "git", "mongodb", "nodejs", "npm", "redis-server", "unzip"],
+        "npm" : ["docker.io", "pm2"]
+    }
+}
