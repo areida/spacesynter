@@ -1,5 +1,7 @@
 node[:deploy].each do |application, deploy|
     if (application != 'frontend')
+        execute "echo '#{deploy[:docroot]}'"
+
         template "/etc/nginx/sites-available/#{application}" do
             mode 0644
             source 'nginx.site.erb'
