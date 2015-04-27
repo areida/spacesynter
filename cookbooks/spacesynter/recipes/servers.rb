@@ -14,7 +14,7 @@ node[:deploy].each do |application, deploy|
 
         execute "pm2 start #{deploy[:deploy_to]}#{deploy[:current_symlink]}/server/#{application}.js"
 
-        template "/etc/nginx/sites-available/#{deploy[:domains].first}" do
+        template "/etc/nginx/sites-available/#{application}" do
             mode 0644
             source 'nginx.conf.erb'
             variables node[:webserver].merge(deploy)
