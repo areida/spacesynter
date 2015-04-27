@@ -1,18 +1,24 @@
-node[:deploy].each do |applicaction, deploy|
-    execute "pm2 delete #{applicaction}" do
-        returns [0, 1]
-    end
+node[:deploy].each do |application, deploy|
+    if (application != 'frontend')
+        execute "pm2 delete #{application}" do
+            returns [0, 1, 127]
+        end
 
-    execute 'npm link docker.io' do
-        cwd "#{deploy[:deploy_to]}#{deploy[:current_symlink]}"
-    end
+        execute 'npm link docker.io' do
+            cwd "#{deploy[:deploy_to]}#{deploy[:current_symlink]}"
+        end
 
-    execute "pm2 start #{deploy[:deploy_to]}#{deploy[:current_symlink]}/server/#{applicaction}.js"
+        execute 'npm link mongodb' do
+            cwd "#{deploy[:deploy_to]}#{deploy[:current_symlink]}"
+        end
 
-    template "/etc/nginx/sites-available/#{deploy[:domains].first}" do
-        mode 0644
-        source 'nginx.conf.erb'
-        variables node[:webserver].merge(deploy)
+        execute "pm2 start #{deploy[:deploy_to]}#{deploy[:current_symlink]}/server/#{application}.js"
+
+        template "/etc/nginx/sites-available/#{deploy[:domains].first}" do
+            mode 0644
+            source 'nginx.conf.erb'
+            variables node[:webserver].merge(deploy)
+        end
     end
 end
 

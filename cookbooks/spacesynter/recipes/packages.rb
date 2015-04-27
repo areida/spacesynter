@@ -6,6 +6,10 @@ end
 
 node[:packages][:npm].each do |pkg|
     execute 'npm install -g ' + pkg do
-        not if 'which ' + pkg
+        not_if 'which ' + pkg
     end
+end
+
+if (node[:packages].include?('nodejs'))
+    execute 'ln -snf /usr/bin/nodejs /usr/bin/node'
 end

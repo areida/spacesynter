@@ -27,7 +27,7 @@ override_attributes(
     },
     'packages' => {
         'apt' => ['docker.io', 'git', 'mongodb', 'nodejs', 'npm', 'redis-server', 'unzip'],
-        'npm' => ['docker.io', 'pm2']
+        'npm' => ['docker.io', 'mongodb', 'pm2']
     }
 )
 
