@@ -1,16 +1,17 @@
 {
     "user" : "deploy",
+    "current_symlink" : "/current",
     "deploy" : {
         "api" : {
-            "current_symlink" : "/current",
-            "proxy_pass"      : "http://localhost:8000"
+            "domains" : ["api.spacesynter.com"],
+            "proxy_pass" : "http://localhost:8000"
         },
         "app" : {
+            "domains" : ["spacesynter.com"],
             "proxies" : {
                 "api" : "http://localhost:8000"
             },
-            "proxy_pass"      : "http://localhost:9090",
-            "current_symlink" : "/current"
+            "proxy_pass" : "http://localhost:9090"
         }
     },
     "environment" : {

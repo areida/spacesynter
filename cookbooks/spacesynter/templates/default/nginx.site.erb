@@ -13,7 +13,7 @@ server {
     <% if @document_root %>
     location / {
         root <%= @absolute_document_root[0...-1] %>;
-        try_files $url @<%= @application %>;
+        try_files $uri @<%= @application %>;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
