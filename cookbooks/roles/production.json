@@ -20,6 +20,6 @@
     },
     "packages" : {
         "apt" : ["docker.io", "git", "mongodb", "nodejs", "npm", "redis-server", "unzip"],
-        "npm" : ["docker.io", "mongodb", "pm2"]
+        "npm" : ["docker.io", "mongodb", "mongoose", "pm2"]
     }
 }

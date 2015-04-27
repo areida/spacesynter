@@ -19,7 +19,6 @@ override_attributes(
             'proxy_pass' => 'http://localhost:9090'
         }
     },
-    'docroot'     => '/vagrant',
     'environment' => {
         'APP_ENV'  => 'development',
         'APP_NAME' => 'spacesynter',
@@ -27,7 +26,7 @@ override_attributes(
     },
     'packages' => {
         'apt' => ['docker.io', 'git', 'mongodb', 'nodejs', 'npm', 'redis-server', 'unzip'],
-        'npm' => ['docker.io', 'mongodb', 'pm2']
+        'npm' => ['docker.io', 'mongodb', 'mongoose', 'pm2']
     }
 )
 

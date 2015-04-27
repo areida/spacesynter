@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
+# `git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10`
 mkdir dist
-zip -r dist/`git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` \
+zip -r dist/app \
     application \
     build \
     docker \
