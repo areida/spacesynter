@@ -8,7 +8,7 @@ server {
     gzip_min_length 1000;
     gzip_types text/plain application/json application/xml application/atom+xml text/javascript text/css;
 
-    server_name <%= @domains.join(' ') %>;
+    server_name <%= @deploy[:domains].join(' ') %>;
 
     <% if @deploy[:document_root] %>
     location / {
