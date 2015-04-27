@@ -12,12 +12,8 @@ module.exports = {
 
         return buildClient.create(container, files)
             .then(
-                function (data) {
-                    flux.dispatch(constants.BUILD_CREATE_SUCCESS, data);
-                },
-                function (error) {
-                    console.log(error);
-                },
+                data => flux.dispatch(constants.BUILD_CREATE_SUCCESS, data),
+                error => console.log(error),
                 progress
             )
             .done();

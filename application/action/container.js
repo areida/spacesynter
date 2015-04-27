@@ -11,9 +11,7 @@ module.exports = {
         this.dispatch(constants.ACTIVATE_BUILD, container, name);
 
         return containerClient.activateBuild(container, name).then(
-            function (data) {
-                flux.dispatch(constants.ACTIVATE_BUILD_SUCCESS, data);
-            }
+            data => flux.dispatch(constants.ACTIVATE_BUILD_SUCCESS, data)
         );
     },
 
@@ -24,9 +22,7 @@ module.exports = {
         this.dispatch(constants.CONTAINER_CREATE, container);
 
         return containerClient.create(container).then(
-            function (data) {
-                flux.dispatch(constants.CONTAINER_CREATE_SUCCESS, data);
-            }
+            data => flux.dispatch(constants.CONTAINER_CREATE_SUCCESS, data)
         );
     },
 
@@ -37,9 +33,7 @@ module.exports = {
         this.dispatch(constants.CONTAINER_FETCH, name);
 
         return containerClient.fetch(name).then(
-            function (response) {
-                flux.dispatch(constants.CONTAINER_FETCH_SUCCESS, response);
-            }
+            response => flux.dispatch(constants.CONTAINER_FETCH_SUCCESS, response)
         );
     },
 
@@ -50,9 +44,7 @@ module.exports = {
         this.dispatch(constants.CONTAINER_FETCH_ALL);
 
         return containerClient.fetchAll().then(
-            function (response) {
-                flux.dispatch(constants.CONTAINER_FETCH_ALL_SUCCESS, response);
-            }
+            response => flux.dispatch(constants.CONTAINER_FETCH_ALL_SUCCESS, response)
         );
     },
 
@@ -63,9 +55,7 @@ module.exports = {
         this.dispatch(constants.CONTAINER_KILL, name);
 
         return containerClient.kill(name).then(
-            function (response) {
-                flux.dispatch(constants.CONTAINER_KILL_SUCCESS, response);
-            }
+            response => flux.dispatch(constants.CONTAINER_KILL_SUCCESS, response)
         );
     }
 };

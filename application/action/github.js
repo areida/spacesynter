@@ -17,18 +17,14 @@ module.exports = {
 
     getUsersGists(username)
     {
-        let flux = this;
+        var flux = this;
 
         flux.dispatch(constants.GET_USERS_GISTS);
 
         return githubClient.getUsersGists(username)
             .then(
-                function (response) {
-                    flux.dispatch(constants.GET_USERS_GISTS_SUCCESS, response);
-                },
-                function (error) {
-                    flux.dispatch(constants.GET_USERS_GISTS_FAILURE, error);
-                }
+                response => flux.dispatch(constants.GET_USERS_GISTS_SUCCESS, response),
+                error => flux.dispatch(constants.GET_USERS_GISTS_FAILURE, error)
             );
     }
 };

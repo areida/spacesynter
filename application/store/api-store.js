@@ -2,7 +2,6 @@
 
 var Store     = require('fluxxor/lib/store');
 var Immutable = require('immutable');
-var _         = require('lodash');
 
 class ApiStore extends Store {
     constructor()
