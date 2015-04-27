@@ -1,5 +1,5 @@
 server {
-    listen <%= @listen %>; ## listen for ipv4; this line is default and implied
+    listen <%= @webserver[:listen] %>; ## listen for ipv4; this line is default and implied
 
     # max upload = 32MB
     client_max_body_size 32m;
@@ -10,10 +10,10 @@ server {
 
     server_name <%= @domains.join(' ') %>;
 
-    <% if @document_root %>
+    <% if @deploy[:document_root] %>
     location / {
-        root <%= @absolute_document_root[0...-1] %>;
-        try_files $uri @<%= @application %>;
+        root <%= @deploy[:absolute_document_root][0...-1] %>;
+        try_files $uri @<%= @deploy[:application] %>;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -25,8 +25,8 @@ server {
         client_body_buffer_size 128k;
     }
 
-    location @<%= @application %> {
-        proxy_pass <%= @proxy_pass %>;
+    location @<%= @deploy[:application] %> {
+        proxy_pass <%= @webserver[:proxy_pass] %>;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -39,7 +39,7 @@ server {
     }
     <% else %>
     location / {
-        proxy_pass <%= @proxy_pass %>;
+        proxy_pass <%= @webserver[:proxy_pass] %>;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -52,7 +52,7 @@ server {
     }
     <% end %>
 
-    <% @proxies.each do |location, proxy_pass| %>
+    <% @webserver[:proxies].each do |location, proxy_pass| %>
     location /<%= location %> {
         rewrite    /<%= location %>/(.*) /$1 break;
         proxy_pass <%= proxy_pass %>;
