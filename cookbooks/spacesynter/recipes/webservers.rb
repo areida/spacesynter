@@ -3,7 +3,7 @@ node[:deploy].each do |application, deploy|
         template "/etc/nginx/sites-available/#{application}" do
             mode 0644
             source 'nginx.site.erb'
-            variables node[:webserver].merge(deploy)
+            variables node[:webserver].merge(node[:webservers][application])
             cookbook 'spacesynter'
         end
     end
