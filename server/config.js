@@ -27,17 +27,17 @@ defaults = {
         builds     : {
             host     : 'localhost',
             port     : 6379,
-            database : 6
+            database : 2
         },
         containers : {
             host     : 'localhost',
             port     : 6379,
-            database : 0
+            database : 1
         },
         cookies : {
             host     : 'localhost',
             port     : 6379,
-            database : 1,
+            database : 0,
             secret   : 'abcdefghijklmnopqrstuvwxyz1234567890'
         }
     }

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # `git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10`
-mkdir dist
+mkdir -p dist
 zip -r dist/app \
     application \
     build \
