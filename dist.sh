@@ -6,12 +6,12 @@ zip -r dist/`git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` 
     build \
     docker \
     Dockerfile \
+    node_modules \
     server \
     templates \
     -x "node_modules/babel-core/*" \
     "node_modules/babel-loader/*" \
     "node_modules/chai/*" \
-    "node_modules/docker.io/*" \
     "node_modules/es5-shim/*" \
     "node_modules/karma/*" \
     "node_modules/karma-chrome-launcher/*" \
@@ -32,6 +32,7 @@ zip -r dist/`git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` 
     "node_modules/file-loader/*" \
     "node_modules/html-webpack-plugin/*" \
     "node_modules/json-loader/*" \
+    "node_modules/jshint/*" \
     "node_modules/jshint-loader/*" \
     "node_modules/jsx-loader/*" \
     "node_modules/jsxhint-loader/*" \
@@ -42,4 +43,6 @@ zip -r dist/`git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10` 
     "node_modules/url-loader/*" \
     "node_modules/webpack/*" \
     "node_modules/webpack-dev-server/*" \
-    "node_modules/webpack-error-notification/*"
+    "node_modules/webpack-error-notification/*" \
+    "node_modules/docker.io/*" \
+    "node_modules/mongodb/*"

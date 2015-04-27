@@ -14,6 +14,7 @@
         "clean:dist"    : "rm -rf ./dist",
         "clean:server"  : "pm2 delete all",
         "dist:app"      : "APP_ENV=production NODE_ENV=production webpack -p",
+        "dist:cookbooks": "mkdir dist && zip -r dist/cookbooks cookbooks",
         "dist:server"   : "APP_ENV=production NODE_ENV=production webpack --config webpack.server.js -p",
         "start:api"     : "pm2 start server/api.js",
         "start:app"     : "pm2 start server/app.js",
@@ -22,8 +23,9 @@
         "watch:api"     : "webpack --config webpack.server.js --watch",
         "watch:app"     : "webpack --watch",
 
-        "predist"  : "npm run clean",
-        "prestart" : "npm run clean",
+        "predist"           : "npm run clean",
+        "predist:cookbooks" : "npm run clean",
+        "prestart"          : "npm run clean",
 
         "clean" : "npm run clean:build && npm run clean:dist",
         "dist"  : "npm run dist:app && npm run dist:server && ./dist.sh",
