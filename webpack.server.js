@@ -85,6 +85,7 @@ module.exports = {
             __BACKEND__     : true,
             console         : true,
             __ENVIRONMENT__ : true,
+            localStorage    : true,
             window          : true
         }
     }

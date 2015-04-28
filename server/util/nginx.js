@@ -13,7 +13,7 @@ if (config.api.nginx) {
 }
 
 tmpl.load = function (name) {
-    return fs.readFileSync(process.cwd() + '/templates/' + name, 'utf8');
+    return fs.readFileSync(__dirname + '/../../templates/' + name, 'utf8');
 };
 
 module.exports = {
@@ -25,7 +25,7 @@ module.exports = {
                     .then(
                         function (containers) {
                             fs.writeFile(
-                                process.cwd() + '/servers.temp',
+                                __dirname + '/../../servers.temp',
                                 tmpl('servers.conf', {containers : containers}),
                                 function (err) {
                                     if (err) {

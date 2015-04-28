@@ -1,4 +1,3 @@
-/* global localStorage */
 'use strict';
 
 var fs     = require('fs');
@@ -14,7 +13,7 @@ var routes    = require('../../application/routes');
 require('../../application/ui/scss/app.scss');
 
 tmpl.load = function (name) {
-    return fs.readFileSync(process.cwd() + '/templates/' + name, 'utf8');
+    return fs.readFileSync(__dirname + '/../../templates/' + name, 'utf8');
 };
 
 module.exports = function (req, res) {
