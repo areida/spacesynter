@@ -111,7 +111,7 @@ container.post('/container', function (req, res) {
             function (containers) {
                 if (containers.length || ['api'].indexOf(req.body.name) !== -1) {
                     res.status(422);
-                    res.send({message : 'Container `' + req.body.name + '` already exists'});
+                    res.send({message : 'Container \'' + req.body.name + '\' already exists'});
                 } else {
                     docker.create(req.body.name).then(
                         function (response) {
