@@ -6,8 +6,8 @@
         "NODE_ENV" : "production"
     },
     "packages" : {
-        "apt" : ["docker.io", "git", "mongodb", "nodejs", "npm", "redis-server", "unzip"],
-        "npm" : ["docker.io", "mongodb", "mongoose", "pm2"]
+        "apt" : ["git", "mongodb", "nodejs", "npm", "redis-server", "unzip"],
+        "npm" : ["mongodb", "mongoose", "pm2"]
     },
     "webservers" : {
         "api" : {

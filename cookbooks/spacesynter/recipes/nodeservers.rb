@@ -1,5 +1,5 @@
 node[:deploy].each do |application, deploy|
-    if (application != 'frontend')
+    if (application != 'app')
         node[:packages][:npm].each do |pkg|
             execute 'npm link ' + pkg do
                 cwd "#{deploy[:deploy_to]}#{node[:current_symlink]}"
@@ -13,7 +13,8 @@ node[:deploy].each do |application, deploy|
         execute "pm2 restart #{application}" do
             only_if "pm2 info #{application}"
         end
+
+        execute "ln -snf #{deploy[:deploy_to]}/servers.temp /etc/nginx/sites-available/servers"
+        execute 'nginx_ensite servers'
     end
 end
-
-# execute 'ln -snf /vagrant/servers.temp /etc/nginx/sites-available/servers'
