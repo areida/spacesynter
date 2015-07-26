@@ -6,14 +6,8 @@ var tmpl = require('blueimp-tmpl').tmpl;
 var config    = require('../config');
 var Container = require('../model/container');
 
-var reloader;
-
-if (config.api.nginx) {
-    reloader = new Reloader();
-}
-
 tmpl.load = function (name) {
-    return fs.readFileSync(__dirname + '/../../templates/' + name, 'utf8');
+    return fs.readFileSync(process.cwd() + '/templates/' + name, 'utf8');
 };
 
 module.exports = {
@@ -25,7 +19,7 @@ module.exports = {
                     .then(
                         function (containers) {
                             fs.writeFile(
-                                __dirname + '/../../servers.temp',
+                                process.cwd() + '/servers.temp',
                                 tmpl('servers.conf', {containers : containers}),
                                 function (err) {
                                     if (err) {

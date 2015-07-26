@@ -15,25 +15,14 @@ defaults = {
     dev  : {
         port : 9000
     },
-    docker : false,
     github : {
         hostname  : 'api.github.com',
         port      : 443,
         secure    : true,
         userAgent : 'areida/spacesynter'
     },
-    nginx : false,
+    nginx : true,
     redis : {
-        builds     : {
-            host     : 'localhost',
-            port     : 6379,
-            database : 2
-        },
-        containers : {
-            host     : 'localhost',
-            port     : 6379,
-            database : 1
-        },
         cookies : {
             host     : 'localhost',
             port     : 6379,

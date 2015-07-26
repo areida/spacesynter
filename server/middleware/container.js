@@ -1,226 +1,354 @@
-var exec     = require('child_process').exec;
-var Express  = require('express');
-var Fs       = require('fs');
-var _        = require('lodash');
+var exec       = require('child_process').exec;
+var Express    = require('express');
+var fs         = require('fs');
+var pm2        = require('pm2');
+var portfinder = require('portfinder');
+var Q          = require('q');
+var _          = require('lodash');
 
 var config    = require('../config');
 var Container = require('../model/container');
+var docker    = require('../util/docker');
 var nginx     = require('../util/nginx');
-
-if (config.docker) {
-    var docker = require('../util/docker');
-} else {
-    var docker = require('../util/mock-docker');
-}
-
-function changeWorkingBuild(container, build, callback) {
-    exec(
-        'rm -rf __containers__/' + container + '/working/* && unzip __containers__/' + container + '/builds/' + build + ' -d __containers__/' + container + '/working',
-        callback
-    );
-}
 
 var container = new Express();
 
-container.delete('/container/:name', function (req, res) {
-    Container.find({name : req.params.name}).exec()
-        .then(
-            function (containers) {
-                if (containers.length) {
-                    var container = containers[0];
+var manager = {
+    changeBuild : function(name, build) {
+        var command = (
+            'rm -rf __containers__/' + name +
+            '/working/* && unzip __containers__/' + name +
+            '/builds/' + build +
+            ' -d __containers__/' + name +
+            '/working'
+        );
 
-                    docker.kill(container.id).then(
-                        function () {
-                            exec('rm -rf __containers__/' + container.name, function () {
-                                Container.remove({name : container.name})
-                                    .exec()
-                                    .then(
-                                        function () {
-                                            nginx.reload().then(
-                                                function () {
-                                                    res.sendStatus(204);
-                                                }
-                                            );
-                                        }
-                                    );
-                            });
-                        },
-                        function () {
-                            res.sendStatus(500);
-                        }
-                    );
-                } else {
-                    res.sendStatus(404);
-                }
+        return new Q.promise(
+            function (resolve, reject) {
+                exec(
+                    command,
+                    function (error) {
+                        if (error) reject(error);
+
+                        resolve();
+                    }
+                );
             }
         );
-});
+    },
+    createContainer : function (name, port) {
+        return new Q.promise(
+            function (resolve, reject) {
+                var container = new Container({
+                    build  : null,
+                    builds : [],
+                    host   : name + '.' + config.app.hostname,
+                    name   : name,
+                    port   : port
+                });
 
-container.get('/container/:name', function (req, res) {
-    Container.find({name : req.params.name}).exec()
-        .then(
-            function (containers) {
-                if (containers.length) {
-                    res.send(containers[0].toObject());
-                } else {
-                    res.sendStatus(404);
-                }
-            }
-        );
-});
-
-container.get('/containers', function (req, res) {
-    Container.find({}).exec()
-        .then(
-            function (containers) {
-                res.send(containers);
-            }
-        );
-});
-
-container.patch('/container/:name', function (req, res) {
-    Container.find({name : req.params.name})
-        .exec()
-        .then(
-            function (containers) {
-                if (containers.length && req.body.build) {
-                    var container = containers[0];
-
-                    changeWorkingBuild(
-                        container.name,
-                        req.body.build,
-                        function (error, stdout, stderr) {
-                            container.activeBuild = req.body.build;
-                            container.save(
-                                function () {
-                                    res.send(containers[0].toObject());
-                                }
-                            );
-                        }
-                    );
-                } else {
-                    res.sendStatus(404);
-                }
-            }
-        );
-});
-
-container.post('/container', function (req, res) {
-    Container.find({name : req.body.name}).exec()
-        .then(
-            function (containers) {
-                if (containers.length || ['api'].indexOf(req.body.name) !== -1) {
-                    res.status(422);
-                    res.send({message : 'Container \'' + req.body.name + '\' already exists'});
-                } else {
-                    docker.create(req.body.name).then(
-                        function (response) {
-                            docker.inspect(response.Id, response).then(
-                                function (response) {
-                                    var container = new Container({
-                                        activeBuild : null,
-                                        builds      : [],
-                                        host        : response.Hostname,
-                                        id          : response.Id,
-                                        image       : response.Image,
-                                        name        : req.body.name
-                                    });
-
-                                    container.ports = {
-                                        22 : parseInt(_.findWhere(response.HostConfig.Ports, {PrivatePort : 22}).PublicPort, 10),
-                                        80 : parseInt(_.findWhere(response.HostConfig.Ports, {PrivatePort : 80}).PublicPort, 10)
-                                    };
-
-                                    container.save(
-                                        function () {
-                                            Fs.mkdir('__containers__/' + req.body.name, function (err) {
-                                                if (err && err.code !== 'EEXIST') throw err;
-
-                                                if (! err) {
-                                                    Fs.mkdir('__containers__/' + req.body.name + '/builds');
-                                                    Fs.mkdir('__containers__/' + req.body.name + '/working');
-                                                }
-
-                                                nginx.reload().then(
-                                                    function () {
-                                                        res.send(container.toObject());
-                                                    }
-                                                );
-                                            });
-                                        }
-                                    );
-                                },
-                                function (error) {
-                                    res.status(500);
-                                    res.send(error);
-                                }
-                            )
-                            .done();
-                       },
-                        function (error) {
-                            res.status(500);
-                            res.send(error);
-                        }
-                    )
-                    .done();
-                }
-            }
-        );
-});
-
-// Capture any uploaded file in a buffer
-container.use('/container/:name/build', function (req, res, next) {
-    var data = new Buffer('');
-
-    req.on('data', function (chunk) {
-        data = Buffer.concat([data, chunk]);
-    });
-
-    req.on('end', function () {
-        req.rawBody = data;
-        next();
-    });
-});
-
-container.post('/container/:name/build', function (req, res) {
-    Container.find({name : req.params.name}).exec()
-        .then(
-            function (containers) {
-                if (containers.length) {
-                    var container = containers[0];
-
-                    if (! _.findWhere(container.builds, {name : req.query.name})) {
-                        var path = '__containers__/' + container.name + '/builds/' + req.query.name;
-
-                        Fs.writeFile(
-                            path,
-                            req.rawBody,
-                            function (err) {
-                                if (err) throw err;
-                                changeWorkingBuild(
-                                    container.name,
-                                    req.query.name,
-                                    function (error, stdout, stderr) {
-                                        container.builds.push({name : req.query.name, path : path});
-                                        container.activeBuild = req.query.name;
-                                        container.save(
-                                            function () {
-                                                res.send(container.toObject());
-                                            }
-                                        );
-                                    }
+                container.save(
+                    function () {
+                        manager.createDirectory('__containers__/' + name).then(
+                            function () {
+                                Q.all([
+                                    manager.createDirectory('__containers__/' + name + '/builds'),
+                                    manager.createDirectory('__containers__/' + name + '/working')
+                                ]).done(
+                                    function () {
+                                        resolve(container);
+                                    },
+                                    reject
                                 );
+                            },
+                            reject
+                        );
+                    }
+                );
+
+            }
+        );
+    },
+    createDirectory : function (dir) {
+        return new Q.promise(
+            function (resolve, reject) {
+                fs.mkdir(dir, function (error) {
+                    if (error) reject(error);
+
+                    resolve();
+                });
+            }
+        );
+    },
+    deleteContainer : function (name) {
+        return Container.remove({name : name}).exec();
+    },
+    deleteFolder : function (name) {
+        return new Q.promise(
+            function (resolve, reject) {
+                exec(
+                    'rm -rf ' + process.cwd() + '/__containers__/' + name,
+                    function (error) {
+                        if (error) reject(error);
+
+                        resolve();
+                    }
+                );
+            }
+        );
+    },
+    deleteProcess : function (name) {
+        return new Q.promise(
+            function (resolve, reject) {
+                pm2.connect(
+                    function (error) {
+                        if (error) reject(error);
+
+                        pm2.delete(
+                            name,
+                            function () {
+                                resolve();
                             }
                         );
-                    } else {
-                        res.status(422);
-                        res.send({message : 'Build `' + req.query.name + '` already exists'});
                     }
-                } else {
-                    res.sendStatus(404);
-                }
+                );
             }
         );
-});
+    },
+    findPort : function () {
+        return new Q.promise(
+            function (resolve, reject) {
+                portfinder.getPort(
+                    function (error, port) {
+                        if (error) reject(error);
+
+                        resolve(port);
+                    }
+                );
+            }
+        );
+    },
+    findContainer : function (name) {
+        return new Q.promise(
+            function (resolve, reject) {
+                Container.find({name : name}).exec().then(
+                    function (containers) {
+                        if (containers.length) {
+                            resolve(containers[0]);
+                        } else {
+                            reject();
+                        }
+                    }
+                );
+            }
+        );
+    },
+    restartProcess : function (name, port) {
+        var script = (
+            process.cwd() + '/__containers__/' +
+            name + '/working/server/index.js'
+        );
+
+        return new Q.promise(
+            function (resolve, reject) {
+                pm2.connect(
+                    function (error) {
+                        if (error) reject(error);
+
+                        pm2.start({
+                            env    : {PORT : port},
+                            name   : name,
+                            script : script
+                        }, function(error, proc) {
+                            if (error) reject(error);
+
+                            resolve();
+                        });
+                    }
+                );
+            }
+        );
+    },
+    saveBuild : function (name, build, file) {
+        return new Q.promise(
+            function (resolve, reject) {
+                var filepath = (
+                    process.cwd() + '/__containers__/' +
+                    name + '/builds/' + build
+                );
+
+                fs.writeFile(
+                    filepath,
+                    file,
+                    function (error) {
+                        if (error) reject(error);
+
+                        resolve();
+                    }
+                );
+            }
+        );
+    }
+};
+
+container.delete(
+    '/container/:name',
+    function (req, res) {
+        manager.findContainer(req.params.name).done(
+            function (container) {
+                Q.all([
+                    manager.deleteContainer(container.name),
+                    manager.deleteFolder(container.name),
+                    manager.deleteProcess(container.name)
+                ]).done(
+                    function () {
+                        res.sendStatus(204);
+                    },
+                    function () {
+                        res.sendStatus(500);
+                    }
+                );
+            },
+            function () {
+                res.sendStatus(404);
+            }
+        );
+    }
+);
+
+container.get(
+    '/container/:name',
+    function (req, res) {
+        manager.findContainer(req.params.name).done(
+            function (container) {
+                res.json(container.toObject());
+            },
+            function () {
+                res.sendStatus(404);
+            }
+        );
+    }
+);
+
+container.get(
+    '/containers',
+    function (req, res) {
+        Container.find({}).exec().then(
+            function (containers) {
+                res.json(containers);
+            }
+        );
+    }
+);
+
+container.patch(
+    '/container/:name',
+    function (req, res) {
+        manager.findContainer(req.params.name).done(
+            function (container) {
+                Q.all([
+                    manager.changeBuild(container.name, req.body.build),
+                    manager.restartProcess(container.name, container.port),
+                    nginx.reload()
+                ]).done(
+                    function () {
+                        container.build = req.body.build;
+                        container.save(
+                            function () {
+                                res.json(container.toObject());
+                            }
+                        );
+                    },
+                    function () {
+                        res.sendStatus(500);
+                    }
+                );
+            },
+            function (error) {
+                req.sendStatus(404);
+            }
+        );
+    }
+);
+
+container.post(
+    '/container',
+    function (req, res) {
+        manager.findContainer(req.body.name).done(
+            function (container) {
+                res.status(422);
+                res.json({message : 'Container \'' + container.name + '\' already exists'});
+            },
+            function () {
+                manager.findPort().then(
+                    function (port) {
+                        return manager.createContainer(req.body.name, port);
+                    },
+                    function () {
+                        res.sendStatus(500);
+                    }
+                ).done(
+                    function (container) {
+                        res.json(container.toObject());
+                    },
+                    function () {
+                        res.sendStatus(500);
+                    }
+                );
+            }
+        );
+    }
+);
+
+// Capture any uploaded file in a buffer
+container.use(
+    '/container/:name/build',
+    function (req, res, next) {
+        var data = new Buffer('');
+
+        req.on('data', function (chunk) {
+            data = Buffer.concat([data, chunk]);
+        });
+
+        req.on('end', function () {
+            req.rawBody = data;
+            next();
+        });
+    }
+);
+
+container.post(
+    '/container/:name/build',
+    function (req, res) {
+        manager.findContainer(req.params.name).then(
+            function (container) {
+                if (_.findWhere(container.builds, {name : req.query.name})) {
+                    res.status(422);
+                    res.json({message : 'Build `' + req.query.name + '` already exists'});
+                } else {
+                    manager.saveBuild(container.name, req.query.name, req.rawBody).then(
+                        function () {
+                            container.builds.push({
+                                name : req.query.name
+                            });
+
+                            container.save(
+                                function () {
+                                    res.json(container.toObject());
+                                }
+                            );
+                        },
+                        function () {
+                            req.sendStatus(500);
+                        }
+                    );
+                }
+            },
+            function () {
+                res.sendStatus(404);
+            }
+        );
+    }
+);
 
 module.exports = container;

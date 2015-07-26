@@ -11,14 +11,14 @@ class ContainerClient extends AuthGateway {
         super();
     }
 
-    activateBuild(container, build)
+    activateBuild(name, build)
     {
-        return this.apiRequest('PATCH', '/container/' + container, {build : build});
+        return this.apiRequest('PATCH', '/container/' + name, {build : build});
     }
 
-    create(container)
+    create(name)
     {
-        return this.apiRequest('POST', '/container/', {name : container.name});
+        return this.apiRequest('POST', '/container/', {name : name});
     }
 
     fetch(name)

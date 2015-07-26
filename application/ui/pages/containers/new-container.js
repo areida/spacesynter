@@ -12,10 +12,7 @@ class NewContainer extends React.Component {
     {
         super(props);
 
-        this.state = {
-            image : '',
-            name  : ''
-        };
+        this.state = {name  : ''};
 
         this.onCreated = this.onCreated.bind(this);
     }
@@ -32,7 +29,7 @@ class NewContainer extends React.Component {
 
     onCreated()
     {
-        this.setState(this.getInitialState());
+        this.setState({name  : ''});
     }
 
     onFormChange(value, element)
@@ -48,21 +45,18 @@ class NewContainer extends React.Component {
     {
         event.preventDefault();
 
-        this.props.flux.actions.container.create({
-            name : this.state.name
-        });
+        if (this.state.name && this.state.name.length) {
+            this.props.flux.actions.container.create(this.state.name).done();
+        }
     }
 
     render()
     {
-        var buttonStyle, formStyle, inputStyle;
-
         return (
             <div className='container new row'>
                 <form
                     className = 'form new-container-form'
                     onSubmit  = {this.onSubmit.bind(this)}
-                    style     = {formStyle}
                 >
                     <div className='medium-2 columns'>
                         <Text
@@ -75,20 +69,12 @@ class NewContainer extends React.Component {
                         />
                     </div>
                     <div className='medium-2 columns'>
-                        <Select
-                            disabled     = {true}
-                            id           = 'image'
-                            value        = {this.state.image}
-                            onChange     = {this.onFormChange.bind(this)}
-                            options      = {[{text : 'Image', value : null}]}
-                        />
                     </div>
                     <div className='medium-8 columns'>
                         <Button
                             className = 'button'
                             type      = 'submit'
                             size      = 'small'
-                            style     = {buttonStyle}
                             onClick   = {this.onSubmit.bind(this)}
                         >
                             <a>Create</a>

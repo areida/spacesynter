@@ -2,10 +2,11 @@
 
 var React = require('react');
 
+var Build  = require('../../components/build');
 var Button = require('../../components/buttons/button');
 var Upload = require('../../components/form/inputs/upload');
 
-class ExistingContainer extends React.Component {
+class Container extends React.Component {
     constructor(props)
     {
         super(props);
@@ -18,7 +19,7 @@ class ExistingContainer extends React.Component {
 
     onActivateBuild(build)
     {
-        if ((this.props.container.get('activeBuild') === build.get('name'))) {
+        if ((this.props.container.get('build') === build.get('name'))) {
             return;
         }
 
@@ -27,11 +28,9 @@ class ExistingContainer extends React.Component {
 
     onDeleteBuild(build)
     {
-        if ((this.props.container.get('activeBuild') === build.get('name'))) {
+        if ((this.props.container.get('build') === build.get('name'))) {
             return;
         }
-
-        console.log(build.get('name'));
     }
 
     onDrop(files)
@@ -60,33 +59,17 @@ class ExistingContainer extends React.Component {
 
     renderBuild(build, index)
     {
-        var active = (this.props.container.get('activeBuild') === build.get('name'));
+        var active = (this.props.container.get('build') === build.get('name'));
 
         return (
-            <div className='row' key={index}>
-                <div className='medium-2 columns'>&nbsp;</div>
-                <div className='medium-2 columns'>{build.get('name')}</div>
-                <div className='medium-2 columns'>{build.get('created')}</div>
-                <div className='medium-2 columns'>
-                    <Button
-                        size     = 'tiny'
-                        onClick  = {this.onActivateBuild.bind(this, build)}
-                        disabled = {active}
-                    >
-                        <a>Activate</a>
-                    </Button>
-                </div>
-                <div className='medium-2 columns'>
-                    <Button
-                        size     = 'tiny'
-                        onClick  = {this.onDeleteBuild.bind(this, build)}
-                        disabled = {active}
-                    >
-                        <a>Delete</a>
-                    </Button>
-                </div>
-                <div className='medium-2 columns'></div>
-            </div>
+            <Build
+                active     = {active}
+                created    = {build.get('created')}
+                key        = {index}
+                name       = {build.get('name')}
+                onActivate = {this.onActivateBuild.bind(this, build)}
+                onDelete   = {this.onDeleteBuild.bind(this, build)}
+            />
         );
     }
 
@@ -123,7 +106,7 @@ class ExistingContainer extends React.Component {
                         <Upload onDrop={this.onDrop.bind(this)} percent={this.state.percent}>Add Build</Upload>
                     </div>
                     <div className='medium-2 columns'>
-                        <Button size='small' onClick={this.onToggleBuilds}>
+                        <Button size='small' onClick={this.onToggleBuilds.bind(this)}>
                             <a>Builds</a>
                         </Button>
                     </div>
@@ -141,6 +124,6 @@ class ExistingContainer extends React.Component {
     }
 }
 
-ExistingContainer.displayName = 'ExistingContainer';
+Container.displayName = 'Container';
 
-module.exports = ExistingContainer;
+module.exports = Container;
