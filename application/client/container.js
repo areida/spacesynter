@@ -21,6 +21,11 @@ class ContainerClient extends AuthGateway {
         return this.apiRequest('POST', '/container/', {name : name});
     }
 
+    deleteBuild(name, build)
+    {
+        return this.apiRequest('DELETE', '/container/' + name, {name : name});
+    }
+
     fetch(name)
     {
         return this.apiRequest('GET', '/container/' + name);

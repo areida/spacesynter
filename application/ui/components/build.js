@@ -17,6 +17,7 @@ class Build extends React.Component {
                         size     = 'tiny'
                         onClick  = {this.props.onActivate}
                         disabled = {this.props.active}
+                        color    = {this.props.active ? 'tertiary' : 'primary'}
                     >
                         <a>Activate</a>
                     </Button>
@@ -26,6 +27,7 @@ class Build extends React.Component {
                         size     = 'tiny'
                         onClick  = {this.props.onDelete}
                         disabled = {this.props.active}
+                        color    = {this.props.active ? 'tertiary' : 'primary'}
                     >
                         <a>Delete</a>
                     </Button>

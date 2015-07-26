@@ -17,6 +17,7 @@ class ContainerStore extends ApiStore {
         this.bindActions(
             constants.ACTIVATE_BUILD_SUCCESS, 'onActvateBuildSuccess',
             constants.BUILD_CREATE_SUCCESS, 'onBuildCreateSuccess',
+            constants.DELETE_BUILD_SUCCESS, 'onDeleteBuildSuccess',
             constants.CONTAINER_FETCH_ALL, 'onFetchAll',
             constants.CONTAINER_FETCH_ALL_SUCCESS, 'onFetchAllSuccess',
             constants.CONTAINER_CREATE_SUCCESS, 'onCreateSuccess',
@@ -51,6 +52,20 @@ class ContainerStore extends ApiStore {
         var containers, index;
 
         index      = this.findIndexByName(container.name);
+        containers = this.state.get('containers').set(index, Immutable.fromJS(container));
+
+        this.state = this.state.set('containers', containers);
+
+        this.emit('change');
+    }
+
+    onDeleteBuildSuccess(payload)
+    {
+        var container, containers, index;
+
+        index      = this.findIndexByName(payload.name);
+        container  = this.state.get('containers').get(index);
+        container  = container.set('builds', container.get('builds').filterNot(build => build.get('name') === payload.build));
         containers = this.state.get('containers').set(index, Immutable.fromJS(container));
 
         this.state = this.state.set('containers', containers);

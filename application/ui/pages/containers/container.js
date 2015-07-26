@@ -31,6 +31,8 @@ class Container extends React.Component {
         if ((this.props.container.get('build') === build.get('name'))) {
             return;
         }
+
+        this.props.flux.actions.container.deleteBuild(this.props.container.get('name'), build.get('name'));
     }
 
     onDrop(files)

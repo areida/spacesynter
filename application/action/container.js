@@ -4,58 +4,57 @@ var constants       = require('../constants');
 var containerClient = require('../client/container');
 
 module.exports = {
-    activateBuild(container, name)
+    activateBuild(name, build)
     {
-        var flux = this;
+        this.dispatch(constants.ACTIVATE_BUILD, name, build);
 
-        this.dispatch(constants.ACTIVATE_BUILD, container, name);
-
-        return containerClient.activateBuild(container, name).then(
-            data => flux.dispatch(constants.ACTIVATE_BUILD_SUCCESS, data)
+        return containerClient.activateBuild(name, build).then(
+            data => this.dispatch(constants.ACTIVATE_BUILD_SUCCESS, data)
         );
     },
 
-    create(container)
+    create(name)
     {
-        var flux = this;
+        this.dispatch(constants.CONTAINER_CREATE, name);
 
-        this.dispatch(constants.CONTAINER_CREATE, container);
+        return containerClient.create(name).then(
+            data => this.dispatch(constants.CONTAINER_CREATE_SUCCESS, data)
+        );
+    },
 
-        return containerClient.create(container).then(
-            data => flux.dispatch(constants.CONTAINER_CREATE_SUCCESS, data)
+    deleteBuild(name, build)
+    {
+        this.dispatch(constants.DELETE_BUILD, name, build);
+
+        return containerClient.activateBuild(name, build).then(
+            () => this.dispatch(constants.DELETE_BUILD_SUCCESS, {name : name, build : build})
         );
     },
 
     fetch(name)
     {
-        var flux = this;
-
         this.dispatch(constants.CONTAINER_FETCH, name);
 
         return containerClient.fetch(name).then(
-            response => flux.dispatch(constants.CONTAINER_FETCH_SUCCESS, response)
+            response => this.dispatch(constants.CONTAINER_FETCH_SUCCESS, response)
         );
     },
 
     fetchAll()
     {
-        var flux = this;
-
         this.dispatch(constants.CONTAINER_FETCH_ALL);
 
         return containerClient.fetchAll().then(
-            response => flux.dispatch(constants.CONTAINER_FETCH_ALL_SUCCESS, response)
+            response => this.dispatch(constants.CONTAINER_FETCH_ALL_SUCCESS, response)
         );
     },
 
     kill(name)
     {
-        var flux = this;
-
         this.dispatch(constants.CONTAINER_KILL, name);
 
         return containerClient.kill(name).then(
-            response => flux.dispatch(constants.CONTAINER_KILL_SUCCESS, response)
+            response => this.dispatch(constants.CONTAINER_KILL_SUCCESS, response)
         );
     }
 };

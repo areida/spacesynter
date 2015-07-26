@@ -80,6 +80,19 @@ var manager = {
             }
         );
     },
+    deleteBuild : function (name, build) {
+        return new Q.promise(
+            function (resolve, reject) {
+                var path = process.cwd() + '/__containers__/' + name + '/builds/' + build;
+
+                fs.unlink(path, function (error) {
+                    if (error) reject(error);
+
+                    resolve();
+                });
+            }
+        );
+    },
     deleteContainer : function (name) {
         return Container.remove({name : name}).exec();
     },
@@ -156,7 +169,10 @@ var manager = {
                         if (error) reject(error);
 
                         pm2.start({
-                            env    : {PORT : port},
+                            env : {
+                                CWD  : process.cwd() + '/__containers__/' + name + '/working',
+                                PORT : port
+                            },
                             name   : name,
                             script : script
                         }, function(error, proc) {
@@ -314,6 +330,43 @@ container.use(
             req.rawBody = data;
             next();
         });
+    }
+);
+
+container.delete(
+    '/container/:name/build',
+    function (req, res) {
+        manager.findContainer(req.params.name).then(
+            function (container) {
+                if (_.findWhere(container.builds, {name : req.query.name})) {
+                    res.status(422);
+                    res.json({message : 'Build `' + req.query.name + '` already exists'});
+                } else {
+                    manager.deleteBuild(container.name, req.query.name).then(
+                        function () {
+                            container.builds = _.reject(
+                                container.builds,
+                                function (build) {
+                                    return build.name === req.query.name;
+                                }
+                            );
+
+                            container.save(
+                                function () {
+                                    res.json(container.toObject());
+                                }
+                            );
+                        },
+                        function () {
+                            req.sendStatus(500);
+                        }
+                    );
+                }
+            },
+            function () {
+                res.sendStatus(404);
+            }
+        );
     }
 );
 
