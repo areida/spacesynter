@@ -170,8 +170,9 @@ var manager = {
 
                         pm2.start({
                             env : {
-                                CWD  : process.cwd() + '/__containers__/' + name + '/working',
-                                PORT : port
+                                APP_ENV : 'qa',
+                                CWD     : process.cwd() + '/__containers__/' + name + '/working',
+                                PORT    : port
                             },
                             name   : name,
                             script : script
