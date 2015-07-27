@@ -2,6 +2,8 @@
 
 module.exports = {
     app : {
-        hostname : 'spacesynter.vm'
+        containerDir : process.cwd() + '/__containers__',
+        hostname     : 'spacesynter.vm',
+        serverDir    : process.cwd()
     }
 };

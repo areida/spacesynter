@@ -47,4 +47,5 @@ zip -r dist/app \
     "node_modules/webpack-error-notification/*" \
     "node_modules/docker.io/*" \
     "node_modules/mongodb/*" \
-    "node_modules/mongoose/*"
+    "node_modules/mongoose/*" \
+    "node_modules/pm2/*"

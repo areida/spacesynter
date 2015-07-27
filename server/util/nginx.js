@@ -19,7 +19,7 @@ module.exports = {
                     .then(
                         function (containers) {
                             fs.writeFile(
-                                process.cwd() + '/servers.temp',
+                                config.serverDir + '/servers.temp',
                                 tmpl('servers.conf', {containers : containers}),
                                 function (err) {
                                     if (err) {

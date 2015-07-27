@@ -30,9 +30,7 @@ if (config.auth) {
 
 app.get(/^([^.]+)$/, render);
 
-if (__ENVIRONMENT__ !== 'production') {
-    app.use(Express.static(process.cwd() + '/build'));
-}
+app.use(Express.static(process.cwd() + '/build'));
 
 app.listen(config.app.port, 10, function () {
     console.log('Listening on localhost:' + config.app.port);

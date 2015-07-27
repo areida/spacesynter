@@ -1,4 +1,6 @@
-execute 'apt-get install -y nginx'
+execute 'apt-get install -y nginx' do
+    not_if 'which nginx'
+end
 
 template '/usr/local/bin/nginx_ensite' do
     not_if {File.exists?('/usr/local/bin/nginx_ensite')}

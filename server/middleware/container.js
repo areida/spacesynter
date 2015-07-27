@@ -8,7 +8,6 @@ var _          = require('lodash');
 
 var config    = require('../config');
 var Container = require('../model/container');
-var docker    = require('../util/docker');
 var nginx     = require('../util/nginx');
 
 var container = new Express();
@@ -16,10 +15,10 @@ var container = new Express();
 var manager = {
     changeBuild : function(name, build) {
         var command = (
-            'rm -rf __containers__/' + name +
-            '/working/* && unzip __containers__/' + name +
+            'rm -rf ' + config.app.containerDir + '/' + name +
+            '/working/* && unzip ' + config.app.containerDir + '/' + name +
             '/builds/' + build +
-            ' -d __containers__/' + name +
+            ' -d ' + config.app.containerDir + '/' + name +
             '/working'
         );
 
@@ -49,11 +48,11 @@ var manager = {
 
                 container.save(
                     function () {
-                        manager.createDirectory('__containers__/' + name).then(
+                        manager.createDirectory(config.app.containerDir + '/' + name).then(
                             function () {
-                                Q.all([
-                                    manager.createDirectory('__containers__/' + name + '/builds'),
-                                    manager.createDirectory('__containers__/' + name + '/working')
+                                return Q.all([
+                                    manager.createDirectory(config.app.containerDir + '/' + name + '/builds'),
+                                    manager.createDirectory(config.app.containerDir + '/' + name + '/working')
                                 ]).done(
                                     function () {
                                         resolve(container);
@@ -83,7 +82,7 @@ var manager = {
     deleteBuild : function (name, build) {
         return new Q.promise(
             function (resolve, reject) {
-                var path = process.cwd() + '/__containers__/' + name + '/builds/' + build;
+                var path = config.containerDir + '/' + name + '/builds/' + build;
 
                 fs.unlink(path, function (error) {
                     if (error) reject(error);
@@ -100,7 +99,7 @@ var manager = {
         return new Q.promise(
             function (resolve, reject) {
                 exec(
-                    'rm -rf ' + process.cwd() + '/__containers__/' + name,
+                    'rm -rf ' + config.containerDir + '/' + name,
                     function (error) {
                         if (error) reject(error);
 
@@ -158,7 +157,7 @@ var manager = {
     },
     restartProcess : function (name, port) {
         var script = (
-            process.cwd() + '/__containers__/' +
+            config.containerDir + '/' +
             name + '/working/server/index.js'
         );
 
@@ -171,7 +170,7 @@ var manager = {
                         pm2.start({
                             env : {
                                 APP_ENV : 'qa',
-                                CWD     : process.cwd() + '/__containers__/' + name + '/working',
+                                CWD     : config.containerDir + '/' + name + '/working',
                                 PORT    : port
                             },
                             name   : name,
@@ -190,7 +189,7 @@ var manager = {
         return new Q.promise(
             function (resolve, reject) {
                 var filepath = (
-                    process.cwd() + '/__containers__/' +
+                    config.containerDir + '/' +
                     name + '/builds/' + build
                 );
 
@@ -221,8 +220,10 @@ container.delete(
                     function () {
                         res.sendStatus(204);
                     },
-                    function () {
-                        res.sendStatus(500);
+                    function (error) {
+                        console.log(error);
+                        res.status(500);
+                        res.json(error);
                     }
                 );
             },
@@ -276,8 +277,10 @@ container.patch(
                             }
                         );
                     },
-                    function () {
-                        res.sendStatus(500);
+                    function (error) {
+                        console.log(error);
+                        res.status(500);
+                        res.json(error);
                     }
                 );
             },
@@ -299,17 +302,22 @@ container.post(
             function () {
                 manager.findPort().then(
                     function (port) {
+                        console.log(port);
                         return manager.createContainer(req.body.name, port);
                     },
-                    function () {
-                        res.sendStatus(500);
+                    function (error) {
+                        console.log(error);
+                        res.status(500);
+                        res.json(error);
                     }
                 ).done(
                     function (container) {
                         res.json(container.toObject());
                     },
-                    function () {
-                        res.sendStatus(500);
+                    function (error) {
+                        console.log(error);
+                        res.status(500);
+                        res.json(error);
                     }
                 );
             }
@@ -358,8 +366,10 @@ container.delete(
                                 }
                             );
                         },
-                        function () {
-                            req.sendStatus(500);
+                        function (error) {
+                            console.log(error);
+                            res.status(500);
+                            res.json(error);
                         }
                     );
                 }
@@ -392,8 +402,10 @@ container.post(
                                 }
                             );
                         },
-                        function () {
-                            req.sendStatus(500);
+                        function (error) {
+                            console.log(error);
+                            res.status(500);
+                            res.json(error);
                         }
                     );
                 }
