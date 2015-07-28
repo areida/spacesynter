@@ -7,12 +7,29 @@ var Button = require('../../components/buttons/button');
 var Select = require('../../components/form/inputs/select');
 var Text   = require('../../components/form/inputs/text');
 
+var defaultPaths = {
+    nodejs : 'server/index.js',
+    static : 'build'
+};
+
+var typeOptions = [{
+    text  : 'NodeJS',
+    value : 'nodejs'
+}, {
+    text  : 'Static',
+    value : 'static'
+}];
+
 class NewContainer extends React.Component {
     constructor(props)
     {
         super(props);
 
-        this.state = {name  : ''};
+        this.state = {
+            name : '',
+            path : defaultPaths.nodejs,
+            type : 'nodejs'
+        };
 
         this.onCreated = this.onCreated.bind(this);
     }
@@ -29,7 +46,11 @@ class NewContainer extends React.Component {
 
     onCreated()
     {
-        this.setState({name  : ''});
+        this.setState({
+            name : '',
+            path : defaultPaths.nodejs,
+            type : 'nodejs'
+        });
     }
 
     onFormChange(value, element)
@@ -38,6 +59,10 @@ class NewContainer extends React.Component {
 
         state[element.props.id] = value;
 
+        if (element.props.id === 'type') {
+            state.path = defaultPaths[value];
+        }
+
         this.setState(state);
     }
 
@@ -45,7 +70,11 @@ class NewContainer extends React.Component {
     {
         event.preventDefault();
 
-        this.props.flux.actions.container.create(this.state.name.trim()).done();
+        this.props.flux.actions.container.create(
+            this.state.name.trim(),
+            this.state.path,
+            this.state.type
+        ).done();
     }
 
     render()
@@ -58,15 +87,34 @@ class NewContainer extends React.Component {
                 >
                     <div className='medium-2 columns'>
                         <Text
-                            id           = 'name'
-                            value        = {this.state.name}
-                            onChange     = {this.onFormChange.bind(this)}
-                            placeholder  = 'Name'
-                            size         = 'small'
-                            type         = 'text'
+                            id          = 'name'
+                            value       = {this.state.name}
+                            onChange    = {this.onFormChange.bind(this)}
+                            placeholder = 'Name'
+                            size        = 'small'
+                            type        = 'text'
                         />
                     </div>
-                    <div className='medium-10 columns'>
+                    <div className='medium-2 columns'>
+                        <Select
+                            id       = 'type'
+                            value    = {this.state.type}
+                            onChange = {this.onFormChange.bind(this)}
+                            options  = {typeOptions}
+                            size     = 'small'
+                        />
+                    </div>
+                    <div className='medium-2 columns'>
+                        <Text
+                            id          = 'path'
+                            value       = {this.state.path}
+                            onChange    = {this.onFormChange.bind(this)}
+                            placeholder = 'Path'
+                            size        = 'small'
+                            type        = 'text'
+                        />
+                    </div>
+                    <div className='medium-8 columns'>
                         <Button
                             className = 'button'
                             type      = 'submit'

@@ -147,14 +147,16 @@ var manager = {
     randomHash : function (length) {
         return Math.random().toString(36).substring(2, length + 2);
     },
-    restartProcess : function (name, port) {
+    restartProcess : function (container, port) {
         var script = (
             config.app.containerDir + '/' +
-            name + '/working/server/index.js'
+            container.name + '/working/' + container.scriptPath
         );
 
         return new Q.promise(
             function (resolve, reject) {
+                if (container.type !== 'nodejs') resolve();
+
                 pm2.connect(
                     function (error) {
                         if (error) reject(error);
@@ -162,10 +164,10 @@ var manager = {
                         pm2.start({
                             env : {
                                 APP_ENV : 'qa',
-                                CWD     : config.app.containerDir + '/' + name + '/working',
+                                CWD     : config.app.containerDir + '/' + container.name + '/working',
                                 PORT    : port
                             },
-                            name   : name,
+                            name   : container.name,
                             script : script
                         }, function(error, proc) {
                             if (error) reject(error);
@@ -338,7 +340,7 @@ container.patch(
 
                         Q.all([
                             manager.changeBuild(container.name, build.name),
-                            manager.restartProcess(container.name, container.port)
+                            manager.restartProcess(container, container.port)
                         ]).then(
                             function () {
                                 return manager.saveContainer(container);
@@ -373,6 +375,8 @@ container.post(
 
         if (! name || ! name.length) {
             name = manager.randomHash(5);
+        } else {
+            name = name.replace(/\s/g, '-').toLowerCase();
         }
 
         Q.all([
@@ -392,7 +396,7 @@ container.post(
                 manager.findPort(ports).then(
                     function (port) {
                         return Q.all([
-                            manager.createContainer(name, port),
+                            manager.createContainer(name, req. port),
                             manager.createDirectory(config.app.containerDir + '/' + name)
                         ]);
                     }

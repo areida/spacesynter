@@ -11,9 +11,9 @@ module.exports = {
         );
     },
 
-    create(name)
+    create(name, path, type)
     {
-        return containerClient.create(name).then(
+        return containerClient.create(name, path, type).then(
             container => this.dispatch(constants.CONTAINER_CREATE_SUCCESS, container)
         );
     },

@@ -42,7 +42,7 @@ class SelectInput extends React.Component {
             (item, index) => (
                 <option
                     value = {item.value}
-                    key   = {'select-option-' + index}
+                    key   = {index}
                 >
                     {item.text}
                 </option>
@@ -63,7 +63,7 @@ class SelectInput extends React.Component {
                         className = 'input input--select'
                         id        = {this.props.id}
                         value     = {this.props.value}
-                        onChange  = {this.onChange}
+                        onChange  = {this.onChange.bind(this)}
                         disabled  = {this.props.disabled ? 'disabled' : ''}
                     >
                         {this.renderSelectOptions()}
@@ -72,7 +72,8 @@ class SelectInput extends React.Component {
                         <Icon
                             className = 'input--select__arrow-icon'
                             icon      = 'caret'
-                            rotate    = {90} />
+                            rotate    = {90}
+                        />
                     </span>
                 </div>
             </InputValidation>
@@ -83,19 +84,18 @@ class SelectInput extends React.Component {
 SelectInput.displayName = 'SelectInputElement';
 
 SelectInput.propTypes = {
-    id                : React.PropTypes.string.isRequired,
-    disabled          : React.PropTypes.bool,
-    label             : React.PropTypes.string,
-    onChange          : React.PropTypes.func,
-    options           : React.PropTypes.arrayOf(
+    id       : React.PropTypes.string.isRequired,
+    disabled : React.PropTypes.bool,
+    label    : React.PropTypes.string,
+    onChange : React.PropTypes.func,
+    options  : React.PropTypes.arrayOf(
         React.PropTypes.shape({
-            value      : React.PropTypes.oneOfType([
+            value : React.PropTypes.oneOfType([
                 React.PropTypes.number,
                 React.PropTypes.string,
                 React.PropTypes.bool
             ]),
-            text       : React.PropTypes.string,
-            isSelected : React.PropTypes.bool
+            text : React.PropTypes.string
         })
     ),
     validationDisplay : React.PropTypes.string,

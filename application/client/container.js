@@ -16,11 +16,13 @@ class ContainerClient extends AuthGateway {
         return this.apiRequest('PATCH', '/container/' + name, {build : build});
     }
 
-    create(name)
+    create(name, path, type)
     {
-        name = (name || '').replace(/\s/g, '-').toLowerCase();
-
-        return this.apiRequest('POST', '/container/', {name : name});
+        return this.apiRequest('POST', '/container/', {
+            name : name,
+            path : path,
+            type : type
+        });
     }
 
     deleteBuild(name, build)

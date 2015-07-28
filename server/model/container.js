@@ -13,7 +13,8 @@ containerSchema = new Schema({
     created : {type : Date, default : Date.now},
     host    : String,
     id      : String,
-    name    : { type : String, index : true},
+    name    : {type : String, index : true},
+    path    : String,
     port    : String,
     type    : {type : String, default : 'nodejs'}
 });
