@@ -45,9 +45,7 @@ class NewContainer extends React.Component {
     {
         event.preventDefault();
 
-        if (this.state.name && this.state.name.length) {
-            this.props.flux.actions.container.create(this.state.name).done();
-        }
+        this.props.flux.actions.container.create(this.state.name.trim()).done();
     }
 
     render()

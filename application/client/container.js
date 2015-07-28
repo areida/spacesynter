@@ -18,6 +18,8 @@ class ContainerClient extends AuthGateway {
 
     create(name)
     {
+        name = (name || '').replace(/\s/g, '-').toLowerCase();
+
         return this.apiRequest('POST', '/container/', {name : name});
     }
 

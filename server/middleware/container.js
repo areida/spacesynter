@@ -144,6 +144,9 @@ var manager = {
             }
         );
     },
+    randomHash : function (length) {
+        return Math.random().toString(36).substring(2, length + 2);
+    },
     restartProcess : function (name, port) {
         var script = (
             config.app.containerDir + '/' +
@@ -363,49 +366,54 @@ container.patch(
 container.post(
     '/container',
     function (req, res) {
+        var name = req.body.name;
+
+        if (! name || ! name.length) {
+            name = manager.randomHash(5);
+        }
+
         Q.all([
-            Container.find({name : req.body.name}).exec(),
+            Container.find({name : name}).exec(),
             Container.find({}).exec()
         ])
         .then(
             function (responses) {
-                var container, ports;
+                var container, ports, suffix;
 
                 if (responses[0].length) {
-                    res.status(422);
-                    res.json({message : 'Container \'' + req.body.name + '\' already exists'});
-                } else {
-                    ports = _.pluck(responses[1], 'port');
-
-                    manager.findPort(ports).then(
-                        function (port) {
-                            return Q.all([
-                                manager.createContainer(req.body.name, port),
-                                manager.createDirectory(config.app.containerDir + '/' + req.body.name)
-                            ]);
-                        }
-                    )
-                    .then(
-                        function (responses) {
-                            container = responses[0];
-
-                            return Q.all([
-                                manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/builds'),
-                                manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/working'),
-                                nginx.reload()
-                            ]);
-                        }
-                    )
-                    .done(
-                        function () {
-                            res.json(container.toObject());
-                        },
-                        function (error) {
-                            res.status(500);
-                            res.json(error);
-                        }
-                    );
+                    name = name + '-' + manager.randomHash(5);
                 }
+
+                ports = _.pluck(responses[1], 'port');
+
+                manager.findPort(ports).then(
+                    function (port) {
+                        return Q.all([
+                            manager.createContainer(name, port),
+                            manager.createDirectory(config.app.containerDir + '/' + name)
+                        ]);
+                    }
+                )
+                .then(
+                    function (responses) {
+                        container = responses[0];
+
+                        return Q.all([
+                            manager.createDirectory(config.app.containerDir + '/' + name + '/builds'),
+                            manager.createDirectory(config.app.containerDir + '/' + name + '/working'),
+                            nginx.reload()
+                        ]);
+                    }
+                )
+                .done(
+                    function () {
+                        res.json(container.toObject());
+                    },
+                    function (error) {
+                        res.status(500);
+                        res.json(error);
+                    }
+                );
             }
         );
     }
@@ -436,26 +444,27 @@ container.post(
         manager.findContainer(req.params.name).then(
             function (container) {
                 if (_.findWhere(container.builds, {name : filename})) {
-                    res.status(422);
-                    res.json({message : 'Build `' + filename + '` already exists'});
-                } else {
-                    container.builds.push({
-                        name : filename
-                    });
+                    var suffix = '-' + manager.randomHash(5);
 
-                    Q.all([
-                        manager.saveBuild(container.name, filename, req.rawBody),
-                        manager.saveContainer(container)
-                    ]).done(
-                        function () {
-                            res.json(container.toObject());
-                        },
-                        function (error) {
-                            res.status(500);
-                            res.json(error);
-                        }
-                    );
+                    filename = filename.replace(/\.zip$/, suffix + '.zip');
                 }
+
+                container.builds.push({
+                    name : filename
+                });
+
+                Q.all([
+                    manager.saveBuild(container.name, filename, req.rawBody),
+                    manager.saveContainer(container)
+                ]).done(
+                    function () {
+                        res.json(container.toObject());
+                    },
+                    function (error) {
+                        res.status(500);
+                        res.json(error);
+                    }
+                );
             },
             function () {
                 res.status(404);

@@ -18,23 +18,29 @@ class BuildClient {
                     var reader = new FileReader();
                     var xhr    = new XMLHttpRequest();
 
-                    xhr.upload.addEventListener('progress', function (event) {
-                        if (event.lengthComputable) {
-                            notify(Math.round((event.loaded * 100) / event.total));
-                        }
-                    }, false);
+                    xhr.upload.addEventListener(
+                        'progress',
+                        event => {
+                            if (event.lengthComputable) {
+                                notify(Math.round((event.loaded * 100) / event.total));
+                            }
 
-                    xhr.upload.addEventListener('load', function () {
-                        notify(0);
-                    }, false);
+                        },
+                        false
+                    );
 
-                    xhr.addEventListener('load', function () {
-                        if (xhr.status === 200) {
-                            resolve(JSON.parse(xhr.response));
-                        } else {
-                            reject(xhr);
+                    xhr.upload.addEventListener('load', () => {notify(0);}, false);
+
+                    xhr.addEventListener(
+                        'load',
+                        () => {
+                            if (xhr.status === 200) {
+                                resolve(JSON.parse(xhr.response));
+                            } else {
+                                reject(xhr);
+                            }
                         }
-                    });
+                    );
 
                     xhr.open(
                         'POST',
@@ -44,28 +50,30 @@ class BuildClient {
                         )
                     );
 
-                    xhr.setRequestHeader('X-Filename', files[0].name);
+                    xhr.setRequestHeader(
+                        'X-Filename',
+                        files[0].name.replace(/\s/g, '-').toLowerCase()
+                    );
 
                     xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
 
-                    reader.onload = function(event) {
+                    reader.onload = function (event) {
                         if (! xhr.sendAsBinary) {
-                            xhr.sendAsBinary = function(dataString) {
-                                var ords = Array
-                                    .prototype
-                                    .map
-                                    .call(dataString, function byteValue(x) {
-                                        return x.charCodeAt(0) & 0xff;
-                                    });
-
-                                this.send(new Uint8Array(ords));
+                            xhr.sendAsBinary = function (dataString) {
+                                this.send(
+                                    new Uint8Array(
+                                        Array.prototype.map.call(
+                                            dataString,
+                                            x => x.charCodeAt(0) & 0xff
+                                        )
+                                    )
+                                );
                             };
                         }
 
                         xhr.sendAsBinary(event.target.result);
                     };
 
-                    console.log('Loading file: ', files[0]);
                     reader.readAsBinaryString(files[0]);
                 }
             }
