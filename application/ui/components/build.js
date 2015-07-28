@@ -35,7 +35,7 @@ class Build extends React.Component {
                         onClick = {this.props.onActivate}
                         color   = {this.props.active ? 'secondary' : 'primary'}
                     >
-                        <a>Activate</a>
+                        <a>{this.props.active ? 'Deactivate' : 'Activate'}</a>
                     </Button>
                 </div>
                 <div className='medium-2 columns'>

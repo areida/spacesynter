@@ -380,11 +380,13 @@ container.post(
 container.delete(
     '/container/:name/build/:build',
     function (req, res) {
+
         manager.findContainer(req.params.name).then(
             function (container) {
                 var build = _.findWhere(container.builds, {_id : new ObjectId(req.params.build)});
 
                 if (build) {
+                    res.sendStatus(403);
                     container.builds = _.reject(
                         container.builds,
                         function (build) {

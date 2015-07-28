@@ -65,7 +65,7 @@ class Container extends React.Component {
 
     renderBuild(build, index)
     {
-        var active = (this.props.container.get('build') === build.get('name'));
+        var active = (this.props.container.get('build') === build.get('_id'));
 
         return (
             <Build
