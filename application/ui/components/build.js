@@ -1,6 +1,7 @@
 'use strict';
 
-var React = require('react');
+var React  = require('react');
+var moment = require('moment');
 
 var Button = require('./buttons/button');
 
@@ -16,7 +17,7 @@ class Build extends React.Component {
                 size     = 'tiny'
                 onClick  = {this.props.onDelete}
                 disabled = {this.props.active}
-                color    = 'primary'
+                color    = 'secondary'
             >
                 <a>Delete</a>
             </Button>
@@ -24,11 +25,18 @@ class Build extends React.Component {
     }
     render()
     {
+        var created = moment.utc(this.props.created);
+
+        if (created > moment.utc().subtract(1, 'day')) {
+            created = created.fromNow();
+        } else {
+            created = created.format('MMM Do, YYYY');
+        }
+
         return (
-            <div className='row'>
-                <div className='medium-2 columns'>&nbsp;</div>
+            <div className='row build'>
                 <div className='medium-2 columns'>{this.props.name}</div>
-                <div className='medium-2 columns'>{this.props.created}</div>
+                <div className='medium-2 columns'>{created}</div>
                 <div className='medium-2 columns'>
                     <Button
                         size    = 'tiny'
@@ -41,7 +49,7 @@ class Build extends React.Component {
                 <div className='medium-2 columns'>
                     {this.renderDelete()}
                 </div>
-                <div className='medium-2 columns'></div>
+                <div className='medium-4 columns'></div>
             </div>
         );
     }

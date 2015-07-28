@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var _     = require('lodash');
 
 var Build  = require('../../components/build');
 var Button = require('../../components/buttons/button');
@@ -61,6 +62,10 @@ class Container extends React.Component {
         this.setState({
             showBuilds : ! this.state.showBuilds
         });
+
+        if (! this.props.container.get('builds').size) {
+            _.delay(() => this.setState({showBuilds : false}), 750);
+        }
     }
 
     renderBuild(build, index)
@@ -79,32 +84,35 @@ class Container extends React.Component {
         );
     }
 
-    render()
+    renderBuilds()
     {
-        var builds, buildsStyle, host;
+        if (! this.state.showBuilds) {
+            return null;
+        }
 
-        builds      = this.props.container.get('builds').map(this.renderBuild.bind(this));
-        buildsStyle = {
-            display : this.state.showBuilds ? 'block' : 'none'
-        };
-
-        host = this.props.container.get('host');
+        var builds = this.props.container.get('builds').sortBy(
+            container => container.get('created')
+        ).map(this.renderBuild.bind(this));
 
         if (! builds.size) {
             builds = builds.push(
-                <div className='row' key={0}>
-                    <div className='medium-2 columns'></div>
-                    <div className='medium-10 columns'>No builds</div>
+                <div className='row build' key={0}>
+                    <div className='medium-6 columns'></div>
+                    <div className='medium-6 columns'>No builds</div>
                 </div>
             );
         }
 
+        return builds.toArray();
+    }
+
+    render()
+    {
+        var host = this.props.container.get('host');
+
         return (
             <div className='container existing'>
                 <div className='row'>
-                    <div className='medium-2 columns'>
-                        <p>{this.props.container.get('name')}</p>
-                    </div>
                     <div className='medium-2 columns'>
                         <p><a href={'http://' + host} target='_blank'>{host}</a></p>
                     </div>
@@ -112,19 +120,25 @@ class Container extends React.Component {
                         <Upload onDrop={this.onDrop.bind(this)} percent={this.state.percent}>Add Build</Upload>
                     </div>
                     <div className='medium-2 columns'>
-                        <Button size='small' onClick={this.onToggleBuilds.bind(this)}>
+                        <Button
+                            color   = {this.state.showBuilds ? 'tertiary' : 'primary'}
+                            size    = 'small'
+                            onClick = {this.onToggleBuilds.bind(this)}
+                        >
                             <a>Builds</a>
                         </Button>
                     </div>
-                    <div className='medium-4 columns'>
-                        <Button size='small' title='Double Click' onDoubleClick={this.onKill.bind(this)}>
+                    <div className='medium-6 columns'>
+                        <Button
+                            color   = 'secondary'
+                            size    = 'small'
+                            onClick = {this.onKill.bind(this)}
+                        >
                             <a>Kill</a>
                         </Button>
                     </div>
                 </div>
-                <div className='builds' style={buildsStyle}>
-                    {builds.toArray()}
-                </div>
+                {this.renderBuilds()}
             </div>
         );
     }

@@ -57,10 +57,14 @@ class ContainersPage extends React.Component {
 
     render()
     {
+        var containers = this.state.containers.sortBy(
+            container => container.get('created')
+        ).map(this.renderContainer.bind(this));
+        
         return (
             <div>
                 <NewContainer {...this.props} />
-                {this.state.containers.map(this.renderContainer.bind(this)).toArray()}
+                {containers.toArray()}
             </div>
         );
     }

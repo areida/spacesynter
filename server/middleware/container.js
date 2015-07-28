@@ -3,7 +3,7 @@ var Express    = require('express');
 var fs         = require('fs');
 var ObjectId   = require('mongoose').Types.ObjectId;
 var pm2        = require('pm2');
-var portfinder = require('portfinder');
+var openport   = require('openport');
 var Q          = require('q');
 var _          = require('lodash');
 
@@ -115,10 +115,11 @@ var manager = {
             }
         );
     },
-    findPort : function () {
+    findPort : function (ports) {
         return new Q.promise(
             function (resolve, reject) {
-                portfinder.getPort(
+                openport.find(
+                    {avoid : ports},
                     function (error, port) {
                         if (error) reject(error);
 
@@ -362,42 +363,49 @@ container.patch(
 container.post(
     '/container',
     function (req, res) {
-        manager.findContainer(req.body.name).done(
-            function (container) {
-                res.status(422);
-                res.json({message : 'Container \'' + container.name + '\' already exists'});
-            },
-            function () {
-                var container;
+        Q.all([
+            Container.find({name : req.body.name}).exec(),
+            Container.find({}).exec()
+        ])
+        .then(
+            function (responses) {
+                var container, ports;
 
-                manager.findPort().then(
-                    function (port) {
-                        return Q.all([
-                            manager.createContainer(req.body.name, port),
-                            manager.createDirectory(config.app.containerDir + '/' + req.body.name)
-                        ]);
-                    }
-                )
-                .then(
-                    function (responses) {
-                        container = responses[0];
+                if (responses[0].length) {
+                    res.status(422);
+                    res.json({message : 'Container \'' + req.body.name + '\' already exists'});
+                } else {
+                    ports = _.pluck(responses[1], 'port');
 
-                        return Q.all([
-                            manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/builds'),
-                            manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/working'),
-                            nginx.reload()
-                        ]);
-                    }
-                )
-                .done(
-                    function () {
-                        res.json(container.toObject());
-                    },
-                    function (error) {
-                        res.status(500);
-                        res.json(error);
-                    }
-                );
+                    manager.findPort(ports).then(
+                        function (port) {
+                            return Q.all([
+                                manager.createContainer(req.body.name, port),
+                                manager.createDirectory(config.app.containerDir + '/' + req.body.name)
+                            ]);
+                        }
+                    )
+                    .then(
+                        function (responses) {
+                            container = responses[0];
+
+                            return Q.all([
+                                manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/builds'),
+                                manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/working'),
+                                nginx.reload()
+                            ]);
+                        }
+                    )
+                    .done(
+                        function () {
+                            res.json(container.toObject());
+                        },
+                        function (error) {
+                            res.status(500);
+                            res.json(error);
+                        }
+                    );
+                }
             }
         );
     }
