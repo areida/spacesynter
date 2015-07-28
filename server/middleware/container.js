@@ -206,23 +206,6 @@ var manager = {
     }
 };
 
-// Capture any uploaded file in a buffer
-container.use(
-    '/container/:name/build',
-    function (req, res, next) {
-        var data = new Buffer('');
-
-        req.on('data', function (chunk) {
-            data = Buffer.concat([data, chunk]);
-        });
-
-        req.on('end', function () {
-            req.rawBody = data;
-            next();
-        });
-    }
-);
-
 container.delete(
     '/container/:name',
     function (req, res) {
@@ -250,6 +233,49 @@ container.delete(
         );
     }
 );
+
+container.delete(
+    '/container/:name/build/:build',
+    function (req, res) {
+
+        manager.findContainer(req.params.name).then(
+            function (container) {
+                var build = _.findWhere(container.builds, {_id : new ObjectId(req.params.build)});
+
+                if (build) {
+                    container.builds = _.reject(
+                        container.builds,
+                        function (build) {
+                            return build._id === build._id;
+                        }
+                    );
+
+                    manager.deleteBuild(container.name, build.name).then(
+                        function () {
+                            return manager.saveContainer(container);
+                        }
+                    ).done(
+                        function () {
+                            res.json(container.toObject());
+                        },
+                        function (error) {
+                            res.status(500);
+                            res.json(error);
+                        }
+                    );
+                } else {
+                    res.status(404);
+                    res.json({message : 'Build `' + req.params.build + '` does not exist'});
+                }
+            },
+            function () {
+                res.status(404);
+                res.json({message : 'Container `' + req.params.name + '` does not exist'});
+            }
+        );
+    }
+);
+
 
 container.get(
     '/container/:name',
@@ -377,46 +403,20 @@ container.post(
     }
 );
 
-container.delete(
-    '/container/:name/build/:build',
-    function (req, res) {
+// Capture any uploaded file in a buffer
+container.post(
+    '/container/:name/build',
+    function (req, res, next) {
+        var data = new Buffer('');
 
-        manager.findContainer(req.params.name).then(
-            function (container) {
-                var build = _.findWhere(container.builds, {_id : new ObjectId(req.params.build)});
+        req.on('data', function (chunk) {
+            data = Buffer.concat([data, chunk]);
+        });
 
-                if (build) {
-                    res.sendStatus(403);
-                    container.builds = _.reject(
-                        container.builds,
-                        function (build) {
-                            return build._id === build._id;
-                        }
-                    );
-
-                    manager.deleteBuild(container.name, build.name).then(
-                        function () {
-                            return manager.saveContainer(container);
-                        }
-                    ).done(
-                        function () {
-                            res.json(container.toObject());
-                        },
-                        function (error) {
-                            res.status(500);
-                            res.json(error);
-                        }
-                    );
-                } else {
-                    res.status(404);
-                    res.json({message : 'Build `' + req.params.build + '` does not exist'});
-                }
-            },
-            function () {
-                res.status(404);
-                res.json({message : 'Container `' + req.params.name + '` does not exist'});
-            }
-        );
+        req.on('end', function () {
+            req.rawBody = data;
+            next();
+        });
     }
 );
 
