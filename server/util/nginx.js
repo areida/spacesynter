@@ -14,36 +14,34 @@ module.exports = {
     reload : function() {
         return Q.promise(
             function (resolve, reject) {
-                Container.find({})
-                    .exec()
-                    .then(
-                        function (containers) {
-                            fs.writeFile(
-                                config.serverDir + '/servers.temp',
-                                tmpl('servers.conf', {containers : containers}),
-                                function (err) {
-                                    if (err) {
-                                        reject();
-                                    } else {
-                                        if (config.nginx) {
-                                            exec(
-                                                'service nginx reload',
-                                                function (err) {
-                                                    if (err) {
-                                                        reject();
-                                                    } else {
-                                                        resolve();
-                                                    }
+                Container.find({}).exec().then(
+                    function (containers) {
+                        fs.writeFile(
+                            config.app.serverDir + '/servers.temp',
+                            tmpl('servers.conf', {containers : containers}),
+                            function (err) {
+                                if (err) {
+                                    reject();
+                                } else {
+                                    if (config.nginx) {
+                                        exec(
+                                            'service nginx reload',
+                                            function (err) {
+                                                if (err) {
+                                                    reject();
+                                                } else {
+                                                    resolve();
                                                 }
-                                            );
-                                        } else {
-                                            resolve();
-                                        }
+                                            }
+                                        );
+                                    } else {
+                                        resolve();
                                     }
                                 }
-                            );
-                        }
-                    );
+                            }
+                        );
+                    }
+                );
             }
         );
     }

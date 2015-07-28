@@ -48,20 +48,7 @@ var manager = {
 
                 container.save(
                     function () {
-                        manager.createDirectory(config.app.containerDir + '/' + name).then(
-                            function () {
-                                return Q.all([
-                                    manager.createDirectory(config.app.containerDir + '/' + name + '/builds'),
-                                    manager.createDirectory(config.app.containerDir + '/' + name + '/working')
-                                ]).done(
-                                    function () {
-                                        resolve(container);
-                                    },
-                                    reject
-                                );
-                            },
-                            reject
-                        );
+                        resolve(container);
                     }
                 );
 
@@ -82,7 +69,7 @@ var manager = {
     deleteBuild : function (name, build) {
         return new Q.promise(
             function (resolve, reject) {
-                var path = config.containerDir + '/' + name + '/builds/' + build;
+                var path = config.app.containerDir + '/' + name + '/builds/' + build;
 
                 fs.unlink(path, function (error) {
                     if (error) reject(error);
@@ -99,7 +86,7 @@ var manager = {
         return new Q.promise(
             function (resolve, reject) {
                 exec(
-                    'rm -rf ' + config.containerDir + '/' + name,
+                    'rm -rf ' + config.app.containerDir + '/' + name,
                     function (error) {
                         if (error) reject(error);
 
@@ -157,7 +144,7 @@ var manager = {
     },
     restartProcess : function (name, port) {
         var script = (
-            config.containerDir + '/' +
+            config.app.containerDir + '/' +
             name + '/working/server/index.js'
         );
 
@@ -170,7 +157,7 @@ var manager = {
                         pm2.start({
                             env : {
                                 APP_ENV : 'qa',
-                                CWD     : config.containerDir + '/' + name + '/working',
+                                CWD     : config.app.containerDir + '/' + name + '/working',
                                 PORT    : port
                             },
                             name   : name,
@@ -189,7 +176,7 @@ var manager = {
         return new Q.promise(
             function (resolve, reject) {
                 var filepath = (
-                    config.containerDir + '/' +
+                    config.app.containerDir + '/' +
                     name + '/builds/' + build
                 );
 
@@ -204,8 +191,36 @@ var manager = {
                 );
             }
         );
+    },
+    saveContainer : function (container) {
+        return new Q.promise(
+            function (resolve, reject) {
+                container.save(
+                    function () {
+                        resolve();
+                    }
+                );
+            }
+        );
     }
 };
+
+// Capture any uploaded file in a buffer
+container.use(
+    '/container/:name/build',
+    function (req, res, next) {
+        var data = new Buffer('');
+
+        req.on('data', function (chunk) {
+            data = Buffer.concat([data, chunk]);
+        });
+
+        req.on('end', function () {
+            req.rawBody = data;
+            next();
+        });
+    }
+);
 
 container.delete(
     '/container/:name',
@@ -221,14 +236,14 @@ container.delete(
                         res.sendStatus(204);
                     },
                     function (error) {
-                        console.log(error);
                         res.status(500);
                         res.json(error);
                     }
                 );
             },
             function () {
-                res.sendStatus(404);
+                res.status(404);
+                res.json({message : 'Container `' + req.params.name + '` does not exist'});
             }
         );
     }
@@ -242,7 +257,8 @@ container.get(
                 res.json(container.toObject());
             },
             function () {
-                res.sendStatus(404);
+                res.status(404);
+                res.json({message : 'Container `' + req.params.name + '` does not exist'});
             }
         );
     }
@@ -264,28 +280,29 @@ container.patch(
     function (req, res) {
         manager.findContainer(req.params.name).done(
             function (container) {
+                container.build = req.body.build;
+
                 Q.all([
                     manager.changeBuild(container.name, req.body.build),
                     manager.restartProcess(container.name, container.port),
                     nginx.reload()
-                ]).done(
+                ]).then(
                     function () {
-                        container.build = req.body.build;
-                        container.save(
-                            function () {
-                                res.json(container.toObject());
-                            }
-                        );
+                        return manager.saveContainer(container);
+                    }
+                ).done(
+                    function () {
+                        res.json(container.toObject());
                     },
                     function (error) {
-                        console.log(error);
                         res.status(500);
                         res.json(error);
                     }
                 );
             },
             function (error) {
-                req.sendStatus(404);
+                res.status(404);
+                res.json({message : 'Container `' + req.params.name + '` does not exist'});
             }
         );
     }
@@ -300,22 +317,31 @@ container.post(
                 res.json({message : 'Container \'' + container.name + '\' already exists'});
             },
             function () {
+                var container;
+
                 manager.findPort().then(
                     function (port) {
-                        console.log(port);
-                        return manager.createContainer(req.body.name, port);
-                    },
-                    function (error) {
-                        console.log(error);
-                        res.status(500);
-                        res.json(error);
+                        return Q.all([
+                            manager.createContainer(req.body.name, port),
+                            manager.createDirectory(config.app.containerDir + '/' + req.body.name)
+                        ]);
                     }
-                ).done(
-                    function (container) {
+                )
+                .then(
+                    function (responses) {
+                        container = responses[0];
+
+                        return Q.all([
+                            manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/builds'),
+                            manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/working')
+                        ]);
+                    }
+                )
+                .done(
+                    function () {
                         res.json(container.toObject());
                     },
                     function (error) {
-                        console.log(error);
                         res.status(500);
                         res.json(error);
                     }
@@ -325,57 +351,39 @@ container.post(
     }
 );
 
-// Capture any uploaded file in a buffer
-container.use(
-    '/container/:name/build',
-    function (req, res, next) {
-        var data = new Buffer('');
-
-        req.on('data', function (chunk) {
-            data = Buffer.concat([data, chunk]);
-        });
-
-        req.on('end', function () {
-            req.rawBody = data;
-            next();
-        });
-    }
-);
-
 container.delete(
     '/container/:name/build',
     function (req, res) {
         manager.findContainer(req.params.name).then(
             function (container) {
                 if (_.findWhere(container.builds, {name : req.query.name})) {
-                    res.status(422);
-                    res.json({message : 'Build `' + req.query.name + '` already exists'});
-                } else {
+                    container.builds = _.reject(
+                        container.builds,
+                        function (build) {
+                            return build.name === req.query.name;
+                        }
+                    );
                     manager.deleteBuild(container.name, req.query.name).then(
                         function () {
-                            container.builds = _.reject(
-                                container.builds,
-                                function (build) {
-                                    return build.name === req.query.name;
-                                }
-                            );
-
-                            container.save(
-                                function () {
-                                    res.json(container.toObject());
-                                }
-                            );
+                            return manager.saveContainer(container);
+                        }
+                    ).done(
+                        function () {
+                            res.json(container.toObject());
                         },
                         function (error) {
-                            console.log(error);
                             res.status(500);
                             res.json(error);
                         }
                     );
+                } else {
+                    res.status(404);
+                    res.json({message : 'Build `' + req.query.name + '` does not exist'});
                 }
             },
             function () {
-                res.sendStatus(404);
+                res.status(404);
+                res.json({message : 'Container `' + req.params.name + '` does not exist'});
             }
         );
     }
@@ -403,7 +411,6 @@ container.post(
                             );
                         },
                         function (error) {
-                            console.log(error);
                             res.status(500);
                             res.json(error);
                         }
@@ -411,7 +418,8 @@ container.post(
                 }
             },
             function () {
-                res.sendStatus(404);
+                res.status(404);
+                res.json({message : 'Container `' + req.params.name + '` does not exist'});
             }
         );
     }
