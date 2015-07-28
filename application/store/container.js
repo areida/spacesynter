@@ -16,12 +16,12 @@ class ContainerStore extends ApiStore {
 
         this.bindActions(
             constants.ACTIVATE_BUILD_SUCCESS, 'onActvateBuildSuccess',
-            constants.BUILD_CREATE_SUCCESS, 'onBuildCreateSuccess',
+            constants.CREATE_BUILD_SUCCESS, 'onCreateBuildSuccess',
             constants.DELETE_BUILD_SUCCESS, 'onDeleteBuildSuccess',
             constants.CONTAINER_FETCH_ALL, 'onFetchAll',
             constants.CONTAINER_FETCH_ALL_SUCCESS, 'onFetchAllSuccess',
             constants.CONTAINER_CREATE_SUCCESS, 'onCreateSuccess',
-            constants.CONTAINER_KILL, 'onKill'
+            constants.CONTAINER_KILL_SUCCESS, 'onKillSuccess'
         );
     }
 
@@ -47,7 +47,7 @@ class ContainerStore extends ApiStore {
         this.emit('change');
     }
 
-    onBuildCreateSuccess(container)
+    onCreateBuildSuccess(container)
     {
         var containers, index;
 
@@ -65,7 +65,7 @@ class ContainerStore extends ApiStore {
 
         index      = this.findIndexByName(payload.name);
         container  = this.state.get('containers').get(index);
-        container  = container.set('builds', container.get('builds').filterNot(build => build.get('name') === payload.build));
+        container  = container.set('builds', container.get('builds').filterNot(build => build.get('_id') === payload.build));
         containers = this.state.get('containers').set(index, Immutable.fromJS(container));
 
         this.state = this.state.set('containers', containers);
@@ -104,7 +104,7 @@ class ContainerStore extends ApiStore {
         this.emit('change');
     }
 
-    onKill(name)
+    onKillSuccess(name)
     {
         var containers = this.state.get('containers').filterNot(c => c.get('name') === name);
 

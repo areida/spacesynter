@@ -19,25 +19,29 @@ class Container extends React.Component {
 
     onActivateBuild(build)
     {
-        if ((this.props.container.get('build') === build.get('name'))) {
-            return;
-        }
-
-        this.props.flux.actions.container.activateBuild(this.props.container.get('name'), build.get('name'));
+        this.props.flux.actions.container.activateBuild(
+            this.props.container.get('name'),
+            build.get('_id')
+        ).done();
     }
 
     onDeleteBuild(build)
     {
-        if ((this.props.container.get('build') === build.get('name'))) {
-            return;
-        }
-
-        this.props.flux.actions.container.deleteBuild(this.props.container.get('name'), build.get('name'));
+        this.props.flux.actions.container.deleteBuild(
+            this.props.container.get('name'),
+            build.get('_id')
+        ).done();
     }
 
     onDrop(files)
     {
-        this.props.flux.actions.build.create(this.props.container, files, this.onProgress);
+        this.setState({showBuilds : true});
+
+        this.props.flux.actions.build.create(
+            this.props.container,
+            files,
+            this.onProgress.bind(this)
+        ).done();
     }
 
     onKill()
@@ -79,16 +83,16 @@ class Container extends React.Component {
     {
         var builds, buildsStyle, host;
 
-        builds      = this.props.container.get('builds').map(this.renderBuild.bind(this)).toArray();
+        builds      = this.props.container.get('builds').map(this.renderBuild.bind(this));
         buildsStyle = {
             display : this.state.showBuilds ? 'block' : 'none'
         };
 
         host = this.props.container.get('host');
 
-        if (! builds.length) {
-            builds = (
-                <div className='row'>
+        if (! builds.size) {
+            builds = builds.push(
+                <div className='row' key={0}>
                     <div className='medium-2 columns'></div>
                     <div className='medium-10 columns'>No builds</div>
                 </div>
@@ -119,7 +123,7 @@ class Container extends React.Component {
                     </div>
                 </div>
                 <div className='builds' style={buildsStyle}>
-                    {builds}
+                    {builds.toArray()}
                 </div>
             </div>
         );

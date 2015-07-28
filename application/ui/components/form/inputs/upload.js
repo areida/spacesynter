@@ -2,6 +2,7 @@
 
 var React      = require('react');
 var classNames = require('classnames');
+var _          = require('lodash');
 
 class Upload extends React.Component {
     constructor(props)
@@ -94,7 +95,7 @@ class Upload extends React.Component {
                 style       = {this.props.style || style}
             >
                 <input
-                    onChange = {this.onDrop}
+                    onChange = {this.onDrop.bind(this)}
                     ref      = 'fileInput'
                     style    = {{display : 'none' }}
                     type     = 'file'

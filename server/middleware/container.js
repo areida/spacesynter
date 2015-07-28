@@ -1,6 +1,7 @@
 var exec       = require('child_process').exec;
 var Express    = require('express');
 var fs         = require('fs');
+var ObjectId   = require('mongoose').Types.ObjectId;
 var pm2        = require('pm2');
 var portfinder = require('portfinder');
 var Q          = require('q');
@@ -230,7 +231,8 @@ container.delete(
                 Q.all([
                     manager.deleteContainer(container.name),
                     manager.deleteFolder(container.name),
-                    manager.deleteProcess(container.name)
+                    manager.deleteProcess(container.name),
+                    nginx.reload()
                 ]).done(
                     function () {
                         res.sendStatus(204);
@@ -280,25 +282,48 @@ container.patch(
     function (req, res) {
         manager.findContainer(req.params.name).done(
             function (container) {
-                container.build = req.body.build;
+                var build = _.findWhere(container.builds, {_id : new ObjectId(req.body.build)});
 
-                Q.all([
-                    manager.changeBuild(container.name, req.body.build),
-                    manager.restartProcess(container.name, container.port),
-                    nginx.reload()
-                ]).then(
-                    function () {
-                        return manager.saveContainer(container);
+                if (build) {
+                    if (container.build === build.id) {
+                        container.build = null;
+
+                        Q.all([
+                            manager.saveContainer(container),
+                            manager.deleteProcess(container.name)
+                        ]).done(
+                            function () {
+                                res.json(container.toObject());
+                            },
+                            function (error) {
+                                res.status(500);
+                                res.json(error);
+                            }
+                        );
+                    } else {
+                        container.build = build._id;
+
+                        Q.all([
+                            manager.changeBuild(container.name, build.name),
+                            manager.restartProcess(container.name, container.port)
+                        ]).then(
+                            function () {
+                                return manager.saveContainer(container);
+                            }
+                        ).done(
+                            function () {
+                                res.json(container.toObject());
+                            },
+                            function (error) {
+                                res.status(500);
+                                res.json(error);
+                            }
+                        );
                     }
-                ).done(
-                    function () {
-                        res.json(container.toObject());
-                    },
-                    function (error) {
-                        res.status(500);
-                        res.json(error);
-                    }
-                );
+                } else {
+                    res.status(404);
+                    res.json({message : 'Build `' + req.body.build + '` does not exist'});
+                }
             },
             function (error) {
                 res.status(404);
@@ -333,7 +358,8 @@ container.post(
 
                         return Q.all([
                             manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/builds'),
-                            manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/working')
+                            manager.createDirectory(config.app.containerDir + '/' + req.body.name + '/working'),
+                            nginx.reload()
                         ]);
                     }
                 )
@@ -352,18 +378,21 @@ container.post(
 );
 
 container.delete(
-    '/container/:name/build',
+    '/container/:name/build/:build',
     function (req, res) {
         manager.findContainer(req.params.name).then(
             function (container) {
-                if (_.findWhere(container.builds, {name : req.query.name})) {
+                var build = _.findWhere(container.builds, {_id : new ObjectId(req.params.build)});
+
+                if (build) {
                     container.builds = _.reject(
                         container.builds,
                         function (build) {
-                            return build.name === req.query.name;
+                            return build._id === build._id;
                         }
                     );
-                    manager.deleteBuild(container.name, req.query.name).then(
+
+                    manager.deleteBuild(container.name, build.name).then(
                         function () {
                             return manager.saveContainer(container);
                         }
@@ -378,7 +407,7 @@ container.delete(
                     );
                 } else {
                     res.status(404);
-                    res.json({message : 'Build `' + req.query.name + '` does not exist'});
+                    res.json({message : 'Build `' + req.params.build + '` does not exist'});
                 }
             },
             function () {
@@ -392,23 +421,24 @@ container.delete(
 container.post(
     '/container/:name/build',
     function (req, res) {
+        var filename = req.headers['x-filename'];
+
         manager.findContainer(req.params.name).then(
             function (container) {
-                if (_.findWhere(container.builds, {name : req.query.name})) {
+                if (_.findWhere(container.builds, {name : filename})) {
                     res.status(422);
-                    res.json({message : 'Build `' + req.query.name + '` already exists'});
+                    res.json({message : 'Build `' + filename + '` already exists'});
                 } else {
-                    manager.saveBuild(container.name, req.query.name, req.rawBody).then(
-                        function () {
-                            container.builds.push({
-                                name : req.query.name
-                            });
+                    container.builds.push({
+                        name : filename
+                    });
 
-                            container.save(
-                                function () {
-                                    res.json(container.toObject());
-                                }
-                            );
+                    Q.all([
+                        manager.saveBuild(container.name, filename, req.rawBody),
+                        manager.saveContainer(container)
+                    ]).done(
+                        function () {
+                            res.json(container.toObject());
                         },
                         function (error) {
                             res.status(500);

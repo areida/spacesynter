@@ -38,8 +38,13 @@ class BuildClient {
 
                     xhr.open(
                         'POST',
-                        'http://' + config.hostname + ':' + config.port + '/container/' + container.get('name') + '/build?name=' + files[0].name
+                        (
+                            'http://' + config.hostname + ':' + config.port +
+                            '/container/' + container.get('name') + '/build'
+                        )
                     );
+
+                    xhr.setRequestHeader('X-Filename', files[0].name);
 
                     xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
 

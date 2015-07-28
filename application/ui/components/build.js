@@ -5,6 +5,23 @@ var React = require('react');
 var Button = require('./buttons/button');
 
 class Build extends React.Component {
+    renderDelete()
+    {
+        if (this.props.active) {
+            return null;
+        }
+
+        return (
+            <Button
+                size     = 'tiny'
+                onClick  = {this.props.onDelete}
+                disabled = {this.props.active}
+                color    = 'primary'
+            >
+                <a>Delete</a>
+            </Button>
+        );
+    }
     render()
     {
         return (
@@ -14,23 +31,15 @@ class Build extends React.Component {
                 <div className='medium-2 columns'>{this.props.created}</div>
                 <div className='medium-2 columns'>
                     <Button
-                        size     = 'tiny'
-                        onClick  = {this.props.onActivate}
-                        disabled = {this.props.active}
-                        color    = {this.props.active ? 'tertiary' : 'primary'}
+                        size    = 'tiny'
+                        onClick = {this.props.onActivate}
+                        color   = {this.props.active ? 'secondary' : 'primary'}
                     >
                         <a>Activate</a>
                     </Button>
                 </div>
                 <div className='medium-2 columns'>
-                    <Button
-                        size     = 'tiny'
-                        onClick  = {this.props.onDelete}
-                        disabled = {this.props.active}
-                        color    = {this.props.active ? 'tertiary' : 'primary'}
-                    >
-                        <a>Delete</a>
-                    </Button>
+                    {this.renderDelete()}
                 </div>
                 <div className='medium-2 columns'></div>
             </div>
