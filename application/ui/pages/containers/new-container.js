@@ -114,7 +114,7 @@ class NewContainer extends React.Component {
                             type        = 'text'
                         />
                     </div>
-                    <div className='medium-8 columns'>
+                    <div className='medium-6 columns'>
                         <Button
                             className = 'button'
                             type      = 'submit'

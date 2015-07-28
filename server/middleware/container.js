@@ -36,7 +36,7 @@ var manager = {
             }
         );
     },
-    createContainer : function (name, port) {
+    createContainer : function (name, path, port, type) {
         return new Q.promise(
             function (resolve, reject) {
                 var container = new Container({
@@ -44,7 +44,9 @@ var manager = {
                     builds : [],
                     host   : name + '.' + config.app.hostname,
                     name   : name,
-                    port   : port
+                    path   : path,
+                    port   : port,
+                    type   : type
                 });
 
                 container.save(
@@ -150,32 +152,34 @@ var manager = {
     restartProcess : function (container, port) {
         var script = (
             config.app.containerDir + '/' +
-            container.name + '/working/' + container.scriptPath
+            container.name + '/working/' + container.path
         );
 
         return new Q.promise(
             function (resolve, reject) {
-                if (container.type !== 'nodejs') resolve();
-
-                pm2.connect(
-                    function (error) {
-                        if (error) reject(error);
-
-                        pm2.start({
-                            env : {
-                                APP_ENV : 'qa',
-                                CWD     : config.app.containerDir + '/' + container.name + '/working',
-                                PORT    : port
-                            },
-                            name   : container.name,
-                            script : script
-                        }, function(error, proc) {
+                if (container.type !== 'nodejs') {
+                    resolve();
+                } else {
+                    pm2.connect(
+                        function (error) {
                             if (error) reject(error);
 
-                            resolve();
-                        });
-                    }
-                );
+                            pm2.start({
+                                env : {
+                                    APP_ENV : 'qa',
+                                    CWD     : config.app.containerDir + '/' + container.name + '/working',
+                                    PORT    : port
+                                },
+                                name   : container.name,
+                                script : script
+                            }, function(error, proc) {
+                                if (error) reject(error);
+
+                                resolve();
+                            });
+                        }
+                    );
+                }
             }
         );
     },
@@ -396,7 +400,7 @@ container.post(
                 manager.findPort(ports).then(
                     function (port) {
                         return Q.all([
-                            manager.createContainer(name, req. port),
+                            manager.createContainer(name, req.body.path, port, req.body.type),
                             manager.createDirectory(config.app.containerDir + '/' + name)
                         ]);
                     }

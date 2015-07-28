@@ -18,17 +18,20 @@ module.exports = {
                     function (containers) {
                         fs.writeFile(
                             config.app.serverDir + '/servers.temp',
-                            tmpl('servers.conf', {containers : containers}),
-                            function (err) {
-                                if (err) {
+                            tmpl('servers.conf', {
+                                containers   : containers,
+                                containerDir : config.app.containerDir
+                            }),
+                            function (error) {
+                                if (error) {
                                     reject();
                                 } else {
                                     if (config.nginx) {
                                         exec(
                                             'service nginx reload',
-                                            function (err) {
-                                                if (err) {
-                                                    reject();
+                                            function (error) {
+                                                if (error) {
+                                                    reject(error);
                                                 } else {
                                                     resolve();
                                                 }
