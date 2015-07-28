@@ -244,13 +244,16 @@ container.delete(
 
         manager.findContainer(req.params.name).then(
             function (container) {
-                var build = _.findWhere(container.builds, {_id : new ObjectId(req.params.build)});
+                var build, objectId;
+
+                objectId = new ObjectId(req.params.build);
+                build    = _.findWhere(container.builds, {_id : objectId});
 
                 if (build) {
                     container.builds = _.reject(
                         container.builds,
                         function (build) {
-                            return build._id === build._id;
+                            return build._id === objectId;
                         }
                     );
 

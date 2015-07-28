@@ -6,6 +6,22 @@ var moment = require('moment');
 var Button = require('./buttons/button');
 
 class Build extends React.Component {
+    constructor(props)
+    {
+        super(props);
+
+        this.state = {
+            deleteConfirm : false
+        };
+    }
+
+    onDelete()
+    {
+        this.setState({
+            deleteConfirm : true
+        });
+    }
+
     renderDelete()
     {
         if (this.props.active) {
@@ -15,14 +31,14 @@ class Build extends React.Component {
         return (
             <Button
                 size     = 'tiny'
-                onClick  = {this.props.onDelete}
-                disabled = {this.props.active}
+                onClick  = {this.state.deleteConfirm ? this.props.onDelete : this.onDelete.bind(this)}
                 color    = 'secondary'
             >
-                <a>Delete</a>
+                <a>{this.state.deleteConfirm ? 'Really?' : 'Delete'}</a>
             </Button>
         );
     }
+
     render()
     {
         var created = moment.utc(this.props.created);

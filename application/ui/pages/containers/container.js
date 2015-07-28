@@ -13,6 +13,7 @@ class Container extends React.Component {
         super(props);
 
         this.state = {
+            killConfirm : false,
             percent     : 0,
             showBuilds  : false
         };
@@ -46,6 +47,11 @@ class Container extends React.Component {
     }
 
     onKill()
+    {
+        this.setState({killConfirm : true});
+    }
+
+    onKillConfirm()
     {
         this.props.flux.actions.container.kill(this.props.container.get('name'));
     }
@@ -94,15 +100,6 @@ class Container extends React.Component {
             container => container.get('created')
         ).map(this.renderBuild.bind(this));
 
-        if (! builds.size) {
-            builds = builds.push(
-                <div className='row build' key={0}>
-                    <div className='medium-6 columns'></div>
-                    <div className='medium-6 columns'>No builds</div>
-                </div>
-            );
-        }
-
         return builds.toArray();
     }
 
@@ -125,16 +122,16 @@ class Container extends React.Component {
                             size    = 'small'
                             onClick = {this.onToggleBuilds.bind(this)}
                         >
-                            <a>Builds</a>
+                            <a>{this.props.container.get('builds').size ? 'Builds' : 'No builds'}</a>
                         </Button>
                     </div>
                     <div className='medium-6 columns'>
                         <Button
                             color   = 'secondary'
                             size    = 'small'
-                            onClick = {this.onKill.bind(this)}
+                            onClick = {this.state.killConfirm ? this.onKillConfirm.bind(this) : this.onKill.bind(this)}
                         >
-                            <a>Kill</a>
+                            <a>{this.state.killConfirm ? 'Really?' : 'Kill'}</a>
                         </Button>
                     </div>
                 </div>
