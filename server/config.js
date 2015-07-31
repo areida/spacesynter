@@ -11,10 +11,12 @@ var config   = {},
     cwd          : process.cwd(),
     hostname     : 'localhost',
     github       : {
-        hostname  : 'api.github.com',
-        port      : 443,
-        secure    : true,
-        userAgent : 'areida/spacesynter'
+        clientId     : process.env.SC_GH_CLIENT_ID,
+        clientSecret : process.env.SC_GH_CLIENT_SECRET,
+        hostname     : 'api.github.com',
+        port         : 443,
+        secure       : true,
+        userAgent    : 'areida/spacesynter'
     },
     mongoDb : {
         host : 'localhost',
@@ -30,10 +32,10 @@ var config   = {},
             secret   : 'abcdefghijklmnopqrstuvwxyz1234567890'
         },
         resque : {
+            database :  0,
             host     : '127.0.0.1',
             password : '',
-            port     :  6379,
-            database :  0
+            port     :  6379
         }
     }
 };

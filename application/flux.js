@@ -4,48 +4,9 @@ var Fluxxor = require('fluxxor');
 var Q       = require('q');
 var _       = require('lodash');
 
-var stores  = require('./stores');
+var Stores  = require('./stores');
 var actions = require('./actions');
 
-class Flux extends Fluxxor.Flux {
-    constructor()
-    {
-        var Stores = {};
-
-        _.each(stores, (Store, name) => Stores[name] = new Store());
-
-        super(Stores, actions);
-    }
-
-    fetchData(state)
-    {
-        var flux = this;
-
-        return Q.all(
-            state.routes
-                .filter(route => route.handler.fetchData)
-                .reduce(
-                    (promises, route) => promises.concat(route.handler.fetchData(flux, state)),
-                    []
-                )
-        );
-    }
-
-    fromObject(object)
-    {
-        _.each(object, (state, name) => this.stores[name].fromObject(state), this);
-
-        return this;
-    }
-
-    toObject()
-    {
-        var data = {};
-
-        _.each(this.stores, (store, name) => data[name] = store.toObject());
-
-        return data;
-    }
-}
-
-module.exports = Flux;
+module.exports = function () {
+    return new Fluxxor.Flux(Stores, actions);
+};

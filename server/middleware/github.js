@@ -12,8 +12,8 @@ var config = require('../config');
 var options = {
     baseUrl        : 'http://' + config.hostname + ':' + config.port,
     callbackUri    : '/gh-callback',
-    ghClientId     : process.env.GH_CLIENT_ID,
-    ghClientSecret : process.env.GH_CLIENT_SECRET,
+    ghClientId     : config.github.clientId,
+    ghClientSecret : config.github.clientSecret,
     ghLoginUrl     : 'https://github.com/login',
     scope          : 'gist'
 };
@@ -40,14 +40,7 @@ function authorizeUrl(state) {
     return (options.ghLoginUrl + '/oauth/authorize?' + query);
 }
 
-function callback(code, state) {
-    var query = {
-        client_id     : options.ghClientId,
-        client_secret : options.ghClientSecret,
-        code          : code,
-        state         : state
-    };
-
+function makeRequest(query) {
     return new Q.Promise(
         function (resolve, reject) {
             request(
@@ -80,7 +73,14 @@ github.get('/gh-callback/?', function (req, res) {
         res.redirect(302, '/login');
         res.end();
     } else {
-        callback(req.query.code, req.session.state)
+        var query = {
+            client_id     : options.ghClientId,
+            client_secret : options.ghClientSecret,
+            code          : req.query.code,
+            state         : req.session.state
+        };
+
+        makeRequest(query)
             .then(
                 function (token) {
                     var redirectUrl = req.session.redirectUrl || '/';
@@ -91,23 +91,12 @@ github.get('/gh-callback/?', function (req, res) {
                     res.end();
                 },
                 function (error) {
-                    console.error('there was a login error', error);
+                    console.error('There was a login error', error);
                     res.redirect(403, '/');
                     res.end();
                 }
             )
             .done();
-    }
-});
-
-github.get('/logout/?', function (req, res) {
-    req.session.ghToken = null;
-
-    if (req.headers['content-type'] === 'application/json') {
-        res.end();
-    } else {
-        res.redirect(302, '/login');
-        res.end(); 
     }
 });
 

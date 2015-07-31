@@ -25,18 +25,6 @@ class ApiStore extends Store {
     {
         return this.state.get('loaded');
     }
-
-    fromObject(object)
-    {
-        this.state = new Immutable.fromJS(object);
-
-        return this;
-    }
-
-    toObject()
-    {
-        return this.state.toJS();
-    }
 }
 
 module.exports = ApiStore;

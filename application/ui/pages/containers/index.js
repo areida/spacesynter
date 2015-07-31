@@ -50,16 +50,13 @@ class ContainersPage extends React.Component {
         this.props.flux.store('ContainerStore').removeListener('change', this.onChange);
     }
 
-    renderContainer(container, index)
-    {
-        return <Container {...this.props} container={container} key={index} />;
-    }
-
     render()
     {
         var containers = this.state.containers.sortBy(
             container => container.get('created')
-        ).map(this.renderContainer.bind(this));
+        ).map(
+            (container, index) => <Container {...this.props} container={container} key={index} />
+        );
         
         return (
             <div>
