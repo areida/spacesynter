@@ -9,6 +9,9 @@ var config   = {},
     auth         : false,
     containerDir : process.cwd() + '/__containers__',
     cwd          : process.cwd(),
+    frontend     : {
+        host : 'localhost:9090'
+    },
     hipache      : false,
     hostname     : 'localhost',
     github       : {
