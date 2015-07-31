@@ -45,7 +45,7 @@ class BuildClient {
                     xhr.open(
                         'POST',
                         (
-                            'http://' + config.hostname + ':' + config.port +
+                            'http://' + config.hostname + config.prefix +
                             '/container/' + container.get('name') + '/build'
                         )
                     );

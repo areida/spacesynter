@@ -7,11 +7,10 @@ var request   = require('request');
 var url       = require('url');
 var _         = require('lodash');
 
-var appConfig = require('../../application/config');
-var config    = require('../config');
+var config = require('../config');
 
 var options = {
-    baseUrl        : __ENVIRONMENT__ === 'production' ? appConfig.api.hostname : 'http://localhost:' + config.dev.port,
+    baseUrl        : 'http://' + config.hostname + ':' + config.port,
     callbackUri    : '/gh-callback',
     ghClientId     : process.env.GH_CLIENT_ID,
     ghClientSecret : process.env.GH_CLIENT_SECRET,
@@ -49,19 +48,24 @@ function callback(code, state) {
         state         : state
     };
 
-    return new Q.Promise(function (resolve, reject) {
-        request({
-            url  : options.ghLoginUrl + '/oauth/access_token',
-            qs   : query,
-            json : true
-        }, function (error, response, token) {
-            if (error) {
-                reject(new HttpError(token, response));
-            } else {
-                resolve(token);
-            }
-        });
-    });
+    return new Q.Promise(
+        function (resolve, reject) {
+            request(
+                {
+                    url  : options.ghLoginUrl + '/oauth/access_token',
+                    qs   : query,
+                    json : true
+                },
+                function (error, response, token) {
+                    if (error) {
+                        reject(new HttpError(token, response));
+                    } else {
+                        resolve(token);
+                    }
+                }
+            );
+        }
+    );
 }
 
 github.get('/gh-login/?', function (req, res) {
@@ -73,7 +77,7 @@ github.get('/gh-login/?', function (req, res) {
 
 github.get('/gh-callback/?', function (req, res) {
     if (! req.query.code || ! req.session.ghState) {
-        res.redirect(302, appConfig.login_url);
+        res.redirect(302, '/login');
         res.end();
     } else {
         callback(req.query.code, req.session.state)
@@ -102,7 +106,7 @@ github.get('/logout/?', function (req, res) {
     if (req.headers['content-type'] === 'application/json') {
         res.end();
     } else {
-        res.redirect(302, appConfig.login_url);
+        res.redirect(302, '/login');
         res.end(); 
     }
 });

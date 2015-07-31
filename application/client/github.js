@@ -1,11 +1,11 @@
 'use strict';
 
-var AuthGateway = require('synapse-common/http/auth-gateway');
+var HttpGateway = require('synapse-common/http/gateway');
 var store       = require('store');
 
 var config = require('../config').github;
 
-class GithubClient extends AuthGateway {
+class GithubClient extends HttpGateway {
     constructor()
     {
         this.config = config;

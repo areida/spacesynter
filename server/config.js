@@ -1,47 +1,45 @@
 'use strict';
 
-var _ = require('lodash');
+var argv = require('minimist')(process.argv.slice(2), {c : 'config'});
+var fs   = require('fs');
+var _    = require('lodash');
 
-var defaults, overrides;
-
-defaults = {
-    api : {
-        port   : 8000
-    },
-    app : {
-        port : 9090
-    },
-    auth : false,
-    dev  : {
-        port : 9000
-    },
-    github : {
+var config   = {},
+    defaults = {
+    auth         : false,
+    containerDir : process.cwd() + '/__containers__',
+    cwd          : process.cwd(),
+    hostname     : 'localhost',
+    github       : {
         hostname  : 'api.github.com',
         port      : 443,
         secure    : true,
         userAgent : 'areida/spacesynter'
     },
+    mongoDb : {
+        host : 'localhost',
+        name : 'test'
+    },
     nginx : true,
+    port  : 9090,
     redis : {
         cookies : {
             host     : 'localhost',
             port     : 6379,
             database : 0,
             secret   : 'abcdefghijklmnopqrstuvwxyz1234567890'
+        },
+        resque : {
+            host     : '127.0.0.1',
+            password : '',
+            port     :  6379,
+            database :  0
         }
     }
 };
 
-switch(__ENVIRONMENT__)
-{
-    case 'development':
-        overrides = require('./config/development');
-        break;
-    case 'production':
-        overrides = require('./config/production');
-        break;
-    default:
-        throw new Error('Invalid ENVIRONMENT value: ' + __ENVIRONMENT__);
+if (argv.config) {
+    config = JSON.parse(fs.readFileSync(argv.config));
 }
 
-module.exports = _.merge({}, defaults, overrides);
+module.exports = _.merge({}, defaults, config);

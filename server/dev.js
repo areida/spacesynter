@@ -10,7 +10,7 @@ var config        = require('./config');
 var webpackConfig = require('../webpack.config');
 
 var server = new WebpackDevServer(webpack(webpackConfig), {
-    contentBase : {target : 'http://localhost:' + config.app.port},
+    contentBase : {target : 'http://localhost:' + config.port},
     headers     : {'Access-Control-Allow-Origin': '*'},
     hot         : true,
     noInfo      : true
@@ -20,18 +20,16 @@ server.use(function (req, res, next) {
     var ext = path.extname(req.url);
 
     if ((ext === '' || ext === '.html') && req.url !== '/') {
-        req.pipe(
-            request('http://localhost:' + config.dev.port)
-        ).pipe(res);
+        req.pipe(request('http://localhost:9000')).pipe(res);
     } else {
         next();
     }
 });
 
-server.listen(config.dev.port, function (err, result) {
+server.listen(9000, function (err, result) {
     if (err) {
         console.log(err);
     }
 
-    console.log('Listening at localhost:' + config.dev.port);
+    console.log('Listening at localhost:' + 9000);
 });

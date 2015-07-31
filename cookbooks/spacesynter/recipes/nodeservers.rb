@@ -14,8 +14,8 @@ node[:deploy].each do |application, deploy|
             not_if "pm2 info #{application}"
         end
 
-        execute "touch #{deploy[:deploy_to]}/shared/servers.temp"
-        execute "ln -snf #{deploy[:deploy_to]}/shared/servers.temp /etc/nginx/sites-available/servers"
+        execute "touch #{deploy[:deploy_to]}/shared/servers.conf"
+        execute "ln -snf #{deploy[:deploy_to]}/shared/servers.conf /etc/nginx/sites-available/servers"
         execute 'nginx_ensite servers'
     end
 end

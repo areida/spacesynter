@@ -1,10 +1,10 @@
 'use strict';
 
-var AuthGateway = require('synapse-common/http/auth-gateway');
+var HttpGateway = require('synapse-common/http/gateway');
 
 var config = require('../config').api;
 
-class ContainerClient extends AuthGateway {
+class ContainerClient extends HttpGateway {
     constructor()
     {
         this.config = config;

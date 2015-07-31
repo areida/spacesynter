@@ -1,3 +1,4 @@
+var bodyParser = require('body-parser');
 var exec       = require('child_process').exec;
 var Express    = require('express');
 var fs         = require('fs');
@@ -13,13 +14,30 @@ var nginx     = require('../util/nginx');
 
 var container = new Express();
 
+container.use(bodyParser.json());
+
+container.disable('etag');
+
+container.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, X-Filename');
+    res.header('Access-Control-Allow-Methods', 'DELETE, GET, HEAD, OPTIONS, PATCH, POST');
+    res.header('Content-Type', 'application/json');
+    res.header('If-None-Match', '*');
+    res.header('Last-Modified', (new Date()).toUTCString());
+    next();
+});
+
 var manager = {
-    changeBuild : function(name, build) {
+    buildHostname : function (name, port) {
+        return name + '.' + config.hostname + (config.hostname === 'localhost' ? ':' + port : '');
+    },
+    changeBuild : function (name, build) {
         var command = (
-            'rm -rf ' + config.app.containerDir + '/' + name +
-            '/working/* && unzip ' + config.app.containerDir + '/' + name +
+            'rm -rf ' + config.containerDir + '/' + name +
+            '/working/* && unzip ' + config.containerDir + '/' + name +
             '/builds/' + build +
-            ' -d ' + config.app.containerDir + '/' + name +
+            ' -d ' + config.containerDir + '/' + name +
             '/working'
         );
 
@@ -37,12 +55,14 @@ var manager = {
         );
     },
     createContainer : function (name, path, port, type) {
+        var host = this.buildHostname(name, port);
+
         return new Q.promise(
             function (resolve, reject) {
                 var container = new Container({
                     build  : null,
                     builds : [],
-                    host   : name + '.' + config.app.hostname,
+                    host   : host,
                     name   : name,
                     path   : path,
                     port   : port,
@@ -72,7 +92,7 @@ var manager = {
     deleteBuild : function (name, build) {
         return new Q.promise(
             function (resolve, reject) {
-                var path = config.app.containerDir + '/' + name + '/builds/' + build;
+                var path = config.containerDir + '/' + name + '/builds/' + build;
 
                 fs.unlink(path, function (error) {
                     if (error) reject(error);
@@ -89,7 +109,7 @@ var manager = {
         return new Q.promise(
             function (resolve, reject) {
                 exec(
-                    'rm -rf ' + config.app.containerDir + '/' + name,
+                    'rm -rf ' + config.containerDir + '/' + name,
                     function (error) {
                         if (error) reject(error);
 
@@ -151,7 +171,7 @@ var manager = {
     },
     restartProcess : function (container, port) {
         var script = (
-            config.app.containerDir + '/' +
+            config.containerDir + '/' +
             container.name + '/working/' + container.path
         );
 
@@ -167,7 +187,7 @@ var manager = {
                             pm2.start({
                                 env : {
                                     APP_ENV : 'qa',
-                                    CWD     : config.app.containerDir + '/' + container.name + '/working',
+                                    CWD     : config.containerDir + '/' + container.name + '/working',
                                     PORT    : port
                                 },
                                 name   : container.name,
@@ -187,7 +207,7 @@ var manager = {
         return new Q.promise(
             function (resolve, reject) {
                 var filepath = (
-                    config.app.containerDir + '/' +
+                    config.containerDir + '/' +
                     name + '/builds/' + build
                 );
 
@@ -401,7 +421,7 @@ container.post(
                     function (port) {
                         return Q.all([
                             manager.createContainer(name, req.body.path, port, req.body.type),
-                            manager.createDirectory(config.app.containerDir + '/' + name)
+                            manager.createDirectory(config.containerDir + '/' + name)
                         ]);
                     }
                 )
@@ -410,8 +430,8 @@ container.post(
                         container = responses[0];
 
                         return Q.all([
-                            manager.createDirectory(config.app.containerDir + '/' + name + '/builds'),
-                            manager.createDirectory(config.app.containerDir + '/' + name + '/working'),
+                            manager.createDirectory(config.containerDir + '/' + name + '/builds'),
+                            manager.createDirectory(config.containerDir + '/' + name + '/working'),
                             nginx.reload()
                         ]);
                     }

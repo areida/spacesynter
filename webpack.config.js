@@ -1,5 +1,5 @@
+var ExtractText  = require('extract-text-webpack-plugin');
 var Webpack      = require('webpack');
-var HtmlWebpack  = require('html-webpack-plugin');
 var WebpackError = require('webpack-error-notification');
 
 var environment = (process.env.APP_ENV || 'development');
@@ -8,16 +8,13 @@ var npmDir      = __dirname + '/node_modules';
 var config = {
     entry   : ['./application/bootstrap.js'],
     plugins : [
+        new ExtractText('app.css', {allChunks : true}),
         new Webpack.DefinePlugin({
-            __BACKEND__     : '\''+process.env.BACKEND+'\'',
-            __ENVIRONMENT__ : '\''+environment+'\''
+            __BACKEND__     : '\'' + process.env.BACKEND + '\'',
+            __ENVIRONMENT__ : '\'' + environment + '\''
         })
     ],
-    reactLoaders : ['jsx-loader?insertPragma=React.DOM&harmony'],
-    sassLoader   : {
-        test   : /\.scss$/,
-        loader : 'style-loader!css-loader!sass-loader?outputStyle=nested&includePaths[]=' + npmDir
-    }
+    reactLoaders : ['jsx-loader?insertPragma=React.DOM&harmony']
 };
 
 if (environment === 'development') {
@@ -26,7 +23,6 @@ if (environment === 'development') {
     config.entry.unshift('webpack-dev-server/client?http://localhost:9000');
     config.entry.unshift('webpack/hot/dev-server');
     config.plugins.push(new Webpack.HotModuleReplacementPlugin());
-    //config.plugins.push(new HtmlWebpack({template : './templates/index.html'}));
     config.reactLoaders.unshift('react-hot');
 }
 
@@ -60,7 +56,17 @@ module.exports = {
                 test   : /\.json$/,
                 loader : 'json-loader'
             },
-            config.sassLoader
+            {
+                test   : /\.scss$/,
+                loader : 'style-loader!css-loader!sass-loader?outputStyle=nested&includePaths[]=' + npmDir
+            },
+            {
+                test   : /\.scss$/,
+                loader : ExtractText.extract(
+                    'style-loader',
+                    'css-loader!sass-loader?outputStyle=compressed&includePaths[]=' + npmDir
+                )
+            }
         ]
     },
     plugins : config.plugins,
