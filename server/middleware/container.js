@@ -204,10 +204,6 @@ var manager = {
                         });
                     }
                 );
-                if (container.type !== 'nodejs') {
-                    exec('http-server')
-                } else {
-                }
             }
         );
     },
