@@ -54,7 +54,7 @@ function makeRequest(url, query, token) {
             };
 
             if (token) {
-                options.headers.Authorization = 'token ' + token;
+                options.headers.Authorization = 'token ' + token.access_token;
             }
 
             request(
