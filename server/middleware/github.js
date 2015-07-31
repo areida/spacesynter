@@ -114,8 +114,7 @@ github.get('/gh-callback/?', function (req, res) {
                             ) {
                                 finish();
                             } else {
-                                res.status(403);
-                                res.json({message : 'Access denied'});
+                                res.redirect(403, '/');
                             }
                         },
                         function (error) {
