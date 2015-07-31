@@ -9,9 +9,7 @@ var routes = require('./routes');
 
 var flux = new Flux();
 
-if (__ENVIRONMENT__ !== 'production') {
-    require('./ui/scss/app.scss');
-}
+require('./ui/scss/app.scss');
 
 window.React = React;
 

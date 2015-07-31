@@ -10,3 +10,4 @@ npm-debug.log
 *.zip
 servers.temp
 server/middleware/render-generated.js
+config.json
