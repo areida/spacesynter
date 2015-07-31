@@ -21,9 +21,6 @@ container.use(bodyParser.json());
 container.disable('etag');
 
 container.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, X-Filename');
-    res.header('Access-Control-Allow-Methods', 'DELETE, GET, HEAD, OPTIONS, PATCH, POST');
     res.header('Content-Type', 'application/json');
     res.header('If-None-Match', '*');
     res.header('Last-Modified', (new Date()).toUTCString());
@@ -366,10 +363,10 @@ container.patch(
 
                         Q.all([
                             manager.changeBuild(container.name, build.name),
-                            manager.restartProcess(container, container.port)
+                            manager.saveContainer(container)
                         ]).then(
                             function () {
-                                return manager.saveContainer(container);
+                                return manager.restartProcess(container, container.port);
                             }
                         ).done(
                             function () {

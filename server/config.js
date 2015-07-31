@@ -22,7 +22,7 @@ var config   = {},
         host : 'localhost',
         name : 'spacesynter'
     },
-    nginx : true,
+    nginx : false,
     port  : 9090,
     redis : {
         cookies : {
