@@ -169,35 +169,44 @@ var manager = {
         return Math.random().toString(36).substring(2, length + 2);
     },
     restartProcess : function (container, port) {
-        var script = (
-            config.containerDir + '/' +
-            container.name + '/working/' + container.path
-        );
+        var cwd, script;
+
+        if (container.type === 'static') {
+            script = process.cwd() + '/server/static.js';
+            cwd    = config.containerDir + '/' + container.name + '/working/' + container.path;
+        } else {
+             script = (
+                config.containerDir + '/' +
+                container.name + '/working/' + container.path
+            );
+
+             cwd = config.containerDir + '/' + container.name + '/working';
+        }
 
         return new Q.promise(
             function (resolve, reject) {
-                if (container.type !== 'nodejs') {
-                    resolve();
-                } else {
-                    pm2.connect(
-                        function (error) {
+                pm2.connect(
+                    function (error) {
+                        if (error) reject(error);
+
+                        pm2.start({
+                            env : {
+                                APP_ENV : 'qa',
+                                CWD     : cwd,
+                                PORT    : port
+                            },
+                            name   : container.name,
+                            script : script
+                        }, function(error) {
                             if (error) reject(error);
 
-                            pm2.start({
-                                env : {
-                                    APP_ENV : 'qa',
-                                    CWD     : config.containerDir + '/' + container.name + '/working',
-                                    PORT    : port
-                                },
-                                name   : container.name,
-                                script : script
-                            }, function(error) {
-                                if (error) reject(error);
-
-                                resolve();
-                            });
-                        }
-                    );
+                            resolve();
+                        });
+                    }
+                );
+                if (container.type !== 'nodejs') {
+                    exec('http-server')
+                } else {
                 }
             }
         );
