@@ -18,7 +18,7 @@ var config   = {},
     },
     mongoDb : {
         host : 'localhost',
-        name : 'test'
+        name : 'spacesynter'
     },
     nginx : true,
     port  : 9090,
