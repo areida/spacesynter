@@ -41,18 +41,24 @@ function authorizeUrl(state) {
     return (options.ghLoginUrl + '/oauth/authorize?' + query);
 }
 
-function makeRequest(url, query) {
+function makeRequest(url, query, token) {
     return new Q.Promise(
+        var options = {
+            url     : url,
+            qs      : query,
+            json    : true,
+            headers : {
+                'User-Agent' : config.github.userAgent
+            }
+        };
+
+        if (token) {
+            options.headers.Authorization = 'token ' + token;
+        }
+
         function (resolve, reject) {
             request(
-                {
-                    url     : url,
-                    qs      : query,
-                    json    : true,
-                    headers : {
-                        'User-Agent' : config.github.userAgent
-                    }
-                },
+                options,
                 function (error, response, token) {
                     if (error) {
                         reject(new HttpError(token, response));
@@ -98,7 +104,7 @@ github.get('/gh-callback/?', function (req, res) {
                 };
 
                 if (config.github.organizations.length) {
-                    makeRequest('https://api.github.com/user/orgs', {access_token : token}).done(
+                    makeRequest('https://api.github.com/user/orgs', {}, token).done(
                         function (orgs) {
                             if (
                                 _.intersection(
@@ -108,12 +114,12 @@ github.get('/gh-callback/?', function (req, res) {
                             ) {
                                 finish();
                             } else {
-                                res.setStatus(403);
+                                res.status(403);
                                 res.json({message : 'Access denied'});
                             }
                         },
                         function (error) {
-                            res.setStatus(500);
+                            res.status(500);
                             res.json(error);
                         }
                     );
