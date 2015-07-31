@@ -74,13 +74,13 @@ function makeRequest(url, query, token) {
 github.get('/gh-login/?', function (req, res) {
     req.session.ghState = createState();
 
-    res.redirect(302, authorizeUrl(req.session.state));
+    res.redirect(authorizeUrl(req.session.state));
     res.end();
 });
 
 github.get('/gh-callback/?', function (req, res) {
     if (! req.query.code || ! req.session.ghState) {
-        res.redirect(302, '/login');
+        res.redirect('/login');
         res.end();
     } else {
         var query = {
@@ -100,7 +100,7 @@ github.get('/gh-callback/?', function (req, res) {
                 var finish = function () {
                     req.session.ghToken     = token;
                     req.session.redirectUrl = null;
-                    res.redirect(302, redirectUrl);
+                    res.redirect(redirectUrl);
                 };
 
                 if (config.github.organizations.length) {
@@ -114,7 +114,7 @@ github.get('/gh-callback/?', function (req, res) {
                             ) {
                                 finish();
                             } else {
-                                res.redirect(403, '/');
+                                res.redirect('/');
                             }
                         },
                         function (error) {
@@ -127,7 +127,7 @@ github.get('/gh-callback/?', function (req, res) {
                 }
             },
             function (error) {
-                res.redirect(403, '/');
+                res.redirect('/');
             }
         );
     }

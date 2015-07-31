@@ -10,8 +10,7 @@ auth.get('/logout/?', function (req, res) {
     if (req.headers['content-type'] === 'application/json') {
         res.end();
     } else {
-        res.redirect(302, '/login');
-        res.end();
+        res.redirect('/login');
     }
 });
 
@@ -20,8 +19,7 @@ auth.all(/^([^.]+)$/, function (req, res, next) {
         next();
     } else {
         req.session.redirectUrl = req.url;
-        res.redirect(403, '/login');
-        res.end();
+        res.redirect('/login');
     }
 });
 
