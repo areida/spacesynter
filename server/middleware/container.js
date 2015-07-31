@@ -37,7 +37,7 @@ var manager = {
             '/working/* && unzip ' + config.containerDir + '/' + name +
             '/builds/' + build +
             ' -d ' + config.containerDir + '/' + name +
-            '/working'
+            '/working > /dev/null'
         );
 
         return new Q.promise(
@@ -191,7 +191,7 @@ var manager = {
                                 },
                                 name   : container.name,
                                 script : script
-                            }, function(error, proc) {
+                            }, function(error) {
                                 if (error) reject(error);
 
                                 resolve();
