@@ -9,6 +9,7 @@ var config   = {},
     auth         : false,
     containerDir : process.cwd() + '/__containers__',
     cwd          : process.cwd(),
+    hipache      : false,
     hostname     : 'localhost',
     github       : {
         clientId     : process.env.SC_GH_CLIENT_ID,
@@ -30,6 +31,11 @@ var config   = {},
             port     : 6379,
             database : 0,
             secret   : 'abcdefghijklmnopqrstuvwxyz1234567890'
+        },
+        hipache : {
+            database : 1,
+            host     : '127.0.0.1',
+            port     : 6379
         },
         resque : {
             database :  0,

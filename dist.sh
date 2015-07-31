@@ -22,4 +22,5 @@ zip -r dist/app \
     node_modules/q \
     node_modules/querystring \
     node_modules/request \
-    node_modules/synapse-common
+    node_modules/synapse-common \
+    node_modules/then-redis

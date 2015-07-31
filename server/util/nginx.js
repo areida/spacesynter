@@ -3,8 +3,10 @@
 var exec   = require('child_process').exec
 var fs     = require('fs');
 var Q      = require('q');
+var Redis  = require('then-redis');
 var Resque = require('node-resque');
 var tmpl   = require('blueimp-tmpl').tmpl;
+var _      = require('lodash');
 
 var config    = require('../config');
 var Container = require('../model/container');
@@ -13,6 +15,8 @@ var jobs      = require('./jobs');
 tmpl.load = function (name) {
     return fs.readFileSync(config.cwd + '/templates/' + name, 'utf8');
 };
+
+var hipache = redis.createClient(config.redis.hipache);
 
 function resqueConnect() {
     return new Q.promise(
@@ -58,6 +62,43 @@ module.exports = {
                         },
                         function (error) {
                             reject(error);
+                        }
+                    );
+                } else if (config.hipache) {
+                    Container.find({}).exec().then(
+                        function (containers) {
+                            Q.all(containers.map(
+                                function (container) {
+                                    var key = 'frontend:' + container.host;
+
+                                    return hipache.llen(key).then(
+                                        function (size) {
+                                            var updates;
+
+                                            if (size) {
+                                                updates = [
+                                                    hipache.lset(key, 0, container.host.split('.')[0]),
+                                                    hipache.lset(key, 1, 'http://localhost:' + container.port)
+                                                ];
+                                            } else {
+                                                updates = [
+                                                    hipache.lpush(key, container.host.split('.')[0]),
+                                                    hipache.lpush(key, 'http://localhost:' + container.port)
+                                                ];
+                                            }
+
+                                            return Q.all(updates);
+                                        }
+                                    );
+                                }
+                            )).done(
+                                function () {
+                                    resolve();
+                                },
+                                function (error) {
+                                    reject(error);
+                                }
+                            );
                         }
                     );
                 } else {
