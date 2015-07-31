@@ -6,16 +6,17 @@ var path    = require('path');
 
 var app = new Express();
 
-app.get(/^([^.]+)$/, function (req, res) {
-    fs.readFile(
-        process.env.CWD + '/index.html',
-        function (error, file) {
-            res.send(file);
-        }
-    );
+app.use(function (req, res, next) {
+    var ext = path.extname(req.url);
+
+    if ((ext === '' || ext === '.html') && req.url !== '/') {
+        res.sendFile('index.html', {root : process.env.CWD});
+    } else {
+        next();
+    }
 });
 
-app.use(Express.static(process.env.CWD + '/build'));
+app.use(Express.static(process.env.CWD));
 
 app.listen(process.env.PORT, 10, function () {
     console.log('Listening on localhost:' + process.env.PORT);
