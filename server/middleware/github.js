@@ -12,7 +12,7 @@ var _         = require('lodash');
 var config = require('../config');
 
 var options = {
-    baseUrl        : 'http://' + config.hostname + ':' + config.port,
+    baseUrl        : 'http://' + config.hostname + (config.hostname === 'localhost' ? ':' + config.port : ''),
     callbackUri    : '/gh-callback',
     ghClientId     : config.github.clientId,
     ghClientSecret : config.github.clientSecret,

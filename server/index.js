@@ -39,8 +39,8 @@ app.use(new Session({
 }));
 
 if (config.auth) {
-    app.use(auth);
     app.use(github);
+    app.use(auth);
 }
 
 app.use('/api', container);
