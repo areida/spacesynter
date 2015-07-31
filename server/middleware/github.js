@@ -46,9 +46,12 @@ function makeRequest(url, query) {
         function (resolve, reject) {
             request(
                 {
-                    url  : url,
-                    qs   : query,
-                    json : true
+                    url     : url,
+                    qs      : query,
+                    json    : true,
+                    headers : {
+                        'User-Agent' : config.github.userAgent
+                    }
                 },
                 function (error, response, token) {
                     if (error) {
@@ -88,7 +91,7 @@ github.get('/gh-callback/?', function (req, res) {
                 var redirectUrl     = req.session.redirectUrl || '/';
                 req.session.ghState = null;
 
-                var finish = function (req, res) {
+                var finish = function () {
                     req.session.ghToken     = token;
                     req.session.redirectUrl = null;
                     res.redirect(302, redirectUrl);
