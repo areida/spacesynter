@@ -12,8 +12,7 @@ var _         = require('lodash');
 var config = require('../config');
 
 var options = {
-    baseUrl        : 'http://' + config.frontend.host,
-    callbackUri    : '/gh-callback',
+    callbackUri    : 'http://' + config.frontend.host + '/gh-callback',
     ghClientId     : config.github.clientId,
     ghClientSecret : config.github.clientSecret,
     ghLoginUrl     : 'https://github.com/login',
@@ -29,7 +28,7 @@ function createState() {
 function authorizeUrl(state) {
     var query = {
         client_id    : options.ghClientId,
-        redirect_uri : url.resolve(options.baseUrl, options.callbackUri),
+        redirect_uri : options.callbackUri,
         state        : state
     };
 
