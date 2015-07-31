@@ -16,7 +16,7 @@ var options = {
     ghClientId     : config.github.clientId,
     ghClientSecret : config.github.clientSecret,
     ghLoginUrl     : 'https://github.com/login',
-    scope          : 'gist'
+    scope          : 'read:org'
 };
 
 var github = new Express();
@@ -41,12 +41,12 @@ function authorizeUrl(state) {
     return (options.ghLoginUrl + '/oauth/authorize?' + query);
 }
 
-function makeRequest(query) {
+function makeRequest(url, query) {
     return new Q.Promise(
         function (resolve, reject) {
             request(
                 {
-                    url  : options.ghLoginUrl + '/oauth/access_token',
+                    url  : url,
                     qs   : query,
                     json : true
                 },
@@ -81,23 +81,47 @@ github.get('/gh-callback/?', function (req, res) {
             state         : req.session.state
         };
 
-        makeRequest(query)
-            .then(
-                function (token) {
-                    var redirectUrl = req.session.redirectUrl || '/';
-                    req.session.ghState     = null;
+        var url = options.ghLoginUrl + '/oauth/access_token';
+
+        makeRequest(url ,query).done(
+            function (token) {
+                var redirectUrl     = req.session.redirectUrl || '/';
+                req.session.ghState = null;
+
+                var finish = function (req, res) {
                     req.session.ghToken     = token;
                     req.session.redirectUrl = null;
                     res.redirect(302, redirectUrl);
-                    res.end();
-                },
-                function (error) {
-                    console.error('There was a login error', error);
-                    res.redirect(403, '/');
-                    res.end();
+                };
+
+                if (config.github.organizations.length) {
+                    makeRequest('https://api.github.com/user/orgs', {access_token : token}).done(
+                        function (orgs) {
+                            if (
+                                _.intersection(
+                                    config.github.organizations,
+                                    _.pluck(org, 'login')
+                                ).length
+                            ) {
+                                finish();
+                            } else {
+                                res.setStatus(403);
+                                res.json({message : 'Access denied'});
+                            }
+                        },
+                        function (error) {
+                            res.setStatus(500);
+                            res.json(error);
+                        }
+                    );
+                } else {
+                    finish();
                 }
-            )
-            .done();
+            },
+            function (error) {
+                res.redirect(403, '/');
+            }
+        );
     }
 });
 

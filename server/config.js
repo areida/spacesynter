@@ -18,6 +18,7 @@ var config   = {},
         clientId     : process.env.SC_GH_CLIENT_ID,
         clientSecret : process.env.SC_GH_CLIENT_SECRET,
         hostname     : 'api.github.com',
+        orgs         : [],
         port         : 443,
         secure       : true,
         userAgent    : 'areida/spacesynter'
