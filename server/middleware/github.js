@@ -100,7 +100,7 @@ github.get('/gh-callback/?', function (req, res) {
                             if (
                                 _.intersection(
                                     config.github.organizations,
-                                    _.pluck(org, 'login')
+                                    _.pluck(orgs, 'login')
                                 ).length
                             ) {
                                 finish();
