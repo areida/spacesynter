@@ -1,3 +1,4 @@
 {
-    "hostname" : "spacesynter.vm"
+    "hostname" : "synsit.es",
+    "hipache"  : true
 }

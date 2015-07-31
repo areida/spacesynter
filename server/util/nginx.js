@@ -16,7 +16,7 @@ tmpl.load = function (name) {
     return fs.readFileSync(config.cwd + '/templates/' + name, 'utf8');
 };
 
-var hipache = redis.createClient(config.redis.hipache);
+var hipache = Redis.createClient(config.redis.hipache);
 
 function resqueConnect() {
     return new Q.promise(
@@ -82,8 +82,8 @@ module.exports = {
                                                 ];
                                             } else {
                                                 updates = [
-                                                    hipache.lpush(key, container.host.split('.')[0]),
-                                                    hipache.lpush(key, 'http://localhost:' + container.port)
+                                                    hipache.rpush(key, container.host.split('.')[0]),
+                                                    hipache.rpush(key, 'http://localhost:' + container.port)
                                                 ];
                                             }
 
