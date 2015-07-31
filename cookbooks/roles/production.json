@@ -10,13 +10,7 @@
         "npm" : ["mongodb", "mongoose", "pm2"]
     },
     "webservers" : {
-        "api" : {
-            "proxy_pass" : "http://localhost:8000"
-        },
         "app" : {
-            "proxies" : {
-                "api" : "http://localhost:8000"
-            },
             "proxy_pass" : "http://localhost:9090"
         }
     }

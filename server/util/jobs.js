@@ -1,16 +1,11 @@
+'use strict';
+
+var exec   = require('child_process').exec;
+
 module.exports = {
-    reload : {
+    'nginx:reload' : {
         perform : function (callback) {
-            exec(
-                'service nginx reload',
-                function (error) {
-                    if (error) {
-                        callback(null, error);
-                    } else {
-                        callback(null, 'nginx reloaded')
-                    }
-                }
-            );
+            exec('service nginx reload', callback);
         }
     }
 };

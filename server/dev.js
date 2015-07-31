@@ -1,3 +1,5 @@
+'use strict';
+
 global.__ENVIRONMENT__ = process.env.APP_ENV || 'development';
 global.__BACKEND__     = process.env.BACKEND || '';
 

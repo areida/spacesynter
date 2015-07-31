@@ -1,3 +1,5 @@
+'use strict';
+
 var exec   = require('child_process').exec
 var fs     = require('fs');
 var Q      = require('q');
@@ -11,7 +13,7 @@ var jobs      = require('./jobs');
 tmpl.load = function (name) {
     return fs.readFileSync(config.cwd + '/templates/' + name, 'utf8');
 };
- 
+
 function resqueConnect() {
     return new Q.promise(
         function (resolve, reject) {
@@ -48,11 +50,14 @@ module.exports = {
                                     if (error) {
                                         reject();
                                     } else {
-                                        responses[0].enqueue('nr:nginx', 'reload', []);
+                                        responses[0].enqueue('nr:nginx', 'nginx:reload', []);
                                         resolve();
                                     }
                                 }
                             );
+                        },
+                        function (error) {
+                            reject(error);
                         }
                     );
                 } else {

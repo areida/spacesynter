@@ -23,17 +23,11 @@ override_attributes(
         'NODE_ENV' => 'development'
     },
     'packages' => {
-        'apt' => ['docker.io', 'git', 'mongodb', 'nodejs', 'npm', 'redis-server', 'unzip'],
-        'npm' => ['docker.io', 'mongodb', 'mongoose', 'pm2']
+        'apt' => ['git', 'mongodb', 'nodejs', 'npm', 'redis-server', 'unzip'],
+        'npm' => ['mongodb', 'mongoose', 'pm2']
     },
     'webservers' => {
-        'api' => {
-            'proxy_pass' => 'http://localhost:9000'
-        },
         'app' => {
-            'proxies' => {
-                'api' => 'http://localhost:8000'
-            },
             'proxy_pass' => 'http://localhost:9090'
         }
     }

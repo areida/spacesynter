@@ -1,3 +1,5 @@
+'use strict';
+
 var crypto    = require('crypto');
 var Express   = require('express');
 var HttpError = require('synapse-common/http/error');

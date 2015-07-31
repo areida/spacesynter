@@ -1,3 +1,5 @@
+'use strict';
+
 var Resque = require('node-resque');
 
 var config = require('./config');

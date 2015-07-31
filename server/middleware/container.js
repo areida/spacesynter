@@ -1,3 +1,5 @@
+'use strict';
+
 var bodyParser = require('body-parser');
 var exec       = require('child_process').exec;
 var Express    = require('express');

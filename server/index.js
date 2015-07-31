@@ -1,7 +1,4 @@
-global.__BACKEND__     = process.env.BACKEND || '';
-global.__ENVIRONMENT__ = process.env.APP_ENV || 'development';
-global.localStorage    = require('localStorage');
-global.navigator       = require('navigator');
+'use strict';
 
 var CookieParser = require('cookie-parser');
 var Express      = require('express');
