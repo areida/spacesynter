@@ -43,20 +43,20 @@ function authorizeUrl(state) {
 
 function makeRequest(url, query, token) {
     return new Q.Promise(
-        var options = {
-            url     : url,
-            qs      : query,
-            json    : true,
-            headers : {
-                'User-Agent' : config.github.userAgent
-            }
-        };
-
-        if (token) {
-            options.headers.Authorization = 'token ' + token;
-        }
-
         function (resolve, reject) {
+            var options = {
+                url     : url,
+                qs      : query,
+                json    : true,
+                headers : {
+                    'User-Agent' : config.github.userAgent
+                }
+            };
+
+            if (token) {
+                options.headers.Authorization = 'token ' + token;
+            }
+
             request(
                 options,
                 function (error, response, token) {
