@@ -1,10 +1,10 @@
 'use strict';
 
-var React      = require('react');
-var classNames = require('classnames');
+import React      from 'react';
+import classNames from 'classnames';
 
-var InputValidation = require('../input-validation');
-var Label           = require('../label');
+import InputValidation from '../input-validation';
+import Label           from '../label';
 
 class TextInput extends React.Component {
     onBlur(event)
@@ -30,7 +30,7 @@ class TextInput extends React.Component {
 
     renderLabel()
     {
-        var classes;
+        let classes;
 
         if (! this.props.label) {
             return null;
@@ -63,7 +63,7 @@ class TextInput extends React.Component {
 
     renderInput()
     {
-        var classes;
+        let classes;
 
         classes = [
             'input',
@@ -202,4 +202,4 @@ TextInput.defaultProps = {
 
 TextInput.displayName = 'TextInputElement';
 
-module.exports = TextInput;
+export default TextInput;

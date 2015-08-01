@@ -1,9 +1,9 @@
 'use strict';
 
-var constants       = require('../constants');
-var containerClient = require('../client/container');
+import constants       from '../constants';
+import containerClient from '../client/container';
 
-module.exports = {
+export default {
     activateBuild(name, build)
     {
         return containerClient.activateBuild(name, build).then(

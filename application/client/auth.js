@@ -1,14 +1,14 @@
 'use strict';
 
-var HttpGateway = require('synapse-common/http/gateway');
+import HttpGateway from 'synapse-common/http/gateway';
 
-var config = require('../config').api;
+import config from '../config';
 
 class AuthClient extends HttpGateway {
     constructor()
     {
-        this.config = config;
         super();
+        this.config = config.api;
     }
 
     logout()
@@ -17,4 +17,4 @@ class AuthClient extends HttpGateway {
     }
 }
 
-module.exports = new AuthClient();
+export default new AuthClient();

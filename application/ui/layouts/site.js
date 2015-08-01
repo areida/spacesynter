@@ -1,7 +1,7 @@
 'use strict';
 
-var React          = require('react');
-var {RouteHandler} = require('react-router');
+import React          from 'react';
+import {RouteHandler} from 'react-router';
 
 class SiteLayout extends React.Component {
     render()
@@ -16,4 +16,4 @@ class SiteLayout extends React.Component {
 
 SiteLayout.displayName = SiteLayout;
 
-module.exports = SiteLayout;
+export default SiteLayout;

@@ -1,7 +1,7 @@
 'use strict';
 
-var React          = require('react');
-var {RouteHandler} = require('react-router');
+import React          from 'react';
+import {RouteHandler} from 'react-router';
 
 class LoggedOutLayout extends React.Component {
     render()
@@ -16,4 +16,4 @@ class LoggedOutLayout extends React.Component {
 
 LoggedOutLayout.displayName = 'LoggedOutLayout';
 
-module.exports = LoggedOutLayout;
+export default LoggedOutLayout;

@@ -1,12 +1,12 @@
 'use strict';
 
-var Store     = require('fluxxor/lib/store');
-var Immutable = require('immutable');
+import Store     from 'fluxxor/lib/store';
+import Immutable from 'immutable';
 
 class ApiStore extends Store {
     constructor()
     {
-        var state = new Immutable.Map({
+        let state = new Immutable.Map({
             loaded  : false,
             loading : false
         });
@@ -27,4 +27,4 @@ class ApiStore extends Store {
     }
 }
 
-module.exports = ApiStore;
+export default ApiStore;

@@ -1,10 +1,10 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
-var Icon            = require('../../icon/icon');
-var InputValidation = require('../input-validation');
-var Label           = require('../label');
+import Icon            from '../../icon/icon';
+import InputValidation from '../input-validation';
+import Label           from '../label';
 
 class SelectInput extends React.Component {
     onChange(event)
@@ -115,4 +115,4 @@ SelectInput.defaultProps = {
     validation        : {}
 };
 
-module.exports = SelectInput;
+export default SelectInput;

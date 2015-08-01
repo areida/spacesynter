@@ -1,10 +1,10 @@
 'use strict';
 
-var Fluxxor = require('fluxxor');
+import Fluxxor from 'fluxxor';
 
-var Stores  = require('./stores');
-var actions = require('./actions');
+import Stores  from './stores';
+import actions from './actions';
 
-module.exports = function () {
+export default () => {
     return new Fluxxor.Flux(Stores, actions);
 };

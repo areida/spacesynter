@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
 class Label extends React.Component {
     render()
@@ -28,4 +28,4 @@ Label.defaultProps = {
     text : null
 };
 
-module.exports = Label;
+export default Label;

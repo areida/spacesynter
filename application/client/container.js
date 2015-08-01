@@ -1,14 +1,14 @@
 'use strict';
 
-var HttpGateway = require('synapse-common/http/gateway');
+import HttpGateway from 'synapse-common/http/gateway';
 
-var config = require('../config').api;
+var config = require('../config');
 
 class ContainerClient extends HttpGateway {
     constructor()
     {
-        this.config = config;
         super();
+        this.config = config.api;
     }
 
     activateBuild(name, build)
@@ -46,4 +46,4 @@ class ContainerClient extends HttpGateway {
     }
 }
 
-module.exports = new ContainerClient();
+export default new ContainerClient();

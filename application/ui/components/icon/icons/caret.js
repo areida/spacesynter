@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
 class Caret extends React.Component {
     render()
@@ -17,4 +17,4 @@ class Caret extends React.Component {
 
 Caret.displayName = 'CaretIcon';
 
-module.exports = Caret;
+export default Caret;

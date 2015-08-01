@@ -1,9 +1,9 @@
 'use strict';
 
-var ContainerStore = require('./store/container');
-var TokenStore     = require('./store/token');
+import ContainerStore from './store/container';
+import TokenStore     from './store/token';
 
-module.exports = {
+export default {
     ContainerStore : new ContainerStore(),
     TokenStore     : new TokenStore()
 };

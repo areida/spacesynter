@@ -2,22 +2,22 @@
 /* jshint bitwise: false */
 'use strict';
 
-var Q = require('q');
+import Q from 'q';
 
-var config = require('../config').api;
+import config from '../config';
 
 class BuildClient {
     create(container, files)
     {
         return Q.promise(
-            function (resolve, reject, notify) {
+            (resolve, reject, notify) => {
                 if (! files.length || files[0].type !== 'application/zip') {
                     reject();
                 }
 
                 if (typeof FileReader !== 'undefined') {
-                    var reader = new FileReader();
-                    var xhr    = new XMLHttpRequest();
+                    let reader = new FileReader();
+                    let xhr    = new XMLHttpRequest();
 
                     xhr.upload.addEventListener(
                         'progress',
@@ -46,7 +46,7 @@ class BuildClient {
                     xhr.open(
                         'POST',
                         (
-                            'http://' + config.hostname + ':' + config.port + config.prefix +
+                            'http://' + config.api.hostname + ':' + config.api.port + config.api.prefix +
                             '/container/' + container.get('name') + '/build'
                         )
                     );
@@ -58,9 +58,9 @@ class BuildClient {
 
                     xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
 
-                    reader.onload = function (event) {
+                    reader.onload = (event) => {
                         if (! xhr.sendAsBinary) {
-                            xhr.sendAsBinary = function (dataString) {
+                            xhr.sendAsBinary = (dataString) => {
                                 this.send(
                                     new Uint8Array(
                                         Array.prototype.map.call(
@@ -82,4 +82,4 @@ class BuildClient {
     }
 }
 
-module.exports = new BuildClient();
+export default new BuildClient();

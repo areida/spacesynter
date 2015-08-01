@@ -1,18 +1,17 @@
 'use strict';
 
-var Immutable = require('immutable');
+import Immutable from 'immutable';
 
-var ApiStore  = require('./api-store');
-var constants = require('../constants');
+import ApiStore  from './api-store';
+import constants from '../constants';
 
 class ContainerStore extends ApiStore {
     constructor()
     {
+        super();
         this.state = {
             containers : new Immutable.List()
         };
-
-        super();
 
         this.bindActions(
             constants.ACTIVATE_BUILD_SUCCESS, 'onActvateBuildSuccess',
@@ -37,7 +36,7 @@ class ContainerStore extends ApiStore {
 
     onActvateBuildSuccess(container)
     {
-        var containers, index;
+        let containers, index;
 
         index      = this.findIndexByName(container.name);
         containers = this.state.get('containers').set(index, Immutable.fromJS(container));
@@ -49,7 +48,7 @@ class ContainerStore extends ApiStore {
 
     onCreateBuildSuccess(container)
     {
-        var containers, index;
+        let containers, index;
 
         index      = this.findIndexByName(container.name);
         containers = this.state.get('containers').set(index, Immutable.fromJS(container));
@@ -61,7 +60,7 @@ class ContainerStore extends ApiStore {
 
     onDeleteBuildSuccess(payload)
     {
-        var container, containers, index;
+        let container, containers, index;
 
         index      = this.findIndexByName(payload.name);
         container  = this.state.get('containers').get(index);
@@ -75,7 +74,7 @@ class ContainerStore extends ApiStore {
 
     onCreateSuccess(container)
     {
-        var containers = this.state.get('containers').push(Immutable.fromJS(container));
+        let containers = this.state.get('containers').push(Immutable.fromJS(container));
 
         this.state = this.state.set('containers', containers);
 
@@ -106,7 +105,7 @@ class ContainerStore extends ApiStore {
 
     onKillSuccess(name)
     {
-        var containers = this.state.get('containers').filterNot(c => c.get('name') === name);
+        let containers = this.state.get('containers').filterNot(c => c.get('name') === name);
 
         this.state = this.state.set('containers', containers);
 
@@ -114,4 +113,4 @@ class ContainerStore extends ApiStore {
     }
 }
 
-module.exports = ContainerStore;
+export default ContainerStore;

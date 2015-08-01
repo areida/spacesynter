@@ -1,9 +1,9 @@
 'use strict';
 
-var authClient = require('../client/auth');
-var constants  = require('../constants');
+import authClient from '../client/auth';
+import constants  from '../constants';
 
-module.exports = {
+export default {
     login(path)
     {
         if (typeof window !== 'undefined') {

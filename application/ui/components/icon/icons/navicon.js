@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
 class Navicon extends React.Component {
     render()
@@ -17,4 +17,4 @@ class Navicon extends React.Component {
 
 Navicon.displayName = 'RocketIcon';
 
-module.exports = Navicon;
+export default Navicon;

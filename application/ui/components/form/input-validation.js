@@ -1,12 +1,12 @@
 'use strict';
 
-var React      = require('react');
-var classNames = require('classnames');
+import React      from 'react';
+import classNames from 'classnames';
 
 class InputValidation extends React.Component {
     renderValidation()
     {
-        var classes, messages;
+        let classes, messages;
 
         if (! this.props.validation.messages) {
             return null;
@@ -39,7 +39,7 @@ class InputValidation extends React.Component {
 
     render()
     {
-        var classes = {
+        let classes = {
             'validation'             : true,
             'validation--visible'    : this.props.validation && this.props.validation.status,
             'validation--error'      : this.props.validation && this.props.validation.status === 'error',
@@ -75,4 +75,4 @@ InputValidation.defaultProps = {
     }
 };
 
-module.exports = InputValidation;
+export default InputValidation;

@@ -1,7 +1,7 @@
 'use strict';
 
-var React      = require('react');
-var classNames = require('classnames');
+import React      from 'react';
+import classNames from 'classnames';
 
 class Upload extends React.Component {
     constructor(props)
@@ -40,7 +40,7 @@ class Upload extends React.Component {
 
     onDrop(event)
     {
-        var files;
+        let files;
 
         event.preventDefault();
 
@@ -61,7 +61,7 @@ class Upload extends React.Component {
 
     render()
     {
-        var background, classes, style;
+        let background, classes, style;
 
         background = (
             '-webkit-linear-gradient(' +
@@ -122,4 +122,4 @@ Upload.defaultProps = {
     size    : '100%'
 };
 
-module.exports = Upload;
+export default Upload;

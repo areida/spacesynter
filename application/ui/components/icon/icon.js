@@ -1,10 +1,10 @@
 'use strict';
 
-var React      = require('react');
-var classNames = require('classnames');
-var _          = require('lodash');
+import React      from 'react';
+import classNames from 'classnames';
+import _          from 'lodash';
 
-var Icons = {
+const ICONS = {
     caret   : require('./icons/caret'),
     navicon : require('./icons/navicon')
 };
@@ -12,7 +12,7 @@ var Icons = {
 class Icon extends React.Component {
     render()
     {
-        var classes, Component;
+        let classes, Component;
 
         classes = {
             'icon'             : true,
@@ -35,7 +35,7 @@ class Icon extends React.Component {
 
         classes['icon--' + this.props.icon] = true;
 
-        Component = Icons[this.props.icon];
+        Component = ICONS[this.props.icon];
 
         return (
             <span className={classNames(classes)}>
@@ -48,7 +48,7 @@ class Icon extends React.Component {
 Icon.displayName = 'Icon';
 
 Icon.propTypes = {
-    icon : React.PropTypes.oneOf(_.keys(Icons)),
+    icon : React.PropTypes.oneOf(_.keys(ICONS)),
     size : React.PropTypes.oneOf([
         'default',
         'x-large',
@@ -79,4 +79,4 @@ Icon.defaultProps = {
         color  : 'black'
 };
 
-module.exports = Icon;
+export default Icon;

@@ -1,12 +1,12 @@
 'use strict';
 
-var React  = require('react');
-var Router = require('react-router');
+import React  from 'react';
+import Router from 'react-router';
 
-var Flux   = require('./flux');
-var routes = require('./routes');
+import Flux   from './flux';
+import routes from './routes';
 
-var flux = new Flux();
+let flux = new Flux();
 
 require('./ui/scss/app.scss');
 

@@ -14,7 +14,7 @@ var config = {
             __ENVIRONMENT__ : '\'' + environment + '\''
         })
     ],
-    reactLoaders : ['jsx-loader?insertPragma=React.DOM&harmony']
+    reactLoaders : ['babel']
 };
 
 if (environment === 'development') {

@@ -1,17 +1,17 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
-var Button = require('../../components/buttons/button');
-var Select = require('../../components/form/inputs/select');
-var Text   = require('../../components/form/inputs/text');
+import Button from '../../components/buttons/button';
+import Select from '../../components/form/inputs/select';
+import Text   from '../../components/form/inputs/text';
 
-var defaultPaths = {
+const DEFAULT_PATHS = {
     nodejs   : 'server/index.js',
     'static' : 'build'
 };
 
-var typeOptions = [{
+const TYPE_OPTIONS = [{
     text  : 'NodeJS',
     value : 'nodejs'
 }, {
@@ -26,7 +26,7 @@ class NewContainer extends React.Component {
 
         this.state = {
             name : '',
-            path : defaultPaths.nodejs,
+            path : DEFAULT_PATHS.nodejs,
             type : 'nodejs'
         };
 
@@ -47,19 +47,19 @@ class NewContainer extends React.Component {
     {
         this.setState({
             name : '',
-            path : defaultPaths.nodejs,
+            path : DEFAULT_PATHS.nodejs,
             type : 'nodejs'
         });
     }
 
     onFormChange(value, element)
     {
-        var state = this.state;
+        let state = this.state;
 
         state[element.props.id] = value;
 
         if (element.props.id === 'type') {
-            state.path = defaultPaths[value];
+            state.path = DEFAULT_PATHS[value];
         }
 
         this.setState(state);
@@ -99,7 +99,7 @@ class NewContainer extends React.Component {
                             id       = 'type'
                             value    = {this.state.type}
                             onChange = {this.onFormChange.bind(this)}
-                            options  = {typeOptions}
+                            options  = {TYPE_OPTIONS}
                             size     = 'small'
                         />
                     </div>
@@ -131,4 +131,4 @@ class NewContainer extends React.Component {
 
 NewContainer.displayName = 'NewContainer';
 
-module.exports = NewContainer;
+export default NewContainer;

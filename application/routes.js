@@ -1,18 +1,18 @@
 /* jshint unused: false */
 'use strict';
 
-var React = require('react');
-var Route = require('react-router').Route;
+import React   from 'react';
+import {Route} from 'react-router';
 
-var LoggedInLayout  = require('./ui/layouts/logged-in');
-var LoggedOutLayout = require('./ui/layouts/logged-out');
-var SiteLayout      = require('./ui/layouts/site');
+import LoggedInLayout  from './ui/layouts/logged-in';
+import LoggedOutLayout from './ui/layouts/logged-out';
+import SiteLayout      from './ui/layouts/site';
 
-var ContainersPage  = require('./ui/pages/containers');
-var LoginPage       = require('./ui/pages/login');
-var NotFoundPage    = require('./ui/pages/404');
+import ContainersPage  from './ui/pages/containers';
+import LoginPage       from './ui/pages/login';
+import NotFoundPage    from './ui/pages/404';
 
-module.exports = (
+export default (
     <Route handler={SiteLayout}>
         <Route handler={LoggedInLayout}>
             <Route path='/' name='containers' handler={ContainersPage} />

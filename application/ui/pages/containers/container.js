@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react');
-var _     = require('lodash');
+import React from 'react';
+import _     from 'lodash';
 
-var Build  = require('../../components/build');
-var Button = require('../../components/buttons/button');
-var Upload = require('../../components/form/inputs/upload');
+import Build  from '../../components/build';
+import Button from '../../components/buttons/button';
+import Upload from '../../components/form/inputs/upload';
 
 class Container extends React.Component {
     constructor(props)
@@ -76,7 +76,7 @@ class Container extends React.Component {
 
     renderBuild(build, index)
     {
-        var active = (this.props.container.get('build') === build.get('_id'));
+        let active = (this.props.container.get('build') === build.get('_id'));
 
         return (
             <Build
@@ -96,7 +96,7 @@ class Container extends React.Component {
             return null;
         }
 
-        var builds = this.props.container.get('builds').sortBy(
+        let builds = this.props.container.get('builds').sortBy(
             container => container.get('created')
         ).map(this.renderBuild.bind(this));
 
@@ -105,7 +105,7 @@ class Container extends React.Component {
 
     render()
     {
-        var host = this.props.container.get('host');
+        let host = this.props.container.get('host');
 
         return (
             <div className='container existing'>
@@ -143,4 +143,4 @@ class Container extends React.Component {
 
 Container.displayName = 'Container';
 
-module.exports = Container;
+export default Container;

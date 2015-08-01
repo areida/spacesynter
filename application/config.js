@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = {
+export default {
     api : {
         hostname : window.location.hostname,
         port     : window.location.port,

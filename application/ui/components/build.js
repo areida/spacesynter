@@ -1,9 +1,9 @@
 'use strict';
 
-var React  = require('react');
-var moment = require('moment');
+import React  from 'react';
+import moment from 'moment';
 
-var Button = require('./buttons/button');
+import Button from './buttons/button';
 
 class Build extends React.Component {
     constructor(props)
@@ -41,7 +41,7 @@ class Build extends React.Component {
 
     render()
     {
-        var created = moment.utc(this.props.created);
+        let created = moment.utc(this.props.created);
 
         if (created > moment.utc().subtract(1, 'day')) {
             created = created.fromNow();
@@ -80,4 +80,4 @@ Build.propTypes   = {
     onDelete   : React.PropTypes.func.isRequired
 };
 
-module.exports = Build;
+export default Build;

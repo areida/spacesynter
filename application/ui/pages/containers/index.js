@@ -1,9 +1,9 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
-var Container    = require('./container');
-var NewContainer = require('./new-container');
+import Container    from './container';
+import NewContainer from './new-container';
 
 class ContainersPage extends React.Component {
     static fetchData(flux)
@@ -51,7 +51,7 @@ class ContainersPage extends React.Component {
 
     render()
     {
-        var containers = this.state.containers.sortBy(
+        let containers = this.state.containers.sortBy(
             container => container.get('created')
         ).map(
             (container, index) => <Container {...this.props} container={container} key={index} />
@@ -68,4 +68,4 @@ class ContainersPage extends React.Component {
 
 ContainersPage.displayName = 'ContainersPage';
 
-module.exports = ContainersPage;
+export default ContainersPage;

@@ -1,8 +1,8 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
-var Button = require('../components/buttons/button');
+import Button from '../components/buttons/button';
 
 class Login extends React.Component {
     constructor(props)
@@ -46,4 +46,4 @@ Login.contextTypes = {
     router : React.PropTypes.func
 };
 
-module.exports = Login;
+export default Login;

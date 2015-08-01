@@ -1,9 +1,9 @@
 'use strict';
 
-var React          = require('react');
-var {RouteHandler} = require('react-router');
+import React          from 'react';
+import {RouteHandler} from 'react-router';
 
-var config = require('../../config');
+import config from '../../config';
 
 class LoggedInLayout extends React.Component {
     constructor(props)
@@ -51,4 +51,4 @@ LoggedInLayout.contextTypes = {
     router : React.PropTypes.func
 };
 
-module.exports = LoggedInLayout;
+export default LoggedInLayout;

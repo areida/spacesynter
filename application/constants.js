@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = {
+export default {
     ACTIVATE_BUILD              : 'ACTIVATE_BUILD',
     ACTIVATE_BUILD_SUCCESS      : 'ACTIVATE_BUILD_SUCCESS',
     CLEAR_GISTS                 : 'CLEAR_GISTS',

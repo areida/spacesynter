@@ -1,21 +1,20 @@
 'use strict';
 
-var store = require('store');
+import store from 'store';
 
-var ApiStore  = require('./api-store');
-var constants = require('../constants');
+import ApiStore  from './api-store';
+import constants from '../constants';
 
 class TokenStore extends ApiStore {
     constructor()
     {
+        super();
         this.state = {
            error    : false,
            loading  : false,
            loggedIn : !! store.get('token'),
            token    : store.get('token')
         };
-
-        super();
 
         this.bindActions(
             constants.LOGOUT, 'onLogout'
@@ -53,4 +52,4 @@ class TokenStore extends ApiStore {
     }
 }
 
-module.exports = TokenStore;
+export default TokenStore;

@@ -1,10 +1,10 @@
 'use strict';
 
-var authActions      = require('./action/auth');
-var buildActions     = require('./action/build');
-var containerActions = require('./action/container');
+import authActions      from './action/auth';
+import buildActions     from './action/build';
+import containerActions from './action/container';
 
-module.exports = {
+export default {
     auth      : authActions,
     build     : buildActions,
     container : containerActions

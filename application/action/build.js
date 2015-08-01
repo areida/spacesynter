@@ -1,9 +1,9 @@
 'use strict';
 
-var constants   = require('../constants');
-var buildClient = require('../client/build');
+import constants   from '../constants';
+import buildClient from '../client/build';
 
-module.exports = {
+export default {
     create(container, files, progress)
     {
         return buildClient.create(container, files)

@@ -1,12 +1,12 @@
 'use strict';
 
-var React      = require('react');
-var classNames = require('classnames');
+import React      from 'react';
+import classNames from 'classnames';
 
 class Button extends React.Component {
     render()
     {
-        var classes = {
+        let classes = {
             'button'              : true,
             'button--tiny'        : this.props.size === 'tiny',
             'button--small'       : this.props.size === 'small',
@@ -86,4 +86,4 @@ Button.defaultProps = {
     onDoubleClick : null
 };
 
-module.exports = Button;
+export default Button;

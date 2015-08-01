@@ -1,12 +1,11 @@
 'use strict';
 
-var React = require('react');
+import React from 'react';
 
 class FourOhFour extends React.Component {
     render()
     {
-        var h1Style,
-            h2Style;
+        let h1Style, h2Style;
 
         h1Style = {
             textAlign  : 'center',
@@ -31,4 +30,4 @@ class FourOhFour extends React.Component {
 
 FourOhFour.displayName = '404';
 
-module.exports = FourOhFour;
+export default FourOhFour;
