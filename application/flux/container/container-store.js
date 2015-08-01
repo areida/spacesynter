@@ -2,10 +2,10 @@
 
 import Immutable from 'immutable';
 
-import ApiStore  from './api-store';
-import constants from '../constants';
+import ApiStore  from '../api-store';
+import constants from '../../constants';
 
-class ContainerStore extends ApiStore {
+export default class ContainerStore extends ApiStore {
     constructor()
     {
         super();
@@ -112,5 +112,3 @@ class ContainerStore extends ApiStore {
         this.emit('change');
     }
 }
-
-export default ContainerStore;

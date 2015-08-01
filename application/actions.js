@@ -1,8 +1,8 @@
 'use strict';
 
-import authActions      from './action/auth';
-import buildActions     from './action/build';
-import containerActions from './action/container';
+import authActions      from './flux/auth/auth-actions';
+import buildActions     from './flux/container/build-actions';
+import containerActions from './flux/container/container-actions';
 
 export default {
     auth      : authActions,

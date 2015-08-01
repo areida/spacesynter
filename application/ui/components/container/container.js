@@ -3,9 +3,9 @@
 import React from 'react';
 import _     from 'lodash';
 
-import Build  from '../../components/build';
-import Button from '../../components/buttons/button';
-import Upload from '../../components/form/inputs/upload';
+import Build  from './build';
+import Button from '../buttons/button';
+import Upload from '../form/inputs/upload';
 
 class Container extends React.Component {
     constructor(props)

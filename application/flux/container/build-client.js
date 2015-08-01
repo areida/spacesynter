@@ -4,9 +4,9 @@
 
 import Q from 'q';
 
-import config from '../config';
+import {api} from '../../config';
 
-class BuildClient {
+export default class BuildClient {
     create(container, files)
     {
         return Q.promise(
@@ -46,7 +46,7 @@ class BuildClient {
                     xhr.open(
                         'POST',
                         (
-                            'http://' + config.api.hostname + ':' + config.api.port + config.api.prefix +
+                            'http://' + api.hostname + ':' + api.port + api.prefix +
                             '/container/' + container.get('name') + '/build'
                         )
                     );
@@ -81,5 +81,3 @@ class BuildClient {
         );
     }
 }
-
-export default new BuildClient();

@@ -1,4 +1,3 @@
-/* jshint unused: false */
 'use strict';
 
 import React   from 'react';
@@ -10,7 +9,7 @@ import SiteLayout      from './ui/layouts/site';
 
 import ContainersPage  from './ui/pages/containers';
 import LoginPage       from './ui/pages/login';
-import NotFoundPage    from './ui/pages/404';
+import NotFoundPage    from './ui/pages/not-found';
 
 export default (
     <Route handler={SiteLayout}>

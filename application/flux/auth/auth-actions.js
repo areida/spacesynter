@@ -1,7 +1,9 @@
 'use strict';
 
-import authClient from '../client/auth';
-import constants  from '../constants';
+import AuthClient from './auth-client';
+import constants  from '../../constants';
+
+let client = new AuthClient();
 
 export default {
     login(path)
@@ -15,6 +17,6 @@ export default {
     {
         this.dispatch(constants.LOGOUT);
 
-        return authClient.logout();
+        return client.logout();
     }
 };

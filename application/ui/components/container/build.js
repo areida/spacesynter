@@ -3,7 +3,7 @@
 import React  from 'react';
 import moment from 'moment';
 
-import Button from './buttons/button';
+import Button from '../buttons/button';
 
 class Build extends React.Component {
     constructor(props)

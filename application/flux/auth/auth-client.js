@@ -2,13 +2,13 @@
 
 import HttpGateway from 'synapse-common/http/gateway';
 
-import config from '../config';
+import {api} from '../../config';
 
-class AuthClient extends HttpGateway {
+export default class AuthClient extends HttpGateway {
     constructor()
     {
         super();
-        this.config = config.api;
+        this.config = api;
     }
 
     logout()
@@ -16,5 +16,3 @@ class AuthClient extends HttpGateway {
         return this.apiRequest('GET', '/logout');
     }
 }
-
-export default new AuthClient();

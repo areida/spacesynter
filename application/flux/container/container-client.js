@@ -2,13 +2,13 @@
 
 import HttpGateway from 'synapse-common/http/gateway';
 
-var config = require('../config');
+import {api} from '../../config';
 
-class ContainerClient extends HttpGateway {
+export default class ContainerClient extends HttpGateway {
     constructor()
     {
         super();
-        this.config = config.api;
+        this.config = api;
     }
 
     activateBuild(name, build)
@@ -45,5 +45,3 @@ class ContainerClient extends HttpGateway {
         return this.apiRequest('DELETE', '/container/' + name);
     }
 }
-
-export default new ContainerClient();

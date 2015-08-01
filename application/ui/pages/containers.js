@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import Container    from './container';
-import NewContainer from './new-container';
+import Container    from '../components/container/container';
+import NewContainer from '../components/container/new-container';
 
 class ContainersPage extends React.Component {
     static fetchData(flux)

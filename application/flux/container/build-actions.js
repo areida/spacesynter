@@ -1,12 +1,14 @@
 'use strict';
 
-import constants   from '../constants';
-import buildClient from '../client/build';
+import BuildClient from './build-client';
+import constants   from '../../constants';
+
+let client = new BuildClient();
 
 export default {
     create(container, files, progress)
     {
-        return buildClient.create(container, files)
+        return client.create(container, files)
             .then(
                 data => this.dispatch(constants.CREATE_BUILD_SUCCESS, data),
                 error => console.log(error),

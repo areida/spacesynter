@@ -3,7 +3,7 @@
 import Store     from 'fluxxor/lib/store';
 import Immutable from 'immutable';
 
-class ApiStore extends Store {
+export default class ApiStore extends Store {
     constructor()
     {
         let state = new Immutable.Map({
@@ -26,5 +26,3 @@ class ApiStore extends Store {
         return this.state.get('loaded');
     }
 }
-
-export default ApiStore;

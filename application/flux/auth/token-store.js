@@ -2,10 +2,10 @@
 
 import store from 'store';
 
-import ApiStore  from './api-store';
-import constants from '../constants';
+import ApiStore  from '../api-store';
+import constants from '../../constants';
 
-class TokenStore extends ApiStore {
+export default class TokenStore extends ApiStore {
     constructor()
     {
         super();
@@ -51,5 +51,3 @@ class TokenStore extends ApiStore {
         }
     }
 }
-
-export default TokenStore;

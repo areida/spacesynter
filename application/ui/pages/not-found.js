@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-class FourOhFour extends React.Component {
+class NotFoundPage extends React.Component {
     render()
     {
         let h1Style, h2Style;
@@ -28,6 +28,6 @@ class FourOhFour extends React.Component {
     }
 }
 
-FourOhFour.displayName = '404';
+NotFoundPage.displayName = 'NotFoundPage';
 
-export default FourOhFour;
+export default NotFoundPage;

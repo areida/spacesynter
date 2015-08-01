@@ -2,9 +2,9 @@
 
 import React from 'react';
 
-import Button from '../../components/buttons/button';
-import Select from '../../components/form/inputs/select';
-import Text   from '../../components/form/inputs/text';
+import Button from '../buttons/button';
+import Select from '../form/inputs/select';
+import Text   from '../form/inputs/text';
 
 const DEFAULT_PATHS = {
     nodejs   : 'server/index.js',
