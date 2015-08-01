@@ -1,4 +1,5 @@
 /* global FileReader, Uint8Array, XMLHttpRequest */
+/* jshint bitwise: false */
 'use strict';
 
 var Q = require('q');
@@ -64,7 +65,7 @@ class BuildClient {
                                     new Uint8Array(
                                         Array.prototype.map.call(
                                             dataString,
-                                            x => x.charCodeAt(0) & 0xff
+                                            x => (x.charCodeAt(0) & 0xff)
                                         )
                                     )
                                 );

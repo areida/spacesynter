@@ -1,7 +1,6 @@
 'use strict';
 
 var React = require('react');
-var _     = require('lodash');
 
 var Icon            = require('../../icon/icon');
 var InputValidation = require('../input-validation');
@@ -32,8 +31,6 @@ class SelectInput extends React.Component {
 
     renderSelectOptions()
     {
-        var selectOptions = [];
-
         if (! this.props.options) {
             return this.props.children;
         }

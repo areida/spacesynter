@@ -79,8 +79,10 @@ module.exports = {
         globalstrict : true,
         globals      : {
             __BACKEND__     : true,
-            console         : true,
             __ENVIRONMENT__ : true,
+            JSON            : true,
+            console         : true,
+            document        : true,
             window          : true
         }
     }

@@ -3,7 +3,6 @@
 var React  = require('react');
 var Router = require('react-router');
 
-var config = require('./config');
 var Flux   = require('./flux');
 var routes = require('./routes');
 

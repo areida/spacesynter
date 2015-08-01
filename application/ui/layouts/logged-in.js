@@ -3,6 +3,8 @@
 var React          = require('react');
 var {RouteHandler} = require('react-router');
 
+var config = require('../../config');
+
 class LoggedInLayout extends React.Component {
     constructor(props)
     {
@@ -15,18 +17,22 @@ class LoggedInLayout extends React.Component {
 
     componentDidMount()
     {
-        this.authenticate();
+        if (config.auth) {
+            this.authenticate();
+        }
     }
 
     componentDidUpdate()
     {
-        this.authenticate();
+        if (config.auth) {
+            this.authenticate();
+        }
     }
 
     authenticate()
     {
         if (! this.state.loggedIn) {
-            //this.context.router.transitionTo('login');
+            this.context.router.transitionTo('login');
         }
     }
 

@@ -1,15 +1,14 @@
 'use strict';
 
 var React = require('react');
-var _     = require('lodash');
 
 var Button = require('../../components/buttons/button');
 var Select = require('../../components/form/inputs/select');
 var Text   = require('../../components/form/inputs/text');
 
 var defaultPaths = {
-    nodejs : 'server/index.js',
-    static : 'build'
+    nodejs   : 'server/index.js',
+    'static' : 'build'
 };
 
 var typeOptions = [{
@@ -41,7 +40,7 @@ class NewContainer extends React.Component {
 
     componentWillUnmount()
     {
-        this.props.flux.store('ContainerStore').removeListener('created'. this.onCreated);
+        this.props.flux.store('ContainerStore').removeListener('created', this.onCreated);
     }
 
     onCreated()

@@ -1,7 +1,6 @@
 'use strict';
 
 var HttpGateway = require('synapse-common/http/gateway');
-var store       = require('store');
 
 var config = require('../config').api;
 

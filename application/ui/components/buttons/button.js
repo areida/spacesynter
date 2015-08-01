@@ -72,7 +72,7 @@ Button.propTypes   = {
     block         : React.PropTypes.bool,
     disabled      : React.PropTypes.bool,
     onClick       : React.PropTypes.func,
-    onDoubleClick : React.PropTypes.func,
+    onDoubleClick : React.PropTypes.func
 };
 
 Button.defaultProps = {

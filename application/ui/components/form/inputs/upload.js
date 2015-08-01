@@ -2,7 +2,6 @@
 
 var React      = require('react');
 var classNames = require('classnames');
-var _          = require('lodash');
 
 class Upload extends React.Component {
     constructor(props)
@@ -74,7 +73,7 @@ class Upload extends React.Component {
 
         classes = {
             active   : this.state.dragActive,
-            dropzone : true,
+            dropzone : true
         };
 
         style = {
