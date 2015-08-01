@@ -9,9 +9,9 @@ export default class ContainerStore extends ApiStore {
     constructor()
     {
         super();
-        this.state = {
-            containers : new Immutable.List()
-        };
+        this.state = new Immutable.fromJS({
+            containers : []
+        });
 
         this.bindActions(
             constants.ACTIVATE_BUILD_SUCCESS, 'onActvateBuildSuccess',

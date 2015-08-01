@@ -1,11 +1,14 @@
 'use strict';
 
-var argv = require('minimist')(process.argv.slice(2), {c : 'config'});
-var fs   = require('fs');
-var _    = require('lodash');
+var fs       = require('fs');
+var minimist = require('minimist');
+var _        = require('lodash');
 
-var config   = {},
-    defaults = {
+var argv, config, defaults;
+
+argv     = minimist(process.argv.slice(2), {c : 'config'});
+config   = {};
+defaults = {
     auth         : false,
     containerDir : process.cwd() + '/__containers__',
     cwd          : process.cwd(),

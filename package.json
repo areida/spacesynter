@@ -17,13 +17,13 @@
     "dist:app": "APP_ENV=production NODE_ENV=production webpack -p",
     "dist:cookbooks": "mkdir -p dist && zip -r dist/cookbooks cookbooks",
     "start:dev": "pm2 start server/dev.js",
-    "start:app": "pm2 start server/index.js",
+    "start:app": "pm2 start server/index.js --watch",
     "predist": "npm run clean",
     "prestart": "npm run clean",
     "clean": "npm run clean:build && npm run clean:dist",
     "deploy": "npm run deploy:app && npm run deploy:cookbooks",
     "dist": "npm run dist:app && npm run dist:cookbooks && ./dist.sh && npm run deploy",
-    "start": "npm run start:app && npm run start:dev"
+    "start": "npm run start:app && npm run start:dev && ./start.sh"
   },
   "devDependencies": {
     "babel-loader": "5.3.2",
