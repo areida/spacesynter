@@ -6,8 +6,6 @@ import Router from 'react-router';
 import Flux   from './flux';
 import routes from './routes';
 
-import './ui/scss/app.scss';
-
 window.React = React;
 
 let flux = new Flux();
