@@ -1,3 +1,3 @@
-# Space Synter Application Control
+# Spacesynter Application Control
 
 @todo write readme

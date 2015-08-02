@@ -23,7 +23,7 @@ tmpl.load = function (name) {
 
 app = new Express();
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', config.hostname + ':' + config.port);
     res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, X-Filename');
     res.header('Access-Control-Allow-Methods', 'DELETE, GET, HEAD, OPTIONS, PATCH, POST');

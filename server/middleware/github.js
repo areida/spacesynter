@@ -41,7 +41,17 @@ function authorizeUrl(state) {
     return (options.ghLoginUrl + '/oauth/authorize?' + query);
 }
 
-function makeRequest(url, query, token) {
+function finishLogin(req, res, token, redirectUrl) {
+    req.session.ghToken = token;
+    res.redirect(redirectUrl);
+}
+
+function handleError(error) {
+    res.status(500);
+    res.json(error);
+}
+
+function makeApiRequest(url, query, token) {
     return new Q.Promise(
         function (resolve, reject) {
             var options = {
@@ -59,11 +69,11 @@ function makeRequest(url, query, token) {
 
             request(
                 options,
-                function (error, response, token) {
+                function (error, response, body) {
                     if (error) {
-                        reject(new HttpError(token, response));
+                        reject(new HttpError(body, response));
                     } else {
-                        resolve(token);
+                        resolve(body);
                     }
                 }
             );
@@ -92,43 +102,33 @@ github.get('/gh-callback/?', function (req, res) {
 
         var url = options.ghLoginUrl + '/oauth/access_token';
 
-        makeRequest(url ,query).done(
+        makeApiRequest(url, query).done(
             function (token) {
-                var redirectUrl     = req.session.redirectUrl || '/';
-                req.session.ghState = null;
+                var redirectUrl         = req.session.redirectUrl || '/';
+                req.session.ghState     = null;
+                req.session.redirectUrl = null;
 
-                var finish = function () {
-                    req.session.ghToken     = token;
-                    req.session.redirectUrl = null;
-                    res.redirect(redirectUrl);
-                };
-
-                if (config.github.organizations.length) {
-                    makeRequest('https://api.github.com/user/orgs', {}, token).done(
+                if (config.github.organization) {
+                    makeApiRequest('https://api.github.com/user/orgs', {}, token).done(
                         function (orgs) {
                             if (
-                                _.intersection(
-                                    config.github.organizations,
-                                    _.pluck(orgs, 'login')
-                                ).length
+                                _.includes(
+                                    _.pluck(orgs, 'login'),
+                                    config.github.organization
+                                )
                             ) {
-                                finish();
+                                finishLogin(req, res, token, redirectUrl);
                             } else {
-                                res.redirect('/');
+                                res.redirect(redirectUrl);
                             }
                         },
-                        function (error) {
-                            res.status(500);
-                            res.json(error);
-                        }
+                        handleError
                     );
                 } else {
-                    finish();
+                    finishLogin(req, res, token, redirectUrl);
                 }
             },
-            function (error) {
-                res.redirect('/');
-            }
+            handleError
         );
     }
 });

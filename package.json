@@ -17,7 +17,7 @@
     "dist:app": "APP_ENV=production NODE_ENV=production webpack -p",
     "dist:cookbooks": "mkdir -p dist && zip -r dist/cookbooks cookbooks",
     "start:dev": "pm2 start server/dev.js",
-    "start:app": "pm2 start server/index.js --watch",
+    "start:app": "pm2 start server/index.js -n app --watch",
     "predist": "npm run clean",
     "prestart": "npm run clean",
     "clean": "npm run clean:build && npm run clean:dist",

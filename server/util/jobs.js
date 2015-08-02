@@ -1,6 +1,6 @@
 'use strict';
 
-var exec   = require('child_process').exec;
+var exec = require('child_process').exec;
 
 module.exports = {
     'nginx:reload' : {

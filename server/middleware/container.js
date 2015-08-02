@@ -12,7 +12,7 @@ var _          = require('lodash');
 
 var config    = require('../config');
 var Container = require('../model/container');
-var nginx     = require('../util/nginx');
+var reload    = require('../util/reload');
 
 var container = new Express();
 
@@ -249,7 +249,7 @@ container.delete(
                     manager.deleteContainer(container.name),
                     manager.deleteFolder(container.name),
                     manager.deleteProcess(container.name),
-                    nginx.reload()
+                    reload.exec()
                 ]).done(
                     function () {
                         res.sendStatus(204);
@@ -436,7 +436,7 @@ container.post(
                         return Q.all([
                             manager.createDirectory(config.containerDir + '/' + name + '/builds'),
                             manager.createDirectory(config.containerDir + '/' + name + '/working'),
-                            nginx.reload()
+                            reload.exec()
                         ]);
                     }
                 )
