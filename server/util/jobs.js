@@ -2,7 +2,9 @@
 
 var exec = require('child_process').exec;
 
-var vagrant = require('./vagrant');
+var Container = require('../model/container');
+var Log       = require('../model/log');
+var vagrant   = require('./vagrant');
 
 module.exports = {
     'nginx:reload' : {
@@ -12,7 +14,20 @@ module.exports = {
     },
     'vagrant:destroy' : {
         perform : function (container, callback) {
-            vagrant.destroy(container).done(
+            Container.updateStatus(container, 'destroying').then(
+                function (container) {
+                    return vagrant.runCommand('destroy', container);
+                },
+                callback
+            ).then(
+                function () {
+                    return Container.updateStatus(container, 'stopped');
+                },
+                function (error) {
+                    return Container.updateStatus(container, 'error');
+                },
+                Log.saveData
+            ).done(
                 function (container) {
                     callback(null, container);
                 },
@@ -22,7 +37,20 @@ module.exports = {
     },
     'vagrant:reprovision' : {
         perform : function (container, callback) {
-            vagrant.reprovision(container).done(
+            Container.updateStatus(container, 'provisioning').then(
+                function (container) {
+                    return vagrant.runCommand('reprovision', container);
+                },
+                callback
+            ).then(
+                function () {
+                    return Container.updateStatus(container, 'running');
+                },
+                function (error) {
+                    return Container.updateStatus(container, 'error');
+                },
+                Log.saveData
+            ).done(
                 function (container) {
                     callback(null, container);
                 },
@@ -32,7 +60,20 @@ module.exports = {
     },
     'vagrant:rsync' : {
         perform : function (container, callback) {
-            vagrant.rsync(container).done(
+            Container.updateStatus(container, 'provisioning').then(
+                function (container) {
+                    return vagrant.runCommand('rsync', container);
+                },
+                callback
+            ).then(
+                function () {
+                    return Container.updateStatus(container, 'running');
+                },
+                function (error) {
+                    return Container.updateStatus(container, 'error');
+                },
+                Log.saveData
+            ).done(
                 function (container) {
                     callback(null, container);
                 },
@@ -41,8 +82,21 @@ module.exports = {
         }
     },
     'vagrant:up' : {
-        perform : function (container, callback) {
-            vagrant.up(container).done(
+        perform : function (container) {
+            Container.updateStatus(container, 'provisioning').then(
+                function (container) {
+                    return vagrant.runCommand('up', contaner);
+                },
+                callback
+            ).then(
+                function () {
+                    return Container.updateStatus(container, 'running');
+                },
+                function (error) {
+                    return Container.updateStatus(container, 'error');
+                },
+                Log.saveData
+            ).done(
                 function (container) {
                     callback(null, container);
                 },

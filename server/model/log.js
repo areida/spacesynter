@@ -1,11 +1,10 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var Schema   = mongoose.Schema;
 
 var Log, schema;
 
-schema = new Schema({
+schema = new mongoose.Schema({
     build     : String,
     commandId : String,
     container : String,
@@ -15,6 +14,23 @@ schema = new Schema({
     id        : String,
     initial   : Boolean
 });
+
+function saveLog() {
+}
+
+schema.static(
+    'saveData',
+    function (build, commandId, container, data, fd, initial) {
+        return this.create({
+            build     : build,
+            commandId : commandId,
+            container : container,
+            data      : data,
+            fd        : fd,
+            initial   : !! initial
+        });
+    }
+);
 
 Log = mongoose.model('Log', schema);
 
