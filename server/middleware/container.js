@@ -177,16 +177,11 @@ function restartProcess(container, port) {
     );
 }
 
-function saveBuild(name, build, file) {
+function saveFile(file, path) {
     return new Q.promise(
         function (resolve, reject) {
-            var filepath = (
-                config.containerDir + '/' +
-                name + '/builds/' + build
-            );
-
             fs.writeFile(
-                filepath,
+                path,
                 file,
                 function (error) {
                     if (error) reject(error);
@@ -450,20 +445,20 @@ container.post(
         Container.findOne({name : req.params.name}).exec().then(
             function (container) {
                 if (container) {
-                    if (_.findWhere(container.builds, {name : filename})) {
-                        var suffix = '-' + randomHash(5);
-
-                        filename = filename.replace(/\.zip$/, suffix + '.zip');
-                    }
-
                     container.builds.push({
                         name : filename
                     });
 
-                    Q.all([
-                        saveBuild(container.name, filename, req.rawBody),
-                        container.save()
-                    ]).done(
+                    container.save().then(
+                        function (container) {
+                            var path = (
+                                config.containerDir + '/' +
+                                container.name + '/builds/' + _.last(container.builds)._id
+                            );
+
+                            return saveFile(req.rawBody, path);
+                        }
+                    ).done(
                         function () {
                             res.json(container.toObject());
                         },
@@ -487,18 +482,13 @@ container.post(
         Container.findOne({name : req.params.name}).exec().then(
             function (container) {
                 if (container) {
-                    if (_.findWhere(container.builds, {name : filename})) {
-                        var suffix = '-' + randomHash(5);
-
-                        filename = filename.replace(/\.zip$/, suffix + '.zip');
-                    }
-
-                    container.builds.push({
-                        name : filename
-                    });
+                    var path = (
+                        config.containerDir + '/' +
+                        container.name + '/cookbooks.zip'
+                    );
 
                     Q.all([
-                        saveBuild(container.name, filename, req.rawBody),
+                        saveFile(req.rawBody, path),
                         container.save()
                     ]).done(
                         function () {
