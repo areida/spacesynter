@@ -36,8 +36,7 @@ function changeBuild(name, build) {
     var command = (
         'rm -rf ' + config.containerDir + '/' + name +
         '/working/* && unzip ' + config.containerDir + '/' + name +
-        '/builds/' + build +
-        ' -d ' + config.containerDir + '/' + name +
+        '/builds/' + build + ' -d ' + config.containerDir + '/' + name +
         '/working > /dev/null'
     );
 
@@ -47,8 +46,7 @@ function changeBuild(name, build) {
                 command,
                 function (error) {
                     if (error) reject(error);
-
-                    resolve();
+                    else resolve();
                 }
             );
         }
@@ -60,8 +58,7 @@ function createDirectory(dir) {
         function (resolve, reject) {
             fs.mkdir(dir, function (error) {
                 if (error) reject(error);
-
-                resolve();
+                else resolve();
             });
         }
     );
