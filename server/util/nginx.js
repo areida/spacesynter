@@ -1,37 +1,19 @@
 'use strict';
 
-var exec   = require('child_process').exec
-var fs     = require('fs');
-var Q      = require('q');
-var Resque = require('node-resque');
-var tmpl   = require('blueimp-tmpl').tmpl;
-var _      = require('lodash');
+var fs   = require('fs');
+var Q    = require('q');
+var tmpl = require('blueimp-tmpl').tmpl;
 
-var config    = require('../config');
-var jobs      = require('./jobs');
+var config = require('../config');
+var resque = require('./resque');
 
 tmpl.load = function (name) {
     return fs.readFileSync(config.cwd + '/templates/' + name, 'utf8');
 };
 
-function resqueConnect() {
-    return new Q.promise(
-        function (resolve, reject) {
-            var queue = new Resque.queue(
-                {connection: config.redis.resque},
-                jobs,
-                function (error) {
-                    if (error) reject(error);
-                    else resolve(queue);
-                }
-            );
-        }
-    );
-}
-
 module.exports = {
     reload : function (containers) {
-        return resqueConnect().then(
+        return resque.connect().then(
             function (resque) {
                 return new Q.promise(
                     function (resolve, reject) {
@@ -43,7 +25,7 @@ module.exports = {
                             function (error) {
                                 if (error) reject(error);
                                 else {
-                                    resque.enqueue('nr:nginx', 'nginx:reload', []);
+                                    resque.enqueue('spacesynter', 'nginx:reload', []);
                                     resolve();
                                 }
                             }

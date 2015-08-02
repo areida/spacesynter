@@ -3,9 +3,9 @@
 var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
 
-var Container, containerSchema;
+var Container, schema;
 
-containerSchema = new Schema({
+schema = new Schema({
     build  : String,
     builds : [{
         created : {type : Date, default : Date.now},
@@ -21,6 +21,6 @@ containerSchema = new Schema({
     type    : {type : String, default : 'nodejs'}
 });
 
-Container = mongoose.model('Container', containerSchema);
+Container = mongoose.model('Container', schema);
 
 module.exports = Container;

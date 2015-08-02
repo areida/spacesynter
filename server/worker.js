@@ -6,7 +6,7 @@ var config = require('./config');
 var jobs   = require('./util/jobs');
 
 var worker = new Resque.worker(
-    {connection: config.redis.resque, queues: ['nr:nginx']},
+    {connection: config.redis.resque, queues: ['spacesynter']},
     jobs,
     function () {
         console.log('Waiting for jobs');
