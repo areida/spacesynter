@@ -41,13 +41,10 @@ class Build extends React.Component {
 
     render()
     {
-        let created = moment.utc(this.props.created).calendar();
-
-        /*if (created > moment.utc().subtract(1, 'day')) {
-            created = created.fromNow();
-        } else {
-            created = created.format('MMM Do, YYYY');
-        }*/
+        let created = moment(this.props.created).local().calendar(null, {
+            lastWeek : 'dddd [at] LT',
+            sameElse : 'L [at] LT'
+        });
 
         return (
             <div className='row build'>

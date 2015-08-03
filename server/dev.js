@@ -12,10 +12,10 @@ var config        = require('./config');
 var webpackConfig = require('../webpack.config');
 
 var server = new WebpackDevServer(webpack(webpackConfig), {
-    contentBase : {target : 'http://localhost:' + config.port},
-    headers     : {'Access-Control-Allow-Origin': '*'},
-    hot         : true,
-    noInfo      : true
+    headers : {'Access-Control-Allow-Origin': '*'},
+    hot     : true,
+    noInfo  : true,
+    proxy   : {'*' : {target : 'http://localhost:' + config.port}}
 });
 
 server.use(function (req, res, next) {

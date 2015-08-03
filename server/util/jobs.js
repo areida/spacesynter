@@ -1,10 +1,12 @@
 'use strict';
 
 var exec = require('child_process').exec;
+var Q    = require('q');
 
-var Container = require('../model/container');
-var Log       = require('../model/log');
-var vagrant   = require('./vagrant');
+var fs      = require('../util/fs');
+var reload  = require('../util/reload');
+var ps      = require('../util/ps');
+var vagrant = require('./vagrant');
 
 module.exports = {
     'nginx:reload' : {
@@ -12,22 +14,9 @@ module.exports = {
             exec('service nginx reload', callback);
         }
     },
-    'vagrant:destroy' : {
+    'vagrant:halt' : {
         perform : function (container, callback) {
-            Container.updateStatus(container, 'destroying').then(
-                function (container) {
-                    return vagrant.runCommand('destroy', container);
-                },
-                callback
-            ).then(
-                function () {
-                    return Container.updateStatus(container, 'stopped');
-                },
-                function (error) {
-                    return Container.updateStatus(container, 'error');
-                },
-                Log.saveData
-            ).done(
+            vagrant.runCommand(container, 'stopping', ['halt'], 'stopped').done(
                 function (container) {
                     callback(null, container);
                 },
@@ -35,22 +24,28 @@ module.exports = {
             );
         }
     },
-    'vagrant:reprovision' : {
+    'vagrant:destroy' : {
         perform : function (container, callback) {
-            Container.updateStatus(container, 'provisioning').then(
+            vagrant.runCommand(container, 'stopping', ['destroy', '-f'], 'stopped').then(
                 function (container) {
-                    return vagrant.runCommand('reprovision', container);
+                    return Q.all([
+                        container.remove(),
+                        fs.rmDir(container),
+                        reload.exec()
+                    ]);
                 },
                 callback
             ).then(
                 function () {
-                    return Container.updateStatus(container, 'running');
+                    callback(null);
                 },
-                function (error) {
-                    return Container.updateStatus(container, 'error');
-                },
-                Log.saveData
-            ).done(
+                callback
+            );
+        }
+    },
+    'vagrant:provision' : {
+        perform : function (container, callback) {
+            vagrant.runCommand(container, 'starting', ['provision'], 'running').done(
                 function (container) {
                     callback(null, container);
                 },
@@ -60,20 +55,7 @@ module.exports = {
     },
     'vagrant:rsync' : {
         perform : function (container, callback) {
-            Container.updateStatus(container, 'provisioning').then(
-                function (container) {
-                    return vagrant.runCommand('rsync', container);
-                },
-                callback
-            ).then(
-                function () {
-                    return Container.updateStatus(container, 'running');
-                },
-                function (error) {
-                    return Container.updateStatus(container, 'error');
-                },
-                Log.saveData
-            ).done(
+            vagrant.runCommand(container, 'starting', ['rsync'], 'running').done(
                 function (container) {
                     callback(null, container);
                 },
@@ -83,20 +65,7 @@ module.exports = {
     },
     'vagrant:up' : {
         perform : function (container) {
-            Container.updateStatus(container, 'provisioning').then(
-                function (container) {
-                    return vagrant.runCommand('up', contaner);
-                },
-                callback
-            ).then(
-                function () {
-                    return Container.updateStatus(container, 'running');
-                },
-                function (error) {
-                    return Container.updateStatus(container, 'error');
-                },
-                Log.saveData
-            ).done(
+            vagrant.runCommand(container, 'starting', ['up'], 'running').done(
                 function (container) {
                     callback(null, container);
                 },

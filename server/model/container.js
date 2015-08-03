@@ -18,7 +18,16 @@ schema = new mongoose.Schema({
     name    : {type : String, index : true},
     path    : String,
     port    : String,
-    type    : {type : String, default : 'nodejs'}
+    status  : {
+        type    : String,
+        enum    : ['stopped', 'starting', 'running', 'stopping'],
+        default : 'stopped'
+    },
+    type : {
+        type    : String,
+        enum    : ['nodejs', 'php', 'static'],
+        default : 'nodejs'
+    }
 });
 
 schema.static(
@@ -28,17 +37,12 @@ schema.static(
 
         return new Q.promise(
             function (resolve, reject) {
-                Schema.find({id : container}).exec().then(
-                    function (containers) {
-                        if (containers.length) {
-                            containers[0].status = status;
+                Schema.findById(container).exec().then(
+                    function (container) {
+                        if (container) {
+                            container.status = status;
 
-                            containers[0].save(
-                                function (error) {
-                                    if (error) reject(error);
-                                    else resolve(containers[0]);
-                                }
-                            );
+                            container.save().then(resolve, reject);
                         } else {
                             reject(404);
                         }

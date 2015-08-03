@@ -7,14 +7,10 @@ import Q from 'q';
 import {api} from '../../config';
 
 export default class BuildClient {
-    create(container, files)
+    create(container, file)
     {
         return Q.promise(
             (resolve, reject, notify) => {
-                if (! files.length || files[0].type !== 'application/zip') {
-                    reject();
-                }
-
                 if (typeof FileReader !== 'undefined') {
                     let reader = new FileReader();
                     let xhr    = new XMLHttpRequest();
@@ -53,14 +49,14 @@ export default class BuildClient {
 
                     xhr.setRequestHeader(
                         'X-Filename',
-                        files[0].name.replace(/\s/g, '-').toLowerCase()
+                        file.name.replace(/\s/g, '-').toLowerCase()
                     );
 
                     xhr.overrideMimeType('text/plain; charset=x-user-defined-binary');
 
-                    reader.onload = (event) => {
+                    reader.onload = function (event) {
                         if (! xhr.sendAsBinary) {
-                            xhr.sendAsBinary = (dataString) => {
+                            xhr.sendAsBinary = function (dataString) {
                                 this.send(
                                     new Uint8Array(
                                         Array.prototype.map.call(
@@ -75,7 +71,7 @@ export default class BuildClient {
                         xhr.sendAsBinary(event.target.result);
                     };
 
-                    reader.readAsBinaryString(files[0]);
+                    reader.readAsBinaryString(file);
                 }
             }
         );

@@ -1,6 +1,7 @@
 'use strict';
 
 var fs   = require('fs');
+var path = require('path');
 var Q    = require('q');
 var tmpl = require('blueimp-tmpl').tmpl;
 
@@ -8,7 +9,7 @@ var config = require('../config');
 var resque = require('./resque');
 
 tmpl.load = function (name) {
-    return fs.readFileSync(config.cwd + '/templates/' + name, 'utf8');
+    return fs.readFileSync(path.join(config.cwd, 'templates', name), 'utf8');
 };
 
 module.exports = {
@@ -18,7 +19,7 @@ module.exports = {
                 return new Q.promise(
                     function (resolve, reject) {
                         fs.writeFile(
-                            config.containerDir + '/servers.conf',
+                            path.join(config.containerDir, 'servers.conf'),
                             tmpl('servers.conf', {
                                 containers : containers
                             }),
@@ -33,9 +34,7 @@ module.exports = {
                     }
                 );
             },
-            function (error) {
-                reject(error);
-            }
+            reject
         );
     }
 }

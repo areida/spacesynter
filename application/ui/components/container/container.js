@@ -37,13 +37,17 @@ class Container extends React.Component {
 
     onDrop(files)
     {
-        this.setState({showBuilds : true});
+        let file = files[0];
 
-        this.props.flux.actions.build.create(
-            this.props.container,
-            files,
-            this.onProgress.bind(this)
-        ).done();
+        if (file && file.type === 'application/zip') {
+            this.setState({showBuilds : true});
+
+            this.props.flux.actions.build.create(
+                this.props.container,
+                files[0],
+                this.onProgress.bind(this)
+            ).done();
+        }
     }
 
     onKill()
@@ -112,6 +116,7 @@ class Container extends React.Component {
                 <div className='row'>
                     <div className='medium-2 columns'>
                         <p><a href={'http://' + host} target='_blank'>{host}</a></p>
+                        <p>{this.props.container.get('type')} - {this.props.container.get('status')}</p>
                     </div>
                     <div className='medium-2 columns' title='Click or Drag Build Here'>
                         <Upload onDrop={this.onDrop.bind(this)} percent={this.state.percent}>Add Build</Upload>

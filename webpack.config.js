@@ -9,29 +9,27 @@ var config = {
         app   : ['./application/bootstrap.js'],
         media : ['./application/media.js']
     },
-    plugins : [
-        new Webpack.DefinePlugin({
-            __BACKEND__     : '\'' + process.env.BACKEND + '\'',
-            __ENVIRONMENT__ : '\'' + environment + '\''
-        })
-    ],
-    reactLoaders : ['babel']
+    plugins : [],
+    react   : ['babel']
 };
 
 if (environment === 'development') {
+    config.entries.app.unshift(
+        'webpack/hot/dev-server',
+        'webpack-dev-server/client?http://localhost:9000'
+    );
+    config.entries.media.unshift(
+        'webpack/hot/dev-server',
+        'webpack-dev-server/client?http://localhost:9000'
+    );
     config.plugins.push(new WebpackError(process.platform));
-
-    config.entries.app.unshift('webpack-dev-server/client?http://localhost:9000');
-    config.entries.media.unshift('webpack-dev-server/client?http://localhost:9000');
-    config.entries.app.unshift('webpack/hot/dev-server');
-    config.entries.media.unshift('webpack/hot/dev-server');
     config.plugins.push(new Webpack.HotModuleReplacementPlugin());
-    config.reactLoaders.unshift('react-hot');
+    config.react.unshift('react-hot');
 }
 
 module.exports = [
     {
-        name   : 'browser bundle',
+        name   : 'app',
         entry  : config.entries.app,
         output : {
             filename : 'app.js',
@@ -53,7 +51,7 @@ module.exports = [
                 },
                 {
                     test    : /\.js$/,
-                    loaders : config.reactLoaders,
+                    loaders : config.react,
                     exclude : npmDir
                 },
                 {
@@ -71,30 +69,21 @@ module.exports = [
             esnext       : true,
             globalstrict : true,
             globals      : {
-                __BACKEND__     : true,
-                __ENVIRONMENT__ : true,
-                JSON            : true,
-                console         : true,
-                document        : true,
-                window          : true
+                JSON     : true,
+                console  : true,
+                document : true,
+                window   : true
             }
         }
     },
     {
-        name   : 'media bundle',
+        name   : 'media',
         entry  : config.entries.media,
         output : {
             filename : 'media.js',
             path     : __dirname + '/build'
         },
         module : {
-            preLoaders : [
-                {
-                    test    : /\.jsx?/,
-                    loader  : 'jsxhint-loader',
-                    exclude : npmDir
-                }
-            ],
             loaders : [
                 {
                     test   : /\.(eot|ico|jpg|png|svg|ttf|woff|woff2)$/,
@@ -103,12 +92,8 @@ module.exports = [
                 },
                 {
                     test    : /\.js$/,
-                    loaders : config.reactLoaders,
+                    loaders : config.react,
                     exclude : npmDir
-                },
-                {
-                    test   : /\.json$/,
-                    loader : 'json-loader'
                 },
                 {
                     test   : /\.scss$/,
@@ -118,20 +103,8 @@ module.exports = [
         },
         plugins : config.plugins,
         resolve : {
-            extensions : ['', '.js', '.json', '.jsx', '.webpack.js', '.web.js']
+            extensions : ['', '.js', '.scss', '.webpack.js', '.web.js']
         },
-        devtool : '#inline-source-map',
-        jshint  : {
-            esnext       : true,
-            globalstrict : true,
-            globals      : {
-                __BACKEND__     : true,
-                __ENVIRONMENT__ : true,
-                JSON            : true,
-                console         : true,
-                document        : true,
-                window          : true
-            }
-        }
+        devtool : '#inline-source-map'
     }
 ];

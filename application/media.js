@@ -1,3 +1,3 @@
 'use strict';
 
-import './ui/scss/app.scss';
+import './ui/scss/app';

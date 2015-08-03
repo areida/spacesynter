@@ -6,12 +6,12 @@ import constants   from '../../constants';
 let client = new BuildClient();
 
 export default {
-    create(container, files, progress)
+    create(container, file, progress)
     {
-        return client.create(container, files)
+        return client.create(container, file)
             .then(
                 data => this.dispatch(constants.CREATE_BUILD_SUCCESS, data),
-                error => console.log(error),
+                () => console.warn,
                 progress
             );
     }
