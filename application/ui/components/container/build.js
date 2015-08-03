@@ -11,7 +11,9 @@ class Build extends React.Component {
         super(props);
 
         this.state = {
-            deleteConfirm : false
+            deleteConfirm : false,
+            editing       : false,
+            name          : null
         };
     }
 
@@ -19,6 +21,20 @@ class Build extends React.Component {
     {
         this.setState({
             deleteConfirm : true
+        });
+    }
+
+    onNameChange(event)
+    {
+        this.setState({
+            name : event.target.value
+        });
+    }
+
+    onToggleEdit()
+    {
+        this.setState({
+            editing : ! this.state.editing
         });
     }
 
@@ -39,6 +55,31 @@ class Build extends React.Component {
         );
     }
 
+    renderName()
+    {
+        if (this.state.editing) {
+            return (
+                <div className='medium-2 columns'>
+                    <input
+                        type     = 'text'
+                        value    = {this.state.name || this.props.name}
+                        onBlur   = {this.onToggleEdit.bind(this)}
+                        onChange = {this.onNameChange.bind(this)}
+                    />
+                </div>
+            );
+        } else {
+            return (
+                <div
+                        className     = 'medium-2 columns'
+                        onDoubleClick = {this.onToggleEdit.bind(this)}
+                >
+                    {this.props.name}
+                </div>
+            );
+        }
+    }
+
     render()
     {
         let created = moment(this.props.created).local().calendar(null, {
@@ -48,7 +89,7 @@ class Build extends React.Component {
 
         return (
             <div className='row build'>
-                <div className='medium-2 columns'>{this.props.name}</div>
+                {this.renderName()}
                 <div className='medium-2 columns'>{created}</div>
                 <div className='medium-2 columns'>
                     <Button

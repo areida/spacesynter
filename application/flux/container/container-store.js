@@ -14,9 +14,10 @@ export default class ContainerStore extends ApiStore {
         });
 
         this.bindActions(
-            constants.ACTIVATE_BUILD_SUCCESS, 'onActvateBuildSuccess',
-            constants.CREATE_BUILD_SUCCESS, 'onCreateBuildSuccess',
-            constants.DELETE_BUILD_SUCCESS, 'onDeleteBuildSuccess',
+            constants.ACTIVATE_BUILD_SUCCESS, 'onUpdateSuccess',
+            constants.CREATE_BUILD_PROGRESS, 'onCreateBuildProgress',
+            constants.CREATE_BUILD_SUCCESS, 'onUpdateSuccess',
+            constants.DELETE_BUILD_SUCCESS, 'onUpdateSuccess',
             constants.CONTAINER_FETCH_ALL, 'onFetchAll',
             constants.CONTAINER_FETCH_ALL_SUCCESS, 'onFetchAllSuccess',
             constants.CONTAINER_CREATE_SUCCESS, 'onCreateSuccess',
@@ -34,40 +35,13 @@ export default class ContainerStore extends ApiStore {
         return this.state.get('containers');
     }
 
-    onActvateBuildSuccess(container)
+    onCreateBuildProgress(payload)
     {
-        let containers, index;
+        let container, index;
 
-        index      = this.findIndexByName(container.name);
-        containers = this.state.get('containers').set(index, Immutable.fromJS(container));
-
-        this.state = this.state.set('containers', containers);
-
-        this.emit('change');
-    }
-
-    onCreateBuildSuccess(container)
-    {
-        let containers, index;
-
-        index      = this.findIndexByName(container.name);
-        containers = this.state.get('containers').set(index, Immutable.fromJS(container));
-
-        this.state = this.state.set('containers', containers);
-
-        this.emit('change');
-    }
-
-    onDeleteBuildSuccess(payload)
-    {
-        let container, containers, index;
-
-        index      = this.findIndexByName(payload.name);
-        container  = this.state.get('containers').get(index);
-        container  = container.set('builds', container.get('builds').filterNot(build => build.get('_id') === payload.build));
-        containers = this.state.get('containers').set(index, Immutable.fromJS(container));
-
-        this.state = this.state.set('containers', containers);
+        index      = this.findIndexByName(payload.container);
+        container  = this.state.get('containers').get(index).set('progress', payload.progress);
+        this.state = this.state.set('containers', this.state.get('containers').set(index, container));
 
         this.emit('change');
     }
@@ -80,6 +54,17 @@ export default class ContainerStore extends ApiStore {
 
         this.emit('change');
         this.emit('created');
+    }
+
+    onUpdateSuccess(container)
+    {
+        let containers, index;
+
+        index      = this.findIndexByName(container.name);
+        containers = this.state.get('containers').set(index, Immutable.fromJS(container));
+        this.state = this.state.set('containers', containers);
+
+        this.emit('change');
     }
 
     onFetchAll()

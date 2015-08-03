@@ -6,14 +6,28 @@ import constants   from '../../constants';
 let client = new BuildClient();
 
 export default {
+    activate(container, build)
+    {
+        return client.activate(container, build).then(
+            container => this.dispatch(constants.ACTIVATE_BUILD_SUCCESS, container)
+        );
+    },
+
     create(container, file, progress)
     {
         return client.create(container, file)
             .then(
                 data => this.dispatch(constants.CREATE_BUILD_SUCCESS, data),
                 () => console.warn,
-                progress
+                progress => this.dispatch(constants.CREATE_BUILD_PROGRESS, {container, progress})
             );
+    },
+
+    'delete'(container, build)
+    {
+        return client['delete'](container, build).then(
+            container => this.dispatch(constants.DELETE_BUILD_SUCCESS, container)
+        );
     }
 };
 

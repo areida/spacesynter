@@ -1,7 +1,8 @@
 'use strict';
 
-import React from 'react';
-import _     from 'lodash';
+import React  from 'react';
+import {List} from 'immutable';
+import _      from 'lodash';
 
 import Build  from './build';
 import Button from '../buttons/button';
@@ -14,14 +15,13 @@ class Container extends React.Component {
 
         this.state = {
             killConfirm : false,
-            percent     : 0,
             showBuilds  : false
         };
     }
 
     onActivateBuild(build)
     {
-        this.props.flux.actions.container.activateBuild(
+        this.props.flux.actions.build.activate(
             this.props.container.get('name'),
             build.get('_id')
         ).done();
@@ -29,7 +29,7 @@ class Container extends React.Component {
 
     onDeleteBuild(build)
     {
-        this.props.flux.actions.container.deleteBuild(
+        this.props.flux.actions.build['delete'](
             this.props.container.get('name'),
             build.get('_id')
         ).done();
@@ -60,10 +60,10 @@ class Container extends React.Component {
         this.props.flux.actions.container.kill(this.props.container.get('name'));
     }
 
-    onProgress(percent)
+    onProgress(progress)
     {
         this.setState({
-            percent : percent
+            progress : progress
         });
     }
 
@@ -119,7 +119,12 @@ class Container extends React.Component {
                         <p>{this.props.container.get('type')} - {this.props.container.get('status')}</p>
                     </div>
                     <div className='medium-2 columns' title='Click or Drag Build Here'>
-                        <Upload onDrop={this.onDrop.bind(this)} percent={this.state.percent}>Add Build</Upload>
+                        <Upload
+                            onDrop  = {this.onDrop.bind(this)}
+                            percent = {this.props.container.get('progress')}
+                        >
+                            Add Build
+                        </Upload>
                     </div>
                     <div className='medium-2 columns'>
                         <Button
@@ -147,5 +152,9 @@ class Container extends React.Component {
 }
 
 Container.displayName = 'Container';
+
+Container.props = {
+    containers : React.PropTypes.instanceOf(List)
+};
 
 export default Container;

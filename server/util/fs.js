@@ -10,18 +10,18 @@ var config = require('../config');
 module.exports = {
     changeBuild : function (container) {
         return new Q.promise(
-            function (resolve, reject) {
+            function (resolve, reject, progress) {
                 var buildPath  = path.join(config.containerDir, container.name, 'builds', container.build);
                 var workingDir = path.join(config.containerDir, container.name, 'working');
 
-                var unzip = spawn('unzip', ['-o', buildPath, '-d', workingDir]);
+                var unzip = spawn('unzip', ['-o', '-qq', buildPath, '-d', workingDir]);
 
-                unzip.stdout.on('data', function () {});
-                unzip.stderr.on('data', function () {});
+                unzip.stdout.on('data', progress);
+                unzip.stderr.on('data', progress);
 
                 unzip.on('close', function (code) {
-                    if (code !== 0) reject(code);
-                    else resolve();
+                    if (code === 0 || code === 1) resolve();
+                    else reject(code);
                 });
             }
         );

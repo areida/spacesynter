@@ -8,16 +8,24 @@ import Text   from '../form/inputs/text';
 
 const DEFAULT_PATHS = {
     nodejs   : 'server/index.js',
+    php      : '',
     'static' : 'build'
 };
 
-const TYPE_OPTIONS = [{
-    text  : 'NodeJS',
-    value : 'nodejs'
-}, {
-    text  : 'Static',
-    value : 'static'
-}];
+const TYPE_OPTIONS = [
+    {
+        text  : 'NodeJS',
+        value : 'nodejs'
+    },
+    {
+        text  : 'PHP',
+        value : 'php'
+    },
+    {
+        text  : 'Static',
+        value : 'static'
+    }
+];
 
 class NewContainer extends React.Component {
     constructor(props)

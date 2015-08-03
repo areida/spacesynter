@@ -167,11 +167,11 @@ app.get(
 );
 
 app.patch(
-    '/container/:name',
+    '/container/:name/build/:build',
     function (req, res) {
         Container.findOne({name : req.params.name}).exec().then(
             function (container) {
-                var build = _.findWhere(container.builds, {_id : new ObjectId(req.body.build)});
+                var build = _.findWhere(container.builds, {_id : new ObjectId(req.params.build)});
 
                 if (build) {
                     if (container.build === build._id.toString()) {
@@ -211,7 +211,7 @@ app.patch(
                     }
                 } else {
                     res.status(404);
-                    res.json({message : 'Build `' + req.body.build + '` does not exist'});
+                    res.json({message : 'Build `' + req.params.build + '` does not exist'});
                 }
             },
             function (error) {

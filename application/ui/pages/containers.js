@@ -54,7 +54,13 @@ class ContainersPage extends React.Component {
         let containers = this.state.containers.sortBy(
             container => container.get('created')
         ).map(
-            (container, index) => <Container {...this.props} container={container} key={index} />
+            (container, index) => (
+                <Container
+                    {...this.props}
+                    container = {container}
+                    key       = {index}
+                />
+            )
         );
         
         return (

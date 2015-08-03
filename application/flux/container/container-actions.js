@@ -6,24 +6,10 @@ import ContainerClient from './container-client';
 let client = new ContainerClient();
 
 export default {
-    activateBuild(name, build)
-    {
-        return client.activateBuild(name, build).then(
-            container => this.dispatch(constants.ACTIVATE_BUILD_SUCCESS, container)
-        );
-    },
-
     create(name, path, type)
     {
         return client.create(name, path, type).then(
             container => this.dispatch(constants.CONTAINER_CREATE_SUCCESS, container)
-        );
-    },
-
-    deleteBuild(name, build)
-    {
-        return client.deleteBuild(name, build).then(
-            () => this.dispatch(constants.DELETE_BUILD_SUCCESS, {name : name, build : build})
         );
     },
 
