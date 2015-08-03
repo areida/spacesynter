@@ -102,7 +102,7 @@ class Build extends React.Component {
                 <div className='medium-2 columns'>
                     <Button
                         size    = 'tiny'
-                        onClick = {this.props.onActivate}
+                        onClick = {this.props.active ? this.props.onDeactivate : this.props.onActivate}
                         color   = {this.props.active ? 'secondary' : 'primary'}
                     >
                         <a>{this.props.active ? 'Deactivate' : 'Activate'}</a>
@@ -124,6 +124,7 @@ Build.propTypes   = {
     name         : React.PropTypes.string.isRequired,
     onActivate   : React.PropTypes.func.isRequired,
     onDelete     : React.PropTypes.func.isRequired,
+    onDeactivate : React.PropTypes.func.isRequired,
     onNameChange : React.PropTypes.func.isRequired
 };
 

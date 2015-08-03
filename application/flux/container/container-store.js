@@ -15,6 +15,7 @@ export default class ContainerStore extends ApiStore {
             constants.ACTIVATE_BUILD_SUCCESS, 'onUpdateSuccess',
             constants.CREATE_BUILD_PROGRESS, 'onCreateBuildProgress',
             constants.CREATE_BUILD_SUCCESS, 'onUpdateSuccess',
+            constants.DEACTIVATE_BUILD_SUCCESS, 'onUpdateSuccess',
             constants.DELETE_BUILD_SUCCESS, 'onUpdateSuccess',
             constants.UPDATE_BUILD_SUCCESS, 'onUpdateSuccess',
             constants.CONTAINER_FETCH_ALL, 'onFetchAll',

@@ -13,7 +13,7 @@ export default class ContainerClient extends HttpGateway {
 
     create(name, path, type)
     {
-        return this.apiRequest('POST', '/container/', {
+        return this.apiRequest('POST', '/container', {
             name : name,
             path : path,
             type : type

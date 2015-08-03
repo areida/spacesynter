@@ -23,6 +23,13 @@ export default {
             );
     },
 
+    deactivate(container, build)
+    {
+        return client.deactivate(container, build).then(
+            container => this.dispatch(constants.DEACTIVATE_BUILD_SUCCESS, container)
+        );
+    },
+
     'delete'(container, build)
     {
         return client['delete'](container, build).then(

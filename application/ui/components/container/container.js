@@ -27,6 +27,14 @@ class Container extends React.Component {
         ).done();
     }
 
+    onDeactivateBuild(build)
+    {
+        this.props.flux.actions.build.deactivate(
+            this.props.container.get('name'),
+            build.get('_id')
+        ).done();
+    }
+
     onDeleteBuild(build)
     {
         this.props.flux.actions.build['delete'](
@@ -98,6 +106,7 @@ class Container extends React.Component {
                 key          = {index}
                 name         = {build.get('name')}
                 onActivate   = {this.onActivateBuild.bind(this, build)}
+                onDeactivate = {this.onDeactivateBuild.bind(this, build)}
                 onDelete     = {this.onDeleteBuild.bind(this, build)}
                 onNameChange = {this.onNameChange.bind(this, build)}
             />
