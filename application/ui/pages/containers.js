@@ -1,9 +1,12 @@
 'use strict';
 
 import React from 'react';
+import _     from 'lodash';
 
 import Container    from '../components/container/container';
 import NewContainer from '../components/container/new-container';
+
+const POLL_DELAY = 1000;
 
 class ContainersPage extends React.Component {
     static fetchData(flux)
@@ -15,15 +18,14 @@ class ContainersPage extends React.Component {
     {
         super(props);
 
-        this.state = this.getStateFromProps(props);
-
+        this.state    = this.getStateFromProps(props);
         this.onChange = this.onChange.bind(this);
     }
 
     getStateFromProps(props)
     {
         return {
-            containers : props.flux.store('ContainerStore').getAll()
+            containers : props.flux.store('Container').getAll()
         };
     }
 
@@ -34,19 +36,27 @@ class ContainersPage extends React.Component {
 
     componentWillMount()
     {
-        this.props.flux.store('ContainerStore').on('change', this.onChange);
+        this.props.flux.store('Container').on('change', this.onChange);
+        this.poll();
     }
 
     componentDidMount()
     {
-        if (! this.props.flux.store('ContainerStore').isLoaded()) {
+        if (! this.props.flux.store('Container').isLoaded()) {
             ContainersPage.fetchData(this.props.flux).done();
         }
     }
 
     componentWillUnmount()
     {
-        this.props.flux.store('ContainerStore').removeListener('change', this.onChange);
+        this.props.flux.store('Container').removeListener('change', this.onChange);
+    }
+
+    poll()
+    {
+        ContainersPage.fetchData(this.props.flux).done(
+            _.delay(this.poll.bind(this), POLL_DELAY)
+        );
     }
 
     render()

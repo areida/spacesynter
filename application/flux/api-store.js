@@ -1,28 +1,23 @@
 'use strict';
 
-import Store     from 'fluxxor/lib/store';
-import Immutable from 'immutable';
+import Store from 'fluxxor/lib/store';
 
 export default class ApiStore extends Store {
     constructor()
     {
-        let state = new Immutable.Map({
-            loaded  : false,
-            loading : false
-        });
-
         super();
 
-        this.state = state.merge(this.state);
-    }
-
-    isLoading()
-    {
-        return this.state.get('loading');
+        this.loaded  = false;
+        this.loading = false;
     }
 
     isLoaded()
     {
-        return this.state.get('loaded');
+        return this.loaded;
+    }
+
+    isLoading()
+    {
+        return this.loading;
     }
 }

@@ -11,7 +11,7 @@ class LoggedInLayout extends React.Component {
         super(props);
 
         this.state = {
-            loggedIn : props.flux.store('TokenStore').isLoggedIn()
+            loggedIn : props.flux.store('Token').isLoggedIn()
         };
     }
 

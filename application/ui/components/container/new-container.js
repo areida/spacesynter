@@ -43,12 +43,12 @@ class NewContainer extends React.Component {
 
     componentDidMount()
     {
-        this.props.flux.store('ContainerStore').on('created', this.onCreated);
+        this.props.flux.store('Container').on('created', this.onCreated);
     }
 
     componentWillUnmount()
     {
-        this.props.flux.store('ContainerStore').removeListener('created', this.onCreated);
+        this.props.flux.store('Container').removeListener('created', this.onCreated);
     }
 
     onCreated()

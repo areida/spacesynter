@@ -9,9 +9,7 @@ export default class ContainerStore extends ApiStore {
     constructor()
     {
         super();
-        this.state = new Immutable.fromJS({
-            containers : []
-        });
+        this.containers = new Immutable.List();
 
         this.bindActions(
             constants.ACTIVATE_BUILD_SUCCESS, 'onUpdateSuccess',
@@ -27,30 +25,28 @@ export default class ContainerStore extends ApiStore {
 
     findIndexByName(name)
     {
-        return this.state.get('containers').findIndex(c => c.get('name') === name);
+        return this.containers.findIndex(c => c.get('name') === name);
     }
 
     getAll()
     {
-        return this.state.get('containers');
+        return this.containers;
     }
 
     onCreateBuildProgress(payload)
     {
-        let container, index;
-
-        index      = this.findIndexByName(payload.container);
-        container  = this.state.get('containers').get(index).set('progress', payload.progress);
-        this.state = this.state.set('containers', this.state.get('containers').set(index, container));
+        let index       = this.findIndexByName(payload.container);
+        this.containers = this.containers.set(
+            index,
+            this.containers.get(index).set('progress', payload.progress)
+        );
 
         this.emit('change');
     }
 
     onCreateSuccess(container)
     {
-        let containers = this.state.get('containers').push(Immutable.fromJS(container));
-
-        this.state = this.state.set('containers', containers);
+        this.containers = this.containers.push(Immutable.fromJS(container));
 
         this.emit('change');
         this.emit('created');
@@ -58,41 +54,31 @@ export default class ContainerStore extends ApiStore {
 
     onUpdateSuccess(container)
     {
-        let containers, index;
-
-        index      = this.findIndexByName(container.name);
-        containers = this.state.get('containers').set(index, Immutable.fromJS(container));
-        this.state = this.state.set('containers', containers);
+        let index       = this.findIndexByName(container.name);
+        this.containers = this.containers.set(index, Immutable.fromJS(container));
 
         this.emit('change');
     }
 
     onFetchAll()
     {
-        this.state = this.state.merge({
-            loaded  : false,
-            loading : true
-        });
+        this.loading = true;
 
         this.emit('change');
     }
 
     onFetchAllSuccess(containers)
     {
-        this.state = new Immutable.fromJS({
-            containers : containers,
-            loaded     : true,
-            loading    : false
-        });
+        this.containers = new Immutable.fromJS(containers);
+        this.loaded     = true;
+        this.loading    = false;
 
         this.emit('change');
     }
 
     onKillSuccess(name)
     {
-        let containers = this.state.get('containers').filterNot(c => c.get('name') === name);
-
-        this.state = this.state.set('containers', containers);
+        this.containers = this.containers.filterNot(c => c.get('name') === name);
 
         this.emit('change');
     }
