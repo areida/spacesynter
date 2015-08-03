@@ -22,9 +22,14 @@ export default class BuildClient extends HttpGateway {
         return this.apiRequest('POST', '/container/' + container.get('name') + '/build', file);
     }
 
-    delete(name, build)
+    delete(container, build)
     {
-        return this.apiRequest('DELETE', '/container/' + name + '/build/' + build);
+        return this.apiRequest('DELETE', '/container/' + container + '/build/' + build);
+    }
+
+    update(container, build, name)
+    {
+        return this.apiRequest('PATCH', '/container/' + container + '/build/' + build, {name});
     }
 
     getRequestOptions(method, path, data)

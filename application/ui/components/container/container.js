@@ -60,6 +60,15 @@ class Container extends React.Component {
         this.props.flux.actions.container.kill(this.props.container.get('name'));
     }
 
+    onNameChange(build, name)
+    {
+        this.props.flux.actions.build.update(
+            this.props.container.get('name'),
+            build.get('_id'),
+            name
+        ).done();
+    }
+
     onProgress(progress)
     {
         this.setState({
@@ -84,12 +93,13 @@ class Container extends React.Component {
 
         return (
             <Build
-                active     = {active}
-                created    = {build.get('created')}
-                key        = {index}
-                name       = {build.get('name')}
-                onActivate = {this.onActivateBuild.bind(this, build)}
-                onDelete   = {this.onDeleteBuild.bind(this, build)}
+                active       = {active}
+                created      = {build.get('created')}
+                key          = {index}
+                name         = {build.get('name')}
+                onActivate   = {this.onActivateBuild.bind(this, build)}
+                onDelete     = {this.onDeleteBuild.bind(this, build)}
+                onNameChange = {this.onNameChange.bind(this, build)}
             />
         );
     }

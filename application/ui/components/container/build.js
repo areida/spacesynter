@@ -36,6 +36,14 @@ class Build extends React.Component {
         this.setState({
             editing : ! this.state.editing
         });
+
+        if (this.state.name && this.state.name !== this.props.name) {
+            this.props.onNameChange(this.state.name);
+
+            this.setState({
+                name : null
+            });
+        }
     }
 
     renderDelete()
@@ -111,11 +119,12 @@ class Build extends React.Component {
 
 Build.displayName = 'Build';
 Build.propTypes   = {
-    active     : React.PropTypes.bool.isRequired,
-    created    : React.PropTypes.string.isRequired,
-    name       : React.PropTypes.string.isRequired,
-    onActivate : React.PropTypes.func.isRequired,
-    onDelete   : React.PropTypes.func.isRequired
+    active       : React.PropTypes.bool.isRequired,
+    created      : React.PropTypes.string.isRequired,
+    name         : React.PropTypes.string.isRequired,
+    onActivate   : React.PropTypes.func.isRequired,
+    onDelete     : React.PropTypes.func.isRequired,
+    onNameChange : React.PropTypes.func.isRequired
 };
 
 export default Build;

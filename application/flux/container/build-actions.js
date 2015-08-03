@@ -28,6 +28,13 @@ export default {
         return client['delete'](container, build).then(
             container => this.dispatch(constants.DELETE_BUILD_SUCCESS, container)
         );
+    },
+
+    update(container, build, name)
+    {
+        return client.update(container, build, name).then(
+            container => this.dispatch(constants.UPDATE_BUILD_SUCCESS, container)
+        );
     }
 };
 

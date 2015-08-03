@@ -68,9 +68,9 @@ function randomHash(length) {
 }
 
 app.delete(
-    '/container/:name',
+    '/container/:container',
     function (req, res) {
-        Container.findOne({name : req.params.name}).exec().then(
+        Container.findOne({name : req.params.container}).exec().then(
             function (container) {
                 if (container) {
                     (
@@ -87,7 +87,7 @@ app.delete(
                     );
                 } else {
                     res.status(404);
-                    res.json({message : 'Container `' + req.params.name + '` does not exist'});
+                    res.json({message : 'Container `' + req.params.container + '` does not exist'});
                 }
             }
         );
@@ -95,9 +95,9 @@ app.delete(
 );
 
 app.delete(
-    '/container/:name/build/:build',
+    '/container/:container/build/:build',
     function (req, res) {
-        Container.findOne({name : req.params.name}).exec().then(
+        Container.findOne({name : req.params.container}).exec().then(
             function (container) {
                 if (container) {
                     var build = _.findWhere(container.builds, {
@@ -130,7 +130,7 @@ app.delete(
                     }
                 } else {
                     res.status(404);
-                    res.json({message : 'Container `' + req.params.name + '` does not exist'});
+                    res.json({message : 'Container `' + req.params.container + '` does not exist'});
                 }
             }
         );
@@ -138,15 +138,15 @@ app.delete(
 );
 
 app.get(
-    '/container/:name',
+    '/container/:container',
     function (req, res) {
-        Container.findOne({name : req.params.name}).exec().then(
+        Container.findOne({name : req.params.container}).exec().then(
             function (container) {
                 res.json(container.toObject());
             },
             function () {
                 res.status(404);
-                res.json({message : 'Container `' + req.params.name + '` does not exist'});
+                res.json({message : 'Container `' + req.params.container + '` does not exist'});
             }
         );
     }
@@ -164,48 +164,98 @@ app.get(
 );
 
 app.patch(
-    '/container/:name/build/:build',
+    '/container/:container/build/:build',
     function (req, res) {
-        Container.findOne({name : req.params.name}).exec().then(
+        Container.findOne({name : req.params.container}).exec().then(
+            function (container) {
+                var index = _.findIndex(container.builds, {_id : new ObjectId(req.params.build)});
+
+                if (index !== -1) {
+                    container.builds[index].name = req.body.name;
+
+                    container.save().then(
+                        function (container) {
+                            res.json(container.toObject());
+                        },
+                        function (error) {
+                            res.status(500);
+                            res.json(error);
+                        }
+                    );
+                } else {
+                    res.status(404);
+                    res.json({message : 'Build `' + req.params.build + '` does not exist'});
+                }
+            },
+            function (error) {
+                res.status(404);
+                res.json({message : 'Container `' + req.params.name + '` does not exist'});
+            }
+        );
+    }
+);
+
+app.post(
+    '/container/:container/build/:build/activate',
+    function (req, res) {
+        Container.findOne({name : req.params.container}).exec().then(
             function (container) {
                 var build = _.findWhere(container.builds, {_id : new ObjectId(req.params.build)});
 
                 if (build) {
-                    if (container.build === build._id.toString()) {
-                        container.build = null;
+                    container.build = build._id.toString();
 
-                        Q.all([
-                            ps.stop(container),
-                            container.save()
-                        ]).then(
-                            function (responses) {
-                                res.json(responses[1].toObject());
-                            },
-                            function (error) {
-                                res.status(500);
-                                res.json(error);
-                            }
-                        );
-                    } else {
-                        container.build = build._id.toString();
+                    Q.all([
+                        fs.changeBuild(container),
+                        container.save()
+                    ]).then(
+                        function (responses) {
+                            return ps.restart(responses[1]);
+                        }
+                    ).done(
+                        function (container) {
+                            res.json(container.toObject());
+                        },
+                        function (error) {
+                            res.status(500);
+                            res.json(error);
+                        }
+                    );
+                } else {
+                    res.status(404);
+                    res.json({message : 'Build `' + req.params.build + '` does not exist'});
+                }
+            },
+            function (error) {
+                res.status(404);
+                res.json({message : 'Container `' + req.params.container + '` does not exist'});
+            }
+        );
+    }
+);
 
-                        Q.all([
-                            fs.changeBuild(container),
-                            container.save()
-                        ]).then(
-                            function (responses) {
-                                return ps.restart(responses[1]);
-                            }
-                        ).done(
-                            function (container) {
-                                res.json(container.toObject());
-                            },
-                            function (error) {
-                                res.status(500);
-                                res.json(error);
-                            }
-                        );
-                    }
+app.post(
+    '/container/:container/build/:build/deactivate',
+    function (req, res) {
+        Container.findOne({name : req.params.container}).exec().then(
+            function (container) {
+                var build = _.findWhere(container.builds, {_id : new ObjectId(req.params.build)});
+
+                if (build) {
+                    container.build = null;
+
+                    Q.all([
+                        ps.stop(container),
+                        container.save()
+                    ]).then(
+                        function (responses) {
+                            res.json(responses[1].toObject());
+                        },
+                        function (error) {
+                            res.status(500);
+                            res.json(error);
+                        }
+                    );
                 } else {
                     res.status(404);
                     res.json({message : 'Build `' + req.params.build + '` does not exist'});
@@ -289,7 +339,7 @@ app.post(
 
 // Capture any uploaded file in a buffer
 app.post(
-    '/container/:name/build',
+    '/container/:container/build',
     function (req, res, next) {
         var data = new Buffer('');
 
@@ -305,11 +355,11 @@ app.post(
 );
 
 app.post(
-    '/container/:name/build',
+    '/container/:container/build',
     function (req, res) {
         var filename = req.headers['x-filename'];
 
-        Container.findOne({name : req.params.name}).exec().then(
+        Container.findOne({name : req.params.container}).exec().then(
             function (container) {
                 if (container) {
                     container.builds.push({
@@ -338,7 +388,7 @@ app.post(
                     );
                 } else {
                     res.status(404);
-                    res.json({message : 'Container `' + req.params.name + '` does not exist'});
+                    res.json({message : 'Container `' + req.params.container + '` does not exist'});
                 }
             }
         );
