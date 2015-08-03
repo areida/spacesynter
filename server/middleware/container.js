@@ -18,12 +18,9 @@ var app = new Express();
 
 app.use(bodyParser.json());
 
-app.disable('etag');
-
 app.use(function(req, res, next) {
     res.header('Content-Type', 'application/json');
     res.header('If-None-Match', '*');
-    res.header('Last-Modified', (new Date()).toUTCString());
     next();
 });
 
