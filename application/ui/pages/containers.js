@@ -25,7 +25,7 @@ class ContainersPage extends React.Component {
     getStateFromProps(props)
     {
         return {
-            containers : props.flux.store('Container').getAll()
+            containers : props.flux.store('Container').containers
         };
     }
 

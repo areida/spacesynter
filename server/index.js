@@ -4,6 +4,7 @@ var CookieParser = require('cookie-parser');
 var Express      = require('express');
 var fs           = require('fs');
 var mongoose     = require('mongoose');
+var os           = require('os');
 var Session      = require('express-session');
 var RedisStore   = require('connect-redis')(Session);
 var tmpl         = require('blueimp-tmpl').tmpl;
@@ -42,6 +43,22 @@ if (config.auth) {
     app.use(github);
     app.use(auth);
 }
+
+app.get('/api/stats', function (req, res) {
+    res.json({
+        arch     : os.arch(),
+        freemem  : os.freemem(),
+        cpus     : os.cpus(),
+        cpuTime  : cpuTime,
+        hostname : os.hostname(),
+        loadavg  : os.loadavg(),
+        platform : os.platform(),
+        release  : os.release(),
+        totalmem : os.totalmem(),
+        type     : os.type(),
+        uptime   : os.uptime()
+    });
+});
 
 app.use('/api', container);
 
