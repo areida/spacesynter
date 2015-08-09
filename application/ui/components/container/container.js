@@ -51,7 +51,7 @@ class Container extends React.Component {
             this.setState({showBuilds : true});
 
             this.props.flux.actions.build.create(
-                this.props.container,
+                this.props.container.get('name'),
                 files[0],
                 this.onProgress.bind(this)
             ).done();

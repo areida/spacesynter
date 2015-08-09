@@ -22,7 +22,7 @@ export default class ContainerClient extends HttpGateway {
 
     fetch(name)
     {
-        return this.apiRequest('GET', '/container/' + name);
+        return this.apiRequest('GET', `/container/${name}`);
     }
 
     fetchAll()
@@ -32,6 +32,6 @@ export default class ContainerClient extends HttpGateway {
 
     kill(name)
     {
-        return this.apiRequest('DELETE', '/container/' + name);
+        return this.apiRequest('DELETE', `/container/${name}`);
     }
 }

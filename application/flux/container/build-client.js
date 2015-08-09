@@ -14,27 +14,27 @@ export default class BuildClient extends HttpGateway {
 
     activate(name, build)
     {
-        return this.apiRequest('POST', '/container/' + name + '/build/' + build + '/activate');
+        return this.apiRequest('POST',  `/container/${name}/build/${build}/activate`);
     }
 
     create(container, file)
     {
-        return this.apiRequest('POST', '/container/' + container.get('name') + '/build', file);
+        return this.apiRequest('POST',  `/container/${container}/build`, file);
     }
 
     deactivate(name, build)
     {
-        return this.apiRequest('POST', '/container/' + name + '/build/' + build + '/deactivate');
+        return this.apiRequest('POST',  `/container/${name}/build/${build}/deactivate`);
     }
 
     delete(container, build)
     {
-        return this.apiRequest('DELETE', '/container/' + container + '/build/' + build);
+        return this.apiRequest('DELETE',    `/container/${container}/build/${build}`);
     }
 
     update(container, build, name)
     {
-        return this.apiRequest('PATCH', '/container/' + container + '/build/' + build, {name});
+        return this.apiRequest('PATCH',     `/container/${container}/build/${build}`, {name});
     }
 
     getRequestOptions(method, path, data)
