@@ -10,17 +10,14 @@
     "url": "https://github.com/areida/spacesynter.git"
   },
   "scripts": {
-    "clean:build": "rm -rf build",
-    "clean:dist": "rm -rf dist",
-    "deploy:app": "aws s3 cp dist/app.zip s3://spacesynter/app.zip",
+    "deploy:app": "aws s3 cp dist/`git rev-parse --abbrev-ref HEAD`-`git rev-parse HEAD | head -c 10`.zip s3://spacesynter/app.zip",
     "deploy:cookbooks": "aws s3 cp dist/cookbooks.zip s3://spacesynter/cookbooks.zip",
     "dist:app": "APP_ENV=production NODE_ENV=production webpack -p",
     "dist:cookbooks": "mkdir -p dist && zip -r dist/cookbooks cookbooks",
     "start:dev": "pm2 start server/dev.js -n spacesynter:dev",
     "start:app": "pm2 start server/index.js -n spacesynter:app --watch",
-    "predist": "npm run clean",
     "prestart": "npm run clean",
-    "clean": "npm run clean:build && npm run clean:dist",
+    "clean": "rm -rf build",
     "deploy": "npm run deploy:app && npm run deploy:cookbooks",
     "dist": "npm run dist:app && npm run dist:cookbooks && ./dist.sh && npm run deploy",
     "start": "npm run start:app && npm run start:dev && ./start.sh"
