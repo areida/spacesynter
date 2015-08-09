@@ -1,6 +1,6 @@
 'use strict';
 
-import constants       from '../../constants';
+import constants       from '../constants';
 import ContainerClient from './container-client';
 
 let client = new ContainerClient();

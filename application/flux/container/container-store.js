@@ -3,7 +3,7 @@
 import Immutable from 'immutable';
 
 import ApiStore  from '../api-store';
-import constants from '../../constants';
+import constants from '../constants';
 
 export default class ContainerStore extends ApiStore {
     constructor()

@@ -1,7 +1,7 @@
 'use strict';
 
 import BuildClient from './build-client';
-import constants   from '../../constants';
+import constants   from '../constants';
 
 let client = new BuildClient();
 

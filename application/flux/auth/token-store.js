@@ -3,7 +3,7 @@
 import store from 'store';
 
 import ApiStore  from '../api-store';
-import constants from '../../constants';
+import constants from '../constants';
 
 export default class TokenStore extends ApiStore {
     constructor()

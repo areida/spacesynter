@@ -1,7 +1,7 @@
 'use strict';
 
 import AuthClient from './auth-client';
-import constants  from '../../constants';
+import constants  from '../constants';
 
 let client = new AuthClient();
 
