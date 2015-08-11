@@ -6,8 +6,9 @@ var Q        = require('q');
 var Container, schema;
 
 schema = new mongoose.Schema({
-    build  : String,
-    builds : [{
+    backend : String,
+    build   : String,
+    builds  : [{
         created : {type : Date, default : Date.now},
         name    : String,
         path    : String

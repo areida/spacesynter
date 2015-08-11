@@ -6,9 +6,9 @@ import ContainerClient from './container-client';
 let client = new ContainerClient();
 
 export default {
-    create(name, path, type)
+    create(name, path, type, backend)
     {
-        return client.create(name, path, type).then(
+        return client.create(name, path, type, backend).then(
             container => this.dispatch(constants.CONTAINER_CREATE_SUCCESS, container)
         );
     },

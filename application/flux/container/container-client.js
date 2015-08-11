@@ -11,13 +11,9 @@ export default class ContainerClient extends HttpGateway {
         this.config = api;
     }
 
-    create(name, path, type)
+    create(name, path, type, backend)
     {
-        return this.apiRequest('POST', '/container', {
-            name : name,
-            path : path,
-            type : type
-        });
+        return this.apiRequest('POST', '/container', {backend, name, path, type});
     }
 
     fetch(name)

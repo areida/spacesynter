@@ -21,7 +21,8 @@ function getOptions(container) {
         env : {
             APP_ENV : 'qa',
             CWD     : cwd,
-            PORT    : container.port
+            PORT    : container.port,
+            BACKEND : container.backend
         },
         name   : container.name,
         script : script

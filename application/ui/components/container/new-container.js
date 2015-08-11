@@ -33,9 +33,10 @@ class NewContainer extends React.Component {
         super(props);
 
         this.state = {
-            name : '',
-            path : DEFAULT_PATHS.nodejs,
-            type : 'nodejs'
+            backend : '',
+            name    : '',
+            path    : DEFAULT_PATHS.nodejs,
+            type    : 'nodejs'
         };
 
         this.onCreated = this.onCreated.bind(this);
@@ -54,9 +55,10 @@ class NewContainer extends React.Component {
     onCreated()
     {
         this.setState({
-            name : '',
-            path : DEFAULT_PATHS.nodejs,
-            type : 'nodejs'
+            backend : '',
+            name    : '',
+            path    : DEFAULT_PATHS.nodejs,
+            type    : 'nodejs'
         });
     }
 
@@ -80,7 +82,8 @@ class NewContainer extends React.Component {
         this.props.flux.actions.container.create(
             this.state.name.trim(),
             this.state.path,
-            this.state.type
+            this.state.type,
+            this.state.backend
         ).done();
     }
 
@@ -98,6 +101,16 @@ class NewContainer extends React.Component {
                             value       = {this.state.name}
                             onChange    = {this.onFormChange.bind(this)}
                             placeholder = 'Name'
+                            size        = 'small'
+                            type        = 'text'
+                        />
+                    </div>
+                    <div className='medium-2 columns'>
+                        <Text
+                            id          = 'backend'
+                            value       = {this.state.backend}
+                            onChange    = {this.onFormChange.bind(this)}
+                            placeholder = 'Backend'
                             size        = 'small'
                             type        = 'text'
                         />
@@ -121,7 +134,7 @@ class NewContainer extends React.Component {
                             type        = 'text'
                         />
                     </div>
-                    <div className='medium-6 columns'>
+                    <div className='medium-4 columns'>
                         <Button
                             className = 'button'
                             type      = 'submit'

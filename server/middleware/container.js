@@ -297,13 +297,14 @@ app.post(
                 findPort(ports).then(
                     function (port) {
                         var data = {
-                            build  : null,
-                            builds : [],
-                            host   : buildHostname(name, port),
-                            name   : name,
-                            path   : req.body.path,
-                            port   : port,
-                            type   : req.body.type
+                            backend : req.body.backend,
+                            build   : null,
+                            builds  : [],
+                            host    : buildHostname(name, port),
+                            name    : name,
+                            path    : req.body.path,
+                            port    : port,
+                            type    : req.body.type
                         };
 
                         return Q.all([
