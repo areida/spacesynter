@@ -136,6 +136,7 @@ class Container extends React.Component {
                     <div className='medium-2 columns'>
                         <p><a href={'http://' + host} target='_blank'>{host}</a></p>
                         <p>{this.props.container.get('type')} - {this.props.container.get('status')}</p>
+                        <p>{this.props.container.get('backend')}</p>
                     </div>
                     <div className='medium-2 columns' title='Click or Drag Build Here'>
                         <Upload
