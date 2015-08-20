@@ -7,7 +7,7 @@ var proxy   = require('express-http-proxy');
 
 var app = new Express();
 
-app.use(config.api.prefix, proxy('http://' + process.env.BACKEND, {
+app.use(process.env.PROXY_PREFIX, proxy('http://' + process.env.BACKEND, {
     limit : '50mb'
 }));
 

@@ -19,10 +19,11 @@ function getOptions(container) {
 
     return {
         env : {
-            APP_ENV : 'qa',
-            CWD     : cwd,
-            PORT    : container.port,
-            BACKEND : container.backend
+            APP_ENV      : 'qa',
+            CWD          : cwd,
+            PORT         : container.port,
+            BACKEND      : container.backend,
+            PROXY_PREFIX : '/api'
         },
         name   : container.name,
         script : script
