@@ -3,8 +3,13 @@
 var Express = require('express');
 var fs      = require('fs');
 var path    = require('path');
+var proxy   = require('express-http-proxy');
 
 var app = new Express();
+
+app.use(process.env.PROXY_PREFIX, proxy('http://' + process.env.BACKEND, {
+    limit : '50mb'
+}));
 
 app.use(function (req, res, next) {
     var ext = path.extname(req.url);
