@@ -54,9 +54,10 @@ class Build extends React.Component {
 
         return (
             <Button
-                size     = 'tiny'
-                onClick  = {this.state.deleteConfirm ? this.props.onDelete : this.onDelete.bind(this)}
-                color    = 'secondary'
+                block   = {true}
+                size    = 'tiny'
+                onClick = {this.state.deleteConfirm ? this.props.onDelete : this.onDelete.bind(this)}
+                color   = 'secondary'
             >
                 <a>{this.state.deleteConfirm ? 'Really?' : 'Delete'}</a>
             </Button>
@@ -67,21 +68,16 @@ class Build extends React.Component {
     {
         if (this.state.editing) {
             return (
-                <div className='medium-2 columns'>
-                    <input
-                        type     = 'text'
-                        value    = {this.state.name || this.props.name}
-                        onBlur   = {this.onToggleEdit.bind(this)}
-                        onChange = {this.onNameChange.bind(this)}
-                    />
-                </div>
+                <input
+                    type     = 'text'
+                    value    = {this.state.name || this.props.name}
+                    onBlur   = {this.onToggleEdit.bind(this)}
+                    onChange = {this.onNameChange.bind(this)}
+                />
             );
         } else {
             return (
-                <div
-                        className     = 'medium-2 columns'
-                        onDoubleClick = {this.onToggleEdit.bind(this)}
-                >
+                <div onDoubleClick = {this.onToggleEdit.bind(this)}>
                     {this.props.name}
                 </div>
             );
@@ -97,21 +93,30 @@ class Build extends React.Component {
 
         return (
             <div className='row build'>
-                {this.renderName()}
-                <div className='medium-2 columns'>{created}</div>
                 <div className='medium-2 columns'>
-                    <Button
-                        size    = 'tiny'
-                        onClick = {this.props.active ? this.props.onDeactivate : this.props.onActivate}
-                        color   = {this.props.active ? 'secondary' : 'primary'}
-                    >
-                        <a>{this.props.active ? 'Deactivate' : 'Activate'}</a>
-                    </Button>
+                    &nbsp;
                 </div>
-                <div className='medium-2 columns'>
-                    {this.renderDelete()}
+                <div className='medium-3 columns'>
+                    {this.renderName()}
                 </div>
-                <div className='medium-4 columns'></div>
+                <div className='medium-3 columns'>
+                    <div className='medium-6 columns'>
+                        <Button
+                            block   = {true}
+                            size    = 'tiny'
+                            onClick = {this.props.active ? this.props.onDeactivate : this.props.onActivate}
+                            color   = {this.props.active ? 'secondary' : 'primary'}
+                        >
+                            <a>{this.props.active ? 'Deactivate' : 'Activate'}</a>
+                        </Button>
+                    </div>
+                    <div className='medium-6 columns'>
+                        {this.renderDelete()}
+                    </div>
+                </div>
+                <div className='medium-3 columns'>
+                    {created}
+                </div>
             </div>
         );
     }

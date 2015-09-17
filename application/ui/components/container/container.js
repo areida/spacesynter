@@ -133,12 +133,12 @@ class Container extends React.Component {
         return (
             <div className='container existing'>
                 <div className='row'>
-                    <div className='medium-2 columns'>
-                        <p><a href={'http://' + host} target='_blank'>{host}</a></p>
-                        <p>{this.props.container.get('type')} - {this.props.container.get('status')}</p>
-                        <p>{this.props.container.get('backend')}</p>
+                    <div className='medium-5 columns'>
+                        <a href={'http://' + host} target='_blank'>{host}</a>
+                        <span className='container__info--status'> - {this.props.container.get('status')}</span><span className='container__info--type'>{this.props.container.get('type')}</span>
+                        <span className='container__info--backend'>Backend: {this.props.container.get('backend')}</span>
                     </div>
-                    <div className='medium-2 columns' title='Click or Drag Build Here'>
+                    <div className='medium-3 columns' title='Click or Drag Build Here'>
                         <Upload
                             onDrop  = {this.onDrop.bind(this)}
                             percent = {this.props.container.get('progress')}
@@ -148,6 +148,7 @@ class Container extends React.Component {
                     </div>
                     <div className='medium-2 columns'>
                         <Button
+                            block  = {true}
                             color   = {this.state.showBuilds ? 'tertiary' : 'primary'}
                             size    = 'small'
                             onClick = {this.onToggleBuilds.bind(this)}
@@ -155,8 +156,9 @@ class Container extends React.Component {
                             <a>{this.props.container.get('builds').size ? 'Builds' : 'No builds'}</a>
                         </Button>
                     </div>
-                    <div className='medium-6 columns'>
+                    <div className='medium-2 columns'>
                         <Button
+                            block  = {true}
                             color   = 'secondary'
                             size    = 'small'
                             onClick = {this.state.killConfirm ? this.onKillConfirm.bind(this) : this.onKill.bind(this)}

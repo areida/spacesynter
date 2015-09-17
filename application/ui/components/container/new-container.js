@@ -90,59 +90,62 @@ class NewContainer extends React.Component {
     render()
     {
         return (
-            <div className='container new row'>
+            <div className='container new'>
                 <form
                     className = 'form new-container-form'
                     onSubmit  = {this.onSubmit.bind(this)}
                 >
-                    <div className='medium-2 columns'>
-                        <Text
-                            id          = 'name'
-                            value       = {this.state.name}
-                            onChange    = {this.onFormChange.bind(this)}
-                            placeholder = 'Name'
-                            size        = 'small'
-                            type        = 'text'
-                        />
-                    </div>
-                    <div className='medium-2 columns'>
-                        <Text
-                            id          = 'backend'
-                            value       = {this.state.backend}
-                            onChange    = {this.onFormChange.bind(this)}
-                            placeholder = 'Backend'
-                            size        = 'small'
-                            type        = 'text'
-                        />
-                    </div>
-                    <div className='medium-2 columns'>
-                        <Select
-                            id       = 'type'
-                            value    = {this.state.type}
-                            onChange = {this.onFormChange.bind(this)}
-                            options  = {TYPE_OPTIONS}
-                            size     = 'small'
-                        />
-                    </div>
-                    <div className='medium-2 columns'>
-                        <Text
-                            id          = 'path'
-                            value       = {this.state.path}
-                            onChange    = {this.onFormChange.bind(this)}
-                            placeholder = 'Path'
-                            size        = 'small'
-                            type        = 'text'
-                        />
-                    </div>
-                    <div className='medium-4 columns'>
-                        <Button
-                            className = 'button'
-                            type      = 'submit'
-                            size      = 'small'
-                            onClick   = {this.onSubmit.bind(this)}
-                        >
-                            <a>Create</a>
-                        </Button>
+                    <div className='row'>
+                        <div className='medium-3 columns'>
+                            <Text
+                                id          = 'name'
+                                value       = {this.state.name}
+                                onChange    = {this.onFormChange.bind(this)}
+                                placeholder = 'Name'
+                                size        = 'small'
+                                type        = 'text'
+                            />
+                        </div>
+                        <div className='medium-3 columns'>
+                            <Text
+                                id          = 'backend'
+                                value       = {this.state.backend}
+                                onChange    = {this.onFormChange.bind(this)}
+                                placeholder = 'Backend'
+                                size        = 'small'
+                                type        = 'text'
+                            />
+                        </div>
+                        <div className='medium-2 columns'>
+                            <Select
+                                id       = 'type'
+                                value    = {this.state.type}
+                                onChange = {this.onFormChange.bind(this)}
+                                options  = {TYPE_OPTIONS}
+                                size     = 'small'
+                            />
+                        </div>
+                        <div className='medium-2 columns'>
+                            <Text
+                                id          = 'path'
+                                value       = {this.state.path}
+                                onChange    = {this.onFormChange.bind(this)}
+                                placeholder = 'Path'
+                                size        = 'small'
+                                type        = 'text'
+                            />
+                        </div>
+                        <div className='medium-2 columns'>
+                            <Button
+                                block     = {true}
+                                className = 'button'
+                                type      = 'submit'
+                                size      = 'small'
+                                onClick   = {this.onSubmit.bind(this)}
+                            >
+                                <a>Create</a>
+                            </Button>
+                        </div>
                     </div>
                 </form>
             </div>
