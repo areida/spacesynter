@@ -72,9 +72,9 @@ class ContainersPage extends React.Component {
                 />
             )
         );
-        
+
         return (
-            <div>
+            <div className='container-wrapper'>
                 <NewContainer {...this.props} />
                 {containers.toArray()}
             </div>

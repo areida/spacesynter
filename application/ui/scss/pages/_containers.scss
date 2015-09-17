@@ -1,6 +1,19 @@
-.container {
-    &.new {
+.container-wrapper {
+    max-width : rem-calc(1280);
+    margin    : rem-calc(50) auto;
+}
 
+.container {
+    padding : rem-calc(10);
+
+    &.new {
+        margin : rem-calc(20 0);
+    }
+
+    &.existing {
+        &:nth-of-type(even) {
+            background : $gray--050;
+        }
     }
 
     margin : 5px 5px;
