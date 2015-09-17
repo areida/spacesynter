@@ -1,9 +1,39 @@
+.header {
+    position: fixed;
+    top : 0;
+    right : 0;
+    left : 0;
+    height : 70px;
+    background : $gray--400;
+    z-index : 10;
+    box-shadow : 0 2px 2px rgba($black, .2);
+
+    .container {
+        max-width : rem-calc(1280);
+        margin    : auto;
+    }
+}
+
+.container-wrapper {
+    max-width : rem-calc(1280);
+    margin    : rem-calc(95) auto rem-calc(50);
+}
+
 .container {
-    &.new {
+    margin : rem-calc(10);
+
+    > * {
+        padding : rem-calc(10);
+    }
+
+    &.existing {
+
+        &:nth-of-type(even) {
+            background : $gray--050;
+        }
 
     }
 
-    margin : 5px 5px;
 }
 
 .builds .build {
@@ -12,4 +42,22 @@
 
 .row {
     margin : 0;
+}
+
+.container__info--type {
+    float : right;
+}
+
+.container__info--status {
+    float : right;
+}
+
+.container__info--backend {
+    float : right;
+    clear : right;
+}
+
+.build {
+    padding : rem-calc(10);
+    border-top : 1px solid $gray--100;
 }

@@ -63,7 +63,7 @@ class ContainersPage extends React.Component {
     {
         let containers = this.state.containers.sortBy(
             container => container.get('created')
-        ).map(
+        ).reverse().map(
             (container, index) => (
                 <Container
                     {...this.props}
@@ -72,10 +72,12 @@ class ContainersPage extends React.Component {
                 />
             )
         );
-        
+
         return (
-            <div>
-                <NewContainer {...this.props} />
+            <div className='container-wrapper'>
+                <header className='header'>
+                    <NewContainer {...this.props} />
+                </header>
                 {containers.toArray()}
             </div>
         );
